@@ -1,0 +1,202 @@
+{
+	"settings":
+	{
+		"en": "Settings",
+		"ru": "Настройки"
+	},
+	"general_settings":
+	{
+		"en": "General",
+		"ru": "Общие"
+	},
+	"language":
+	{
+		"en": "Language",
+		"ru": "Язык"
+	},
+	"about_app_title":
+	{
+		"en": "About",
+		"ru": "О приложении"
+	},
+	"source_code_title":
+	{
+		"en": "Source",
+		"ru": "Исходный код"
+	},
+	"source_code_text":
+	{
+		"en": "This app is open source",
+		"ru": "Это приложение с открытым исходным кодом"
+	},
+	"monday":
+	{
+		"en": "Monday",
+		"ru": "Понедельник"
+	},
+	"tuesday":
+	{
+		"en": "Tuesday",
+		"ru": "Вторник"
+	},
+	"wednesday":
+	{
+		"en": "Wednesday",
+		"ru": "Среда"
+	},
+	"thursday":
+	{
+		"en": "Thursday",
+		"ru": "Четверг"
+	},
+	"friday":
+	{
+		"en": "Friday",
+		"ru": "Пятница"
+	},
+	"saturday":
+	{
+		"en": "Saturday",
+		"ru": "Суббота"
+	},
+	"sunday":
+	{
+		"en": "Sunday",
+		"ru": "Воскресенье"
+	},
+	"monday_short":
+	{
+		"en": "Mon",
+		"ru": "Пн"
+	},
+	"tuesday_short":
+	{
+		"en": "Tue",
+		"ru": "Вт"
+	},
+	"wednesday_short":
+	{
+		"en": "Wed",
+		"ru": "Ср"
+	},
+	"thursday_short":
+	{
+		"en": "Thu",
+		"ru": "Чт"
+	},
+	"friday_short":
+	{
+		"en": "Fri",
+		"ru": "Пт"
+	},
+	"saturday_short":
+	{
+		"en": "Sat",
+		"ru": "Сб"
+	},
+	"sunday_short":
+	{
+		"en": "Sun",
+		"ru": "Вс"
+	},
+	"january":
+	{
+		"en": "January",
+		"ru": "Январь"
+	},
+	"february":
+	{
+		"en": "February",
+		"ru": "Февраль"
+	},
+	"march":
+	{
+		"en": "March",
+		"ru": "Март"
+	},
+	"april":
+	{
+		"en": "April",
+		"ru": "Апрель"
+	},
+	"may":
+	{
+		"en": "May",
+		"ru": "Май"
+	},
+	"june":
+	{
+		"en": "June",
+		"ru": "Июнь"
+	},
+	"july":
+	{
+		"en": "July",
+		"ru": "Июль"
+	},
+	"august":
+	{
+		"en": "August",
+		"ru": "Август"
+	},
+	"september":
+	{
+		"en": "September",
+		"ru": "Сентябрь"
+	},
+	"october":
+	{
+		"en": "October",
+		"ru": "Октябрь"
+	},
+	"november":
+	{
+		"en": "November",
+		"ru": "Ноябрь"
+	},
+	"december":
+	{
+		"en": "December",
+		"ru": "Декабрь"
+	},
+	"setting_locale_en":
+	{
+		"en": "English",
+		"ru": "English"
+	},
+	"setting_locale_ru":
+	{
+		"en": "Русский",
+		"ru": "Русский"
+	},
+	"search":
+	{
+		"en": "Search",
+		"ru": "Поиск"
+	},
+	"name":
+	{
+		"en": "Name",
+		"ru": "Название"
+	},
+	"input_incentive":
+	{
+		"en": "Input",
+		"ru": "Введите"
+	},
+	"no_results_found":
+	{
+		"en": "No results found",
+		"ru": "Ничего не найдено"
+	},
+	"searching":
+	{
+		"en": "Searching...",
+		"ru": "Поиск..."
+	},
+	"optional":
+	{
+		"en": "optional",
+		"ru": "необязательно"
+	}
+}

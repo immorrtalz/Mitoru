@@ -1,0 +1,220 @@
+@font-face
+{
+	font-family: Montserrat;
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('./assets/Montserrat-Medium-Cyrillic.woff2') format('woff2');
+	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face
+{
+	font-family: Montserrat;
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('./assets/Montserrat-Medium-Latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face
+{
+	font-family: Montserrat;
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url('./assets/Montserrat-SemiBold-Cyrillic.woff2') format('woff2');
+	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face
+{
+	font-family: Montserrat;
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url('./assets/Montserrat-SemiBold-Latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+.fontRegular
+{
+	font-family: Montserrat, sans-serif;
+	font-style: normal;
+	font-weight: 400;
+}
+
+.fontMedium
+{
+	font-family: Montserrat, sans-serif;
+	font-style: normal;
+	font-weight: 500;
+}
+
+.fontSemibold
+{
+	font-family: Montserrat, sans-serif;
+	font-style: normal;
+	font-weight: 600;
+}
+
+:root
+{
+	--accent: #F26549;
+	--dark: #101012;
+
+	--white-0: hsl(from white h s l / 0);
+	--white-2: hsl(from white h s l / 0.02);
+	--white-5: hsl(from white h s l / 0.05);
+	--white-10: hsl(from white h s l / 0.1);
+	--white-15: hsl(from white h s l / 0.15);
+	--white-20: hsl(from white h s l / 0.20);
+	--white-25: hsl(from white h s l / 0.25);
+	--white-30: hsl(from white h s l / 0.30);
+	--white-35: hsl(from white h s l / 0.35);
+	--white-40: hsl(from white h s l / 0.40);
+	--white-45: hsl(from white h s l / 0.45);
+	--white-50: hsl(from white h s l / 0.50);
+	--white-55: hsl(from white h s l / 0.55);
+	--white-60: hsl(from white h s l / 0.60);
+	--white-65: hsl(from white h s l / 0.65);
+	--white-70: hsl(from white h s l / 0.70);
+	--white-75: hsl(from white h s l / 0.75);
+	--white-80: hsl(from white h s l / 0.80);
+	--white-85: hsl(from white h s l / 0.85);
+	--white-90: hsl(from white h s l / 0.90);
+	--white-95: hsl(from white h s l / 0.95);
+	--white-100: hsl(from white h s l / 1);
+
+	--black-0: hsl(from black h s l / 0);
+	--black-2: hsl(from black h s l / 0.02);
+	--black-5: hsl(from black h s l / 0.05);
+	--black-10: hsl(from black h s l / 0.1);
+	--black-15: hsl(from black h s l / 0.15);
+	--black-20: hsl(from black h s l / 0.20);
+	--black-25: hsl(from black h s l / 0.25);
+	--black-30: hsl(from black h s l / 0.30);
+	--black-35: hsl(from black h s l / 0.35);
+	--black-40: hsl(from black h s l / 0.40);
+	--black-45: hsl(from black h s l / 0.45);
+	--black-50: hsl(from black h s l / 0.50);
+	--black-55: hsl(from black h s l / 0.55);
+	--black-60: hsl(from black h s l / 0.60);
+	--black-65: hsl(from black h s l / 0.65);
+	--black-70: hsl(from black h s l / 0.70);
+	--black-75: hsl(from black h s l / 0.75);
+	--black-80: hsl(from black h s l / 0.80);
+	--black-85: hsl(from black h s l / 0.85);
+	--black-90: hsl(from black h s l / 0.90);
+	--black-95: hsl(from black h s l / 0.95);
+	--black-100: hsl(from black h s l / 1);
+
+	--main-fg-color: var(--white-90);
+	--hover-main-fg-color: var(--white-90);
+	--active-main-fg-color: var(--white-75);
+
+	--second-fg-color: var(--white-75);
+	--third-fg-color: var(--white-50);
+	--fourth-fg-color: var(--white-25);
+
+	--main-bg-color: var(--white-5);
+	--hover-main-bg-color: var(--white-15);
+	--active-main-bg-color: var(--white-5);
+
+	--second-bg-color: var(--white-2);
+
+	--blur-bg: blur(50px);
+	--main-border-radius: 16px;
+	--smaller-border-radius: 8px;
+	--larger-border-radius: 24px;
+
+	--main-font-size: 16px;
+	--smaller-font-size: 12px;
+	--larger-font-size: 20px;
+}
+
+*, *::before, *::after
+{
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	pointer-events: none;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+
+	font-family: Montserrat;
+	font-size: var(--main-font-size);
+	font-weight: 500;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	position: relative;
+	margin: 0;
+	padding: 0;
+
+	color: var(--white-90);
+
+	interpolate-size: allow-keywords;
+	-webkit-tap-highlight-color: transparent;
+
+	overscroll-behavior-y: none;
+}
+
+*, *::before, *::after, *:not(path):not(g) { transition: all 0.2s; }
+
+h1, h2, h3, h4, h5, h6, p, a
+{
+	width: fit-content;
+	height: fit-content;
+	white-space: pre;
+	line-height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 { font-weight: 700; }
+
+h1 { font-size: calc(var(--main-font-size) + 32px); }	// 48
+h2 { font-size: calc(var(--main-font-size) + 24px); }	// 40
+h3 { font-size: calc(var(--main-font-size) + 16px); }	// 32
+h4 { font-size: calc(var(--main-font-size) + 8px); }	// 24
+h5 { font-size: calc(var(--main-font-size) + 4px); }	// 20
+h6 { font-size: var(--main-font-size); }					// 16
+
+html
+{
+	width: 100vw;
+	height: fit-content;
+	overflow: hidden auto;
+	scroll-behavior: smooth;
+	scrollbar-width: thin;
+	scrollbar-color: var(--white-35) transparent;
+}
+
+body
+{
+	width: 100%;
+	height: 100%;
+	background: var(--dark);
+}
+
+#root
+{
+	width: 100%;
+	height: 100%;
+}
+
+a
+{
+	color: var(--accent);
+	text-decoration: none;
+	pointer-events: all;
+	cursor: pointer;
+
+	&:hover { color: var(--white-90); }
+	&:active { color: color-mix(in srgb, var(--accent) 50%, white 50%); }
+}
