@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export const names = ['menu', 'search', 'chevronLeft', 'chevronRight', 'chevronUp', 'chevronDown', 'reset', 'update', 'drag', 'settings', 'plus', 'cross'];
+export const names = ['logo', 'menuLines', 'menuDots', 'search', 'chevronLeft', 'chevronRight', 'chevronUp', 'chevronDown', 'reset', 'update', 'drag', 'settings', 'plus', 'cross'];
 
 interface Props
 {
@@ -19,7 +19,9 @@ export function SVG(props: Props)
 {
 	const ParamsMap: Record<string, SvgParams> =
 	{
-		'menu': { width: '32', height: '32', viewBox: '0 0 32 32' },
+		'logo': { width: '32', height: '32', viewBox: '0 0 32 32' },
+		'menuLines': { width: '32', height: '32', viewBox: '0 0 32 32' },
+		'menuDots': { width: '32', height: '32', viewBox: '0 0 32 32' },
 		'search': { width: '32', height: '32', viewBox: '0 0 32 32' },
 		'chevronLeft': { width: '32', height: '32', viewBox: '0 0 32 32' },
 		'chevronRight': { width: '32', height: '32', viewBox: '0 0 32 32' },
@@ -35,11 +37,33 @@ export function SVG(props: Props)
 
 	const PathsMap: Record<string, ReactElement> =
 	{
-		'menu':
+		'logo':
+			<>
+				<path d="M0 6.82667C0 3.0564 3.0564 0 6.82667 0H25.1733C28.9436 0 32 3.0564 32 6.82667V25.1733C32 28.9436 28.9436 32 25.1733 32H6.82667C3.0564 32 0 28.9436 0 25.1733V6.82667Z" fill="#F26549"/>
+				<path d="M26.88 7.18013C26.88 6.41989 25.9608 6.03916 25.4233 6.57673L17.8531 14.1469C17.213 14.787 16.8533 15.6552 16.8533 16.5605V25.1733C16.8533 26.1159 17.6174 26.88 18.56 26.88H25.1733C26.1159 26.88 26.88 26.1159 26.88 25.1733V7.18013Z" fill="url(#paint0_linear_2017_1259)"/>
+				<path d="M5.12 7.18013C5.12 6.41989 6.03916 6.03916 6.57673 6.57673L14.1469 14.1469C14.787 14.787 15.1467 15.6552 15.1467 16.5605V25.1733C15.1467 26.1159 14.3826 26.88 13.44 26.88H6.82667C5.8841 26.88 5.12 26.1159 5.12 25.1733V7.18013Z" fill="url(#paint1_linear_2017_1259)"/>
+				<defs>
+					<linearGradient id="paint0_linear_2017_1259" x1="16" y1="0" x2="16" y2="32" gradientUnits="userSpaceOnUse">
+						<stop offset="0.25" stopColor="white" stopOpacity="0.75"/>
+						<stop offset="1" stopColor="white" stopOpacity="0.65"/>
+					</linearGradient>
+					<linearGradient id="paint1_linear_2017_1259" x1="16" y1="0" x2="16" y2="32" gradientUnits="userSpaceOnUse">
+						<stop offset="0.25" stopColor="white" stopOpacity="0.75"/>
+						<stop offset="1" stopColor="white" stopOpacity="0.65"/>
+					</linearGradient>
+				</defs>
+			</>,
+		'menuLines':
 			<>
 				<path d="M8 21C8 20.4477 8.44772 20 9 20H23C23.5523 20 24 20.4477 24 21C24 21.5523 23.5523 22 23 22H9C8.44772 22 8 21.5523 8 21Z"/>
 				<path d="M8 16C8 15.4477 8.44772 15 9 15H23C23.5523 15 24 15.4477 24 16C24 16.5523 23.5523 17 23 17H9C8.44772 17 8 16.5523 8 16Z"/>
 				<path d="M8 11C8 10.4477 8.44772 10 9 10H23C23.5523 10 24 10.4477 24 11C24 11.5523 23.5523 12 23 12H9C8.44772 12 8 11.5523 8 11Z"/>
+			</>,
+		'menuDots':
+			<>
+				<path d="M15 21C15 20.4477 15.4477 20 16 20C16.5523 20 17 20.4477 17 21C17 21.5523 16.5523 22 16 22C15.4477 22 15 21.5523 15 21Z"/>
+				<path d="M15 16C15 15.4477 15.4477 15 16 15C16.5523 15 17 15.4477 17 16C17 16.5523 16.5523 17 16 17C15.4477 17 15 16.5523 15 16Z"/>
+				<path d="M15 11C15 10.4477 15.4477 10 16 10C16.5523 10 17 10.4477 17 11C17 11.5523 16.5523 12 16 12C15.4477 12 15 11.5523 15 11Z"/>
 			</>,
 		'search': <path fillRule="evenodd" clipRule="evenodd" d="M23.7062 23.7062C23.3157 24.0967 22.6825 24.0967 22.292 23.7062L17.4765 18.8908C16.4957 19.5892 15.2958 20 14 20C10.6863 20 8 17.3137 8 14C8 10.6863 10.6863 8 14 8C17.3137 8 20 10.6863 20 14C20 15.2958 19.5892 16.4957 18.8907 17.4766L23.7062 22.292C24.0967 22.6825 24.0967 23.3157 23.7062 23.7062ZM10 14C10 11.7909 11.7909 10 14 10C16.2091 10 18 11.7909 18 14C18 16.2091 16.2091 18 14 18C11.7909 18 10 16.2091 10 14Z"/>,
 		'chevronLeft': <path d="M19.5877 21.5858C20.1402 22.1384 20.1402 23.0344 19.5877 23.5871C19.0351 24.1397 18.1392 24.1397 17.5866 23.5871L11.0606 17.0606C10.4748 16.4749 10.4748 15.5252 11.0606 14.9394L17.5866 8.41301C18.1392 7.86038 19.0351 7.86038 19.5877 8.41301C20.1402 8.96565 20.1402 9.86165 19.5877 10.4143L14.0021 16L19.5877 21.5858Z"/>,

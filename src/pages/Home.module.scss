@@ -1,13 +1,39 @@
-.page
+.boardsPageContainer
 {
-	width: 100svw;
-	height: fit-content;
-	min-height: 100svh;
+	width: min(400px, 90%);
+	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	flex-wrap: nowrap;
-	transition: none;
-	z-index: 0;
-	overscroll-behavior-y: none;
+	gap: 32px;
+
+	& .boardsContainer
+	{
+		--masked-offset: 16px;
+		width: 100%;
+		height: fit-content;
+		max-height: 512px;
+		display: flex;
+		padding: var(--masked-offset) 0;
+		flex-direction: column;
+		align-items: center;
+		flex-wrap: nowrap;
+		gap: 8px;
+		pointer-events: all;
+		overflow: hidden auto;
+		mask-image: linear-gradient(to bottom, transparent, white var(--masked-offset), white calc(100% - var(--masked-offset)), transparent);
+
+		& > *
+		{
+			width: 100%;
+			flex-grow: 1;
+		}
+	}
+
+	& > button
+	{
+		width: 100%;
+	}
 }

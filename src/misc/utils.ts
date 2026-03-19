@@ -1,3 +1,11 @@
+export interface Color
+{
+	h: number;
+	s: number;
+	b: number;
+	a: number;
+}
+
 export const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 export const lerp = (start: number, end: number, t: number): number => start + (end - start) * t;
 
@@ -38,10 +46,8 @@ export const lerpHexColorsWithStops = (stops: Array<{ color: string; position: n
 };
 
 /**
-	@params `num` A number to be rounded.
-
-	@params `fractionDigits` The number of decimal places to round to. Must be an integer between 0 and 20 (inclusive). If it's out of range or not an integer, it will be clamped to the nearest valid integer value.
-
+	@param `num` A number to be rounded.
+	@param `fractionDigits` The number of decimal places to round to. Must be an integer between 0 and 20 (inclusive). If it's out of range or not an integer, it will be clamped to the nearest valid integer value.
 	@returns The rounded number.
 */
 export const round = (num: number, fractionDigits: number = 0) =>
@@ -49,3 +55,25 @@ export const round = (num: number, fractionDigits: number = 0) =>
 	const digits = fractionDigits < 0 || fractionDigits > 20 ? clamp(fractionDigits, 0, 20) : (Number.isInteger(fractionDigits) ? fractionDigits : Math.round(fractionDigits));
 	return Math.round(num * Math.pow(10, digits)) / Math.pow(10, digits);
 };
+
+/**
+	Generates the next unique ID based on an array of existing IDs. It finds the smallest positive integer that is not present in the array.
+
+	@param existingIds An array of existing IDs (numbers).
+	@returns The next unique ID.
+*/
+export const getNextId = (existingIds: number[]): number =>
+{
+	if (existingIds.length === 0) return 1;
+
+	const ids = [...existingIds].sort((a, b) => a - b);
+	let newId = 1;
+
+	for (const id of ids)
+	{
+		if (id !== newId) break;
+		newId++;
+	}
+
+	return newId;
+}

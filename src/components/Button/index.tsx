@@ -4,37 +4,35 @@ import styles from './Button.module.scss';
 export enum ButtonType
 {
 	Primary,
-	Secondary
+	Secondary,
+	Small
 }
 
 interface Props
 {
-	type?: ButtonType;
-	children?: ReactElement | string;
+	type: ButtonType;
+	children?: ReactElement | ReactElement[] | string;
 	square?: boolean;
 	disabled?: boolean;
 	onClick?: (...args: any[]) => any;
 	className?: string;
 }
 
-export function Button(props: Props)
+export default function Button(props: Props)
 {
-	const onClick = (e: React.MouseEvent<HTMLElement>) => props.onClick?.(e);
-	var dynamicClassNames: string[] = [];
-
-	switch (props.type)
+	const onClick = (e: React.MouseEvent<HTMLElement>) =>
 	{
-		case ButtonType.Secondary:
-			dynamicClassNames.push(styles.secondaryButton);
-			break;
+		e.stopPropagation();
+		if (!props.disabled) props.onClick?.(e);
+	};
 
-		default: dynamicClassNames.push(styles.primaryButton);
-	}
+	const stopPropagation = (e: React.MouseEvent<HTMLElement>) => { e.stopPropagation(); };
 
-	if (props.square) dynamicClassNames.push(styles.squareButton);
+	const typeStyle = props.type === ButtonType.Primary ? styles.primary : props.type === ButtonType.Secondary ? styles.secondary : styles.small;
 
 	return (
-		<button className={`${styles.button} ${dynamicClassNames.join(' ')} ${props.className || ''} fontSemibold`} onClick={props.disabled ? undefined : onClick} disabled={props.disabled}>
+		<button className={`${styles.button} ${typeStyle} ${props.square ? styles.square : ''} ${props.className || ''}`} onClick={onClick} disabled={props.disabled}
+			onPointerEnter={stopPropagation} onPointerDown={stopPropagation} onPointerUp={stopPropagation}>
 			{props.children}
 		</button>
 	);

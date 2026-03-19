@@ -1,39 +1,37 @@
 .topBar
 {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	padding: 0 24px;
-	height: calc(50px + calc(24px + env(safe-area-inset-top)) * 2);
+	width: 100%;
+	height: 72px;
+	padding: 0 16px 0 32px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 	flex-wrap: nowrap;
-	z-index: 1;
-	pointer-events: all;
-	background: var(--black-0);
-	backdrop-filter: blur(0px);
-	border-bottom: 1px solid var(--white-0);
+	flex-shrink: 0;
+	background: var(--main-bg-color);
+	backdrop-filter: var(--blur-bg);
+	border-bottom: 1px solid var(--main-border-color);
 
-	&.scrolledTopBar
+	& .leftContainer
 	{
-		height: calc(24px + calc(24px + env(safe-area-inset-top)) * 2);
-		background: var(--black-25);
-		backdrop-filter: var(--blur-bg);
-		border-bottom: 1px solid var(--white-15);
-	}
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex-wrap: nowrap;
+		gap: 8px;
 
-	& > p
-	{
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		font-size: var(--larger-font-size);
-		font-weight: 600;
-		color: var(--white-75);
-		text-align: center;
+		& .logoContainer
+		{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			flex-wrap: nowrap;
+			gap: 8px;
+			pointer-events: all;
+			cursor: pointer;
+
+			& .appName { color: color-mix(in srgb, var(--accent) 25%, white 75%); }
+		}
 	}
 }

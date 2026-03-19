@@ -1,0 +1,52 @@
+.boardItem
+{
+	appearance: none;
+	-webkit-appearance: none;
+	outline: none;
+	width: 200px;
+	height: 48px;
+	padding: 0 8px 0 16px;
+	border-radius: var(--main-border-radius);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	flex-shrink: 0;
+	font-size: var(--main-font-size);
+	background: var(--main-bg-color);
+	color: var(--main-fg-color);
+	fill: var(--main-fg-color);
+	border: 1px solid var(--main-border-color);
+	pointer-events: all;
+	cursor: pointer;
+
+	&:hover:not(:has(> button:hover)):not(:has(> button:active))
+	{
+		background: var(--hover-main-bg-color);
+		color: var(--hover-main-fg-color);
+		fill: var(--hover-main-fg-color);
+		border-color: transparent;
+	}
+
+	&:active:not(:has(> button:hover)):not(:has(> button:active))
+	{
+		background: var(--active-main-bg-color);
+		color: var(--active-main-fg-color);
+		fill: var(--active-main-fg-color);
+		border-color: transparent;
+	}
+
+	& > p
+	{
+		text-align: left;
+		flex-grow: 1;
+	}
+
+	& > button
+	{
+		&:not(:hover):not(:active):not(:disabled) { fill: var(--white-50) !important; }
+		flex-shrink: 0;
+	}
+}

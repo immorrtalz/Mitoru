@@ -4,10 +4,11 @@
 	-webkit-appearance: none;
 	outline: none;
 	border: none;
-	width: fit-content;
-	height: 50px !important;
+	background: transparent;
+	width: 200px;
+	height: 48px;
 	padding: 0 16px;
-	border-radius: 20px;
+	border-radius: var(--main-border-radius);
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
@@ -17,53 +18,97 @@
 	flex-shrink: 0;
 	pointer-events: all;
 	font-size: var(--main-font-size);
-	backdrop-filter: var(--blur-bg);
-	transition: all 0.1s;
-
-	&:disabled
-	{
-		background: var(--black-5) !important;
-		color: rgba(255, 255, 255, 0.25) !important;
-		fill: rgba(255, 255, 255, 0.25) !important;
-		pointer-events: none !important;
-	}
+	cursor: pointer;
 
 	& > svg
 	{
-		width: 40px;
-		height: 40px;
+		width: 32px;
+		height: 32px;
 	}
-}
 
-.primaryButton
-{
-	background: var(--white-90);
-	color: var(--black-80);
-	fill: var(--black-80);
-	border: 1px solid var(--white-10);
-
-	&:active
+	&.primary
 	{
-		background: var(--white-50);
-		color: var(--black-50);
-		fill: var(--black-50);
+		background: var(--accent);
+		color: var(--black-75);
+		fill: var(--black-75);
+		font-weight: 600;
+
+		&:hover { background: color-mix(in srgb, var(--accent), white 15%); }
+
+		&:active
+		{
+			background: color-mix(in srgb, var(--accent), black 25%);
+			color: var(--black-65);
+			fill: var(--black-65);
+		}
 	}
-}
 
-.secondaryButton
-{
-	background: hsl(from white h s l / 0.03);
-	color: var(--white-90);
-	fill: var(--white-90);
-	border: 1px solid var(--white-15);
-
-	&:active
+	&.secondary
 	{
-		background: var(--white-10);
-		color: var(--white-50);
-		fill: var(--white-50);
-		border: 1px solid var(--white-0);
+		background: var(--main-bg-color);
+		color: var(--main-fg-color);
+		fill: var(--main-fg-color);
+		border: 1px solid var(--main-border-color);
+
+		&:hover
+		{
+			background: var(--hover-main-bg-color);
+			color: var(--hover-main-fg-color);
+			fill: var(--hover-main-fg-color);
+			border-color: transparent;
+		}
+
+		&:active
+		{
+			background: var(--active-main-bg-color);
+			color: var(--active-main-fg-color);
+			fill: var(--active-main-fg-color);
+			border-color: transparent;
+		}
+	}
+
+	&.small
+	{
+		height: 32px;
+		font-size: 14px;
+		color: var(--main-fg-color);
+		fill: var(--main-fg-color);
+		border-radius: var(--smaller-border-radius);
+
+		& > svg
+		{
+			width: 32px;
+			height: 32px;
+		}
+
+		&:hover
+		{
+			background: var(--white-10);
+			color: var(--hover-main-fg-color);
+			fill: var(--hover-main-fg-color);
+		}
+
+		&:active
+		{
+			background: var(--white-5);
+			color: var(--active-main-fg-color);
+			fill: var(--active-main-fg-color);
+			border-color: transparent;
+		}
+	}
+
+	&.square
+	{
+		width: auto;
+		aspect-ratio: 1;
+		padding: 0;
+	}
+
+	&:disabled
+	{
+		background: var(--white-2);
+		color: var(--white-25);
+		fill: var(--white-25);
+		pointer-events: none;
 	}
 }
-
-.squareButton { width: 50px; padding: 0; }

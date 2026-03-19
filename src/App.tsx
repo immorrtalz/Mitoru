@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
 
 import Home from "./pages/Home";
+import Kanban from "./pages/Kanban";
 import SettingsPage from "./pages/Settings";
 
 function App()
@@ -20,14 +21,14 @@ function App()
 			index: true,
 			Component: Home // aka Boards
 		},
-		/* {
-			path: "kanban",
-			Component: KanbanPage
-		}, */
 		{
+			path: "kanban/:boardId",
+			Component: Kanban
+		},
+		/* {
 			path: "settings",
 			Component: SettingsPage
-		}
+		} */
 	]);
 
 	return <RouterProvider router={router}/>;

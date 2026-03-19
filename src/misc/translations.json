@@ -198,5 +198,30 @@
 	{
 		"en": "optional",
 		"ru": "необязательно"
+	},
+	"board":
+	{
+		"en": "Board",
+		"ru": "Доска"
+	},
+	"boards":
+	{
+		"en": "Boards",
+		"ru": "Доски"
+	},
+	"create_new_board":
+	{
+		"en": "Create new board",
+		"ru": "Создать новую доску"
+	},
+	"column":
+	{
+		"en": "Column",
+		"ru": "Колонка"
+	},
+	"create_new_column":
+	{
+		"en": "Create new column",
+		"ru": "Создать новую колонку"
 	}
 }
