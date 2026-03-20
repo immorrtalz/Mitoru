@@ -1,7 +1,8 @@
-import { ReactElement } from 'react';
+import { ReactElement, useContext } from 'react';
 import styles from './TopBar.module.scss';
 import { SVG } from '../SVG';
 import { useNavigate } from 'react-router';
+import BoardsContext from '../../context/BoardsContext';
 
 interface Props
 {
@@ -13,11 +14,18 @@ interface Props
 export function TopBar(props: Props)
 {
 	const navigate = useNavigate();
+	const { setCurrentBoardId } = useContext(BoardsContext);
+
+	const onReturnToHome = () =>
+	{
+		setCurrentBoardId(NaN);
+		navigate("/");
+	};
 
 	return (
 		<div className={`${styles.topBar} ${props.className ?? ''}`}>
-			<div className={styles.leftContainer} onClick={() => navigate("/")}>
-				<div className={styles.logoContainer} onClick={() => navigate("/")}>
+			<div className={styles.leftContainer} onClick={onReturnToHome}>
+				<div className={styles.logoContainer} onClick={onReturnToHome}>
 					<SVG name="logo"/>
 					<h5 className={styles.appName}>Mitoru</h5>
 				</div>

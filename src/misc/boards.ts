@@ -52,10 +52,14 @@ export interface BoardsContextValue
 {
 	boards: Board[];
 	setBoards: (boards: Board[]) => void;
+	currentBoardId: number;
+	setCurrentBoardId: (id: number) => void;
 }
 
 export const initialBoardsContextValue: BoardsContextValue =
 {
 	boards: [],
-	setBoards: () => {}
+	setBoards: () => {},
+	currentBoardId: NaN,
+	setCurrentBoardId: () => {}
 };

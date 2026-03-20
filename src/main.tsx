@@ -16,6 +16,7 @@ export function AppRoot()
 	const { saveSettingsToFile } = useSettingsLoader();
 
 	const [boards, internal_setBoards] = useState<Board[]>([]);
+	const [currentBoardId, setCurrentBoardId] = useState(NaN);
 	//const { saveBoardsToFile } = useSettingsLoader();
 
 	const setSettings = (newSettings: Settings) =>
@@ -33,7 +34,7 @@ export function AppRoot()
 	return (
 		<React.StrictMode>
 			<SettingsContext.Provider value={{ settings, setSettings }}>
-				<BoardsContext.Provider value={{ boards, setBoards }}>
+				<BoardsContext.Provider value={{ boards, setBoards, currentBoardId, setCurrentBoardId }}>
 					<App/>
 				</BoardsContext.Provider>
 			</SettingsContext.Provider>

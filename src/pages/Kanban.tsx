@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { useParams } from "react-router";
+import { useContext, useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
 import styles from "./Kanban.module.scss";
 
 import { SVG } from "../components/SVG";
@@ -8,28 +8,32 @@ import { TopBar } from "../components/TopBar";
 import KanbanColumn from "../components/KanbanColumn";
 
 import useTranslations from "../hooks/useTranslations";
-import { getNextId, Color } from "../misc/utils";
-import { Board, Column } from "../misc/boards";
+import { Color, getNextId } from "../misc/utils";
+import { Column } from "../misc/boards";
 
 import BoardsContext from "../context/BoardsContext";
 
 function Kanban()
 {
+	const navigate = useNavigate();
 	const { boards, setBoards } = useContext(BoardsContext);
 	const { translate } = useTranslations();
 
-	let params = useParams();
+	const params = useParams();
+	const boardId = params.boardId === undefined ? NaN : Number.parseInt(params.boardId, 10);
+	const board = Number.isFinite(boardId) ? boards.find(item => item.id === boardId) : undefined;
 
-	const boardId = params.boardId === undefined ? -1 : parseInt(params.boardId, 10);
-	const board = boards.find(board => board.id === boardId);
-	let boardName = '';
+	useEffect(() =>
+	{
+		if (board === undefined) navigate('/');
+	}, [board, navigate]);
 
-	if (board !== undefined) boardName = boardId === -1 ? 'Invalid board' : `${board.title}`;
+	if (board === undefined) return null;
+
+	const boardName = board.title;
 
 	const createNewColumn = () =>
 	{
-		if (board === undefined) return;
-
 		const newId = getNextId(board.columns.map(column => column.id));
 
 		const newColumn: Column =
@@ -57,7 +61,7 @@ function Kanban()
 
 			<div className={styles.kanbanPageContainer}>
 				{
-					board?.columns.map(column => (<KanbanColumn key={`column-${column.id}`} id={column.id} boardId={boardId}/>))
+					board?.columns.map(column => (<KanbanColumn key={`column-${column.id}`} id={column.id}/>))
 				}
 				<Button type={ButtonType.Secondary} onClick={createNewColumn}>
 					<>

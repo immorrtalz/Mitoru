@@ -11,8 +11,5 @@
 	overflow: scroll hidden;
 	pointer-events: all;
 
-	& > *
-	{
-		width: 300px;
-	}
+	& > * { width: 300px; }
 }

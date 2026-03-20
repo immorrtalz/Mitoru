@@ -16,7 +16,7 @@ import BoardsContext from "../context/BoardsContext";
 function Home()
 {
 	const navigate = useNavigate();
-	const { boards, setBoards } = useContext(BoardsContext);
+	const { boards, setBoards, setCurrentBoardId } = useContext(BoardsContext);
 	const { translate } = useTranslations();
 
 	const createNewBoard = () =>
@@ -35,6 +35,12 @@ function Home()
 		setBoards([...boards, newBoard]);
 	};
 
+	const onBoardOpen = (id: number) =>
+	{
+		setCurrentBoardId(id);
+		navigate(`/kanban/${id}`);
+	};
+
 	return (
 		<div className='mainContainer'>
 			<TopBar>
@@ -46,7 +52,7 @@ function Home()
 
 				<div className={styles.boardsContainer}>
 				{
-					boards.map(board => (<BoardItem key={`board-${board.id}`} title={board.title} onClick={() => navigate(`/kanban/${board.id}`)}/>))
+					boards.map(board => (<BoardItem key={`board-${board.id}`} title={board.title} onClick={() => onBoardOpen(board.id)}/>))
 				}
 				</div>
 

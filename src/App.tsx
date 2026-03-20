@@ -6,6 +6,7 @@ import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
 import Home from "./pages/Home";
 import Kanban from "./pages/Kanban";
 import SettingsPage from "./pages/Settings";
+import NotFound from "./pages/NotFound";
 
 function App()
 {
@@ -24,6 +25,10 @@ function App()
 		{
 			path: "kanban/:boardId",
 			Component: Kanban
+		},
+		{
+			path: "*",
+			Component: NotFound
 		},
 		/* {
 			path: "settings",

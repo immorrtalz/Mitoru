@@ -199,6 +199,16 @@
 		"en": "optional",
 		"ru": "необязательно"
 	},
+	"go_home":
+	{
+		"en": "Go home",
+		"ru": "На главную"
+	},
+	"not_found":
+	{
+		"en": "Not found",
+		"ru": "Не найдено"
+	},
 	"board":
 	{
 		"en": "Board",
@@ -223,5 +233,25 @@
 	{
 		"en": "Create new column",
 		"ru": "Создать новую колонку"
+	},
+	"tasks_count_one":
+	{
+		"en": "task",
+		"ru": "задача"
+	},
+	"tasks_count_two_three_four":
+	{
+		"en": "tasks",
+		"ru": "задачи"
+	},
+	"tasks_count_multiple":
+	{
+		"en": "tasks",
+		"ru": "задач"
+	},
+	"task":
+	{
+		"en": "Task",
+		"ru": "Задача"
 	}
 }

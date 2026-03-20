@@ -1,8 +1,5 @@
 .kanbanColumn
 {
-	appearance: none;
-	-webkit-appearance: none;
-	outline: none;
 	height: fit-content;
 	padding: 16px 8px 8px;
 	border-radius: var(--larger-border-radius);
@@ -42,6 +39,11 @@
 				color: var(--third-fg-color);
 				font-size: var(--smaller-font-size);
 			}
+		}
+
+		& > button
+		{
+			fill: var(--third-fg-color);
 		}
 	}
 }
