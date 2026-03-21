@@ -30,7 +30,7 @@ export function TopBar(props: Props)
 					<h5 className={styles.appName}>Mitoru</h5>
 				</div>
 
-				{ props.pageName && <h5 className={styles.pageName}>/{props.pageName}</h5> }
+				{ props.pageName && <h6 className={styles.pageName}>/{props.pageName}</h6> }
 			</div>
 
 			{props.children}

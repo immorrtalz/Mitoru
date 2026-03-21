@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import './global.scss';
+import App from "./App";
+
+import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
+import useBoardsLoader from "./hooks/Loaders/useBoardsLoader";
+
+import { initialSettings, Settings } from "./misc/settings";
+import { Board } from "./misc/boards";
 
 import SettingsContext from "./context/SettingsContext";
-import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
-import { initialSettings, Settings } from "./misc/settings";
-
-import App from "./App";
 import BoardsContext from "./context/BoardsContext";
-import { Board } from "./misc/boards";
 
 export function AppRoot()
 {
@@ -17,7 +19,7 @@ export function AppRoot()
 
 	const [boards, internal_setBoards] = useState<Board[]>([]);
 	const [currentBoardId, setCurrentBoardId] = useState(NaN);
-	//const { saveBoardsToFile } = useSettingsLoader();
+	const { saveBoardsToLocalStorage } = useBoardsLoader();
 
 	const setSettings = (newSettings: Settings) =>
 	{
@@ -28,7 +30,7 @@ export function AppRoot()
 	const setBoards = (newBoards: Board[]) =>
 	{
 		internal_setBoards(newBoards);
-		// saveBoardsToFile(newBoards);
+		saveBoardsToLocalStorage(newBoards);
 	};
 
 	return (

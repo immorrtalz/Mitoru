@@ -9,7 +9,24 @@ Simple kanban board with modern design
 
 ---
 
-Open source, works only locally (for now) and available in web
+Open source, designed for small teams and individuals and available in web
+
+> [!NOTE]
+> It is planned to have two methods of use:
+> 
+> 1) static website availale at **[mitoru.immorrtalz.com](https://mitoru.immorrtalz.com)**, storing data locally in localStorage
+> 2) Docker image for self-hosting available in the **[Latest release](https://github.com/immorrtalz/Mitoru/releases/latest)** **[SUBJECT TO CHANGE, NOT SURE IF THIS WILL BE DONE]**
+> 
+> In any case, there will be an ability to import/export all json data.
+
+## Repository structure
+After the first somewhat working release, the structure of this repository will be:
+
+[`main`](https://github.com/immorrtalz/Mitoru/tree/main) – somewhat stable, not broken, no active work, pushing working versions here
+
+[`dev`](https://github.com/immorrtalz/Mitoru/tree/dev) – the app might not work, active development
+
+[`prod`](https://github.com/immorrtalz/Mitoru/tree/prod) – GitHub pages deploy source, pushing stable releases here
 
 ---
 
