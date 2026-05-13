@@ -10,7 +10,7 @@
 		inset: 8px auto 8px 8px;
 		width: 40px;
 		height: 40px;
-		fill: var(--white-35);
+		fill: var(--fourth-fg-color);
 	}
 
 	& .textBox
@@ -22,22 +22,26 @@
 		height: 100%;
 		padding: 8px 16px;
 		border-radius: inherit;
-		background: var(--white-5);
-		border: 1px solid var(--white-0);
-		color: var(--white-90);
+		background: var(--main-bg-color);
+		border: 1px solid var(--main-border-color);
+		color: var(--main-fg-color);
 		pointer-events: all;
 
-		&:focus { background: var(--white-10); }
-		&::placeholder { color: var(--white-50); }
+		&:focus
+		{
+			background: var(--hover-main-bg-color);
+			border: 1px solid transparent;
+		}
+
+		&::placeholder { color: var(--third-fg-color); }
 
 		&:disabled
 		{
 			background: transparent;
-			border: 1px solid var(--white-10);
-			color: var(--white-50);
+			color: var(--third-fg-color);
 			pointer-events: none;
 
-			&::placeholder { color: var(--white-35); }
+			&::placeholder { color: var(--fourth-fg-color); }
 		}
 
 		&.withIcon { padding-left: 48px; }

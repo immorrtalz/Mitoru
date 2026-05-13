@@ -6,6 +6,7 @@ export enum ButtonType
 	Primary,
 	Secondary,
 	Small,
+	SmallNegative,
 	Simple,
 	Positive,
 	Negative
@@ -34,6 +35,7 @@ export default function Button(props: Props)
 	const typeStyle = props.type === ButtonType.Primary ? styles.primary
 		: props.type === ButtonType.Secondary ? styles.secondary
 		: props.type === ButtonType.Small ? styles.small
+		: props.type === ButtonType.SmallNegative ? styles.smallNegative
 		: props.type === ButtonType.Positive ? styles.positive
 		: styles.negative;
 

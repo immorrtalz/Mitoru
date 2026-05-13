@@ -27,10 +27,10 @@ export function TopBar(props: Props)
 			<div className={styles.leftContainer} onClick={onReturnToHome}>
 				<div className={styles.logoContainer} onClick={onReturnToHome}>
 					<SVG name="logo"/>
-					<h5 className={styles.appName}>Mitoru</h5>
+					<h3 className={styles.appName}>Mitoru</h3>
 				</div>
 
-				{ props.pageName && <h6 className={styles.pageName}>/{props.pageName}</h6> }
+				{ props.pageName && <h5 className={styles.pageName}>{props.pageName}</h5> }
 			</div>
 
 			{props.children}

@@ -75,10 +75,12 @@
 
 		& > button
 		{
-			height: 32px;
+			height: 40px;
 			flex-grow: 1;
 			flex-shrink: 1;
 			border-radius: var(--smaller-border-radius);
 		}
 	}
+
+	& input { border-radius: var(--smaller-border-radius) !important; }
 }

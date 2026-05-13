@@ -19,6 +19,7 @@
 	pointer-events: all;
 	font-size: var(--main-font-size);
 	font-weight: 500;
+	line-height: 100%;
 	cursor: pointer;
 
 	& > svg
@@ -27,18 +28,20 @@
 		height: 32px;
 	}
 
-	&.primary
+	&.primary, &.positive, &.negative
 	{
-		background: var(--accent);
+		--primary-color: var(--accent);
+
+		background: var(--primary-color);
 		color: var(--black-75);
 		fill: var(--black-75);
 		font-weight: 600;
 
-		&:hover { background: color-mix(in srgb, var(--accent), white 15%); }
+		&:hover { background: color-mix(in srgb, var(--primary-color), white 15%); }
 
 		&:active
 		{
-			background: color-mix(in srgb, var(--accent), black 25%);
+			background: color-mix(in srgb, var(--primary-color), black 25%);
 			color: var(--black-65);
 			fill: var(--black-65);
 		}
@@ -68,8 +71,10 @@
 		}
 	}
 
-	&.small
+	&.small, &.smallNegative
 	{
+		--mix-color: transparent;
+
 		height: 32px;
 		font-size: 14px;
 		color: var(--main-fg-color);
@@ -84,19 +89,21 @@
 
 		&:hover
 		{
-			background: var(--white-10);
-			color: var(--hover-main-fg-color);
-			fill: var(--hover-main-fg-color);
+			background: color-mix(in srgb, white 10%, var(--mix-color) 75%);
+			color: color-mix(in srgb, var(--hover-main-fg-color), var(--mix-color) 15%);
+			fill: color-mix(in srgb, var(--hover-main-fg-color), var(--mix-color) 15%);
 		}
 
 		&:active
 		{
-			background: var(--white-5);
-			color: var(--active-main-fg-color);
-			fill: var(--active-main-fg-color);
+			background: color-mix(in srgb, white 5%, var(--mix-color) 35%);
+			color: color-mix(in srgb, var(--active-main-fg-color), var(--mix-color) 15%);
+			fill: color-mix(in srgb, var(--active-main-fg-color), var(--mix-color) 15%);
 			border-color: transparent;
 		}
 	}
+
+	&.smallNegative { --mix-color: var(--negative); }
 
 	&.simple
 	{
@@ -129,34 +136,17 @@
 		}
 	}
 
-	&.positive
-	{
-		background: var(--positive);
-		color: var(--black-75);
-		fill: var(--black-75);
-		font-weight: 600;
-
-		&:hover { background: color-mix(in srgb, var(--positive), white 15%); }
-
-		&:active
-		{
-			background: color-mix(in srgb, var(--positive), black 25%);
-			color: var(--black-65);
-			fill: var(--black-65);
-		}
-	}
+	&.positive { --primary-color: var(--positive); }
 
 	&.negative
 	{
-		background: var(--negative);
+		--primary-color: var(--negative);
+
 		color: var(--main-fg-color);
 		fill: var(--main-fg-color);
 
-		&:hover { background: color-mix(in srgb, var(--negative), white 15%); }
-
 		&:active
 		{
-			background: color-mix(in srgb, var(--negative), black 25%);
 			color: var(--active-main-fg-color);
 			fill: var(--active-main-fg-color);
 		}

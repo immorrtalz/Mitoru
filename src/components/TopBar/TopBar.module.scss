@@ -19,7 +19,7 @@
 		flex-direction: row;
 		align-items: center;
 		flex-wrap: nowrap;
-		gap: 8px;
+		gap: 24px;
 
 		& .logoContainer
 		{
@@ -31,7 +31,11 @@
 			pointer-events: all;
 			cursor: pointer;
 
-			& .appName { color: color-mix(in srgb, var(--accent) 25%, white 75%); }
+			& .appName
+			{
+				color: color-mix(in srgb, var(--accent) 25%, white 75%);
+				font-size: 28px;
+			}
 		}
 	}
 }

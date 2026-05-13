@@ -96,8 +96,8 @@ function Home()
 				{
 					boards.map(board => (
 					<BoardItem key={`board-${board.id}`} title={board.title} onClick={() => onBoardOpen(board.id)}>
-						<Button type={ButtonType.Small} square onClick={() => onBoardRenameStart(board.id)}><SVG name='settings'/></Button>
-						<Button type={ButtonType.Small} square onClick={() => onBoardDeleteStart(board.id)}><SVG name='cross'/></Button>
+						<Button type={ButtonType.Small} square onClick={() => onBoardRenameStart(board.id)}><SVG name='edit'/></Button>
+						<Button type={ButtonType.SmallNegative} square onClick={() => onBoardDeleteStart(board.id)}><SVG name='delete'/></Button>
 					</BoardItem>))
 				}
 				</div>
