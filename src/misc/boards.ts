@@ -63,3 +63,8 @@ export const initialBoardsContextValue: BoardsContextValue =
 	currentBoardId: NaN,
 	setCurrentBoardId: () => {}
 };
+
+export const MAX_BOARD_TITLE_LENGTH = 32;
+export const MAX_TAG_TITLE_LENGTH = 20;
+export const MAX_COLUMN_TITLE_LENGTH = 30;
+export const MAX_TASK_TITLE_LENGTH = 50;

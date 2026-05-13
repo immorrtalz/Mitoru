@@ -199,6 +199,56 @@
 		"en": "optional",
 		"ru": "необязательно"
 	},
+	"cancel":
+	{
+		"en": "Cancel",
+		"ru": "Отмена"
+	},
+	"confirm":
+	{
+		"en": "Confirm",
+		"ru": "Подтвердить"
+	},
+	"rename":
+	{
+		"en": "Rename",
+		"ru": "Переименовать"
+	},
+	"rename_the_board":
+	{
+		"en": "Rename the board",
+		"ru": "Переименовать доску"
+	},
+	"enter_new_board_name":
+	{
+		"en": "Enter new board name",
+		"ru": "Введите новое название доски"
+	},
+	"max_length_is":
+	{
+		"en": "Max length is",
+		"ru": "Макс. длина -"
+	},
+	"delete_the_board":
+	{
+		"en": "Delete the board",
+		"ru": "Удалить доску"
+	},
+	"are_you_sure_delete_the_board":
+	{
+		"en": "Are you sure you want to delete the board",
+		"ru": "Вы уверены, что хотите удалить доску"
+	},
+	"this_action_cannot_be_undone":
+	{
+		"en": "This action cannot be undone",
+		"ru": "Это действие нельзя будет отменить"
+	},
+	"delete":
+	{
+		"en": "Delete",
+		"ru": "Удалить"
+	},
 	"go_home":
 	{
 		"en": "Go home",

@@ -18,6 +18,7 @@
 	flex-shrink: 0;
 	pointer-events: all;
 	font-size: var(--main-font-size);
+	font-weight: 500;
 	cursor: pointer;
 
 	& > svg
@@ -94,6 +95,70 @@
 			color: var(--active-main-fg-color);
 			fill: var(--active-main-fg-color);
 			border-color: transparent;
+		}
+	}
+
+	&.simple
+	{
+		height: 32px;
+		padding: 0 8px;
+		font-size: 14px;
+		color: var(--main-fg-color);
+		fill: var(--main-fg-color);
+		border-radius: var(--smaller-border-radius);
+
+		& > svg
+		{
+			width: 32px;
+			height: 32px;
+		}
+
+		&:hover
+		{
+			background: var(--white-10);
+			color: var(--hover-main-fg-color);
+			fill: var(--hover-main-fg-color);
+		}
+
+		&:active
+		{
+			background: var(--white-5);
+			color: var(--active-main-fg-color);
+			fill: var(--active-main-fg-color);
+			border-color: transparent;
+		}
+	}
+
+	&.positive
+	{
+		background: var(--positive);
+		color: var(--black-75);
+		fill: var(--black-75);
+		font-weight: 600;
+
+		&:hover { background: color-mix(in srgb, var(--positive), white 15%); }
+
+		&:active
+		{
+			background: color-mix(in srgb, var(--positive), black 25%);
+			color: var(--black-65);
+			fill: var(--black-65);
+		}
+	}
+
+	&.negative
+	{
+		background: var(--negative);
+		color: var(--main-fg-color);
+		fill: var(--main-fg-color);
+
+		&:hover { background: color-mix(in srgb, var(--negative), white 15%); }
+
+		&:active
+		{
+			background: color-mix(in srgb, var(--negative), black 25%);
+			color: var(--active-main-fg-color);
+			fill: var(--active-main-fg-color);
 		}
 	}
 

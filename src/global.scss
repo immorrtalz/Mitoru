@@ -43,6 +43,9 @@
 	--accent: #F26549;
 	--dark: #101012;
 
+	--positive: #3bdb43;
+	--negative: #ca2424;
+
 	--white-0: hsl(from white h s l / 0);
 	--white-2: hsl(from white h s l / 0.02);
 	--white-5: hsl(from white h s l / 0.05);
@@ -127,9 +130,9 @@
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 
-	font-family: Montserrat;
+	font-family: "Google Sans";
 	font-size: var(--main-font-size);
-	font-weight: 500;
+	font-weight: 400;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -157,7 +160,7 @@ h1, h2, h3, h4, h5, h6, p, a
 	width: fit-content;
 	height: fit-content;
 	white-space: pre;
-	line-height: 100%;
+	line-height: 120%;
 }
 
 h1, h2, h3, h4, h5, h6 { font-weight: 700; }

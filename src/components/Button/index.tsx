@@ -5,7 +5,10 @@ export enum ButtonType
 {
 	Primary,
 	Secondary,
-	Small
+	Small,
+	Simple,
+	Positive,
+	Negative
 }
 
 interface Props
@@ -20,15 +23,19 @@ interface Props
 
 export default function Button(props: Props)
 {
+	const stopPropagation = (e: React.MouseEvent<HTMLElement>) => e.stopPropagation();
+
 	const onClick = (e: React.MouseEvent<HTMLElement>) =>
 	{
 		e.stopPropagation();
 		if (!props.disabled) props.onClick?.(e);
 	};
 
-	const stopPropagation = (e: React.MouseEvent<HTMLElement>) => { e.stopPropagation(); };
-
-	const typeStyle = props.type === ButtonType.Primary ? styles.primary : props.type === ButtonType.Secondary ? styles.secondary : styles.small;
+	const typeStyle = props.type === ButtonType.Primary ? styles.primary
+		: props.type === ButtonType.Secondary ? styles.secondary
+		: props.type === ButtonType.Small ? styles.small
+		: props.type === ButtonType.Positive ? styles.positive
+		: styles.negative;
 
 	return (
 		<button className={`${styles.button} ${typeStyle} ${props.square ? styles.square : ''} ${props.className || ''}`} onClick={onClick} disabled={props.disabled}

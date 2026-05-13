@@ -9,7 +9,7 @@
 	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: space-between;
-	gap: 8px;
+	gap: 4px;
 	flex-shrink: 0;
 	font-size: var(--main-font-size);
 	background: var(--main-bg-color);
@@ -39,6 +39,10 @@
 	{
 		text-align: left;
 		flex-grow: 1;
+		flex-shrink: 1;
+		text-overflow: ellipsis;
+		text-wrap: nowrap;
+		overflow: hidden;
 	}
 
 	& > button

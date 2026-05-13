@@ -30,4 +30,4 @@ After the first somewhat working release, the structure of this repository will 
 
 ---
 
-Font "Montserrat" - Copyright © 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
+Font "Google Sans" - Copyright © Google LLC (https://fonts.google.com/specimen/Google+Sans)

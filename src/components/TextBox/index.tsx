@@ -11,6 +11,8 @@ interface Props
 	value?: string;
 	onInput?: (...args: any[]) => any;
 	onEditingEnded?: (...args: any[]) => any;
+	onEnterPressed?: (...args: any[]) => any;
+	className?: string;
 }
 
 export function TextBox(props: Props)
@@ -27,9 +29,19 @@ export function TextBox(props: Props)
 		props.onEditingEnded?.(e);
 	};
 
+	const onEnterPressed = (e: React.KeyboardEvent<HTMLInputElement>) =>
+	{
+		props.onEnterPressed?.(e);
+	};
+
 	const onEnterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) =>
 	{
-		if (e.key === 'Enter') (e.target as HTMLElement).blur();
+		if (e.key === 'Enter')
+		{
+			(e.target as HTMLElement).blur();
+			onEnterPressed(e);
+			e.preventDefault();
+		}
 	};
 
 	const [value, setValue] = useState(props.value || "");
@@ -40,7 +52,7 @@ export function TextBox(props: Props)
 	}, [props.value]);
 
 	return (
-		<div className={styles.container}>
+		<div className={`${styles.container} ${props.className || ''}`}>
 			{ props.svgIconName && <SVG className={styles.icon} name={props.svgIconName}/> }
 			<input className={`${styles.textBox} ${props.svgIconName ? styles.withIcon : ""}`} type="text" placeholder={props.placeholder} maxLength={props.maxLength || 50}
 				onInput={onInput} onBlur={onEditingEnded} onKeyDown={onEnterKeyDown} disabled={props.disabled} value={value}/>

@@ -1,7 +1,8 @@
 .container
 {
 	width: 100%;
-	height: 56px;
+	height: 48px;
+	border-radius: var(--main-border-radius);
 
 	& .icon
 	{
@@ -20,7 +21,7 @@
 		width: 100%;
 		height: 100%;
 		padding: 8px 16px;
-		border-radius: 20px;
+		border-radius: inherit;
 		background: var(--white-5);
 		border: 1px solid var(--white-0);
 		color: var(--white-90);
