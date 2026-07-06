@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
-import useBoardsLoader from "./hooks/Loaders/useBoardsLoader";
 
 import Home from "./pages/Home";
 import Kanban from "./pages/Kanban";
@@ -12,12 +11,10 @@ import NotFound from "./pages/NotFound";
 function App()
 {
 	const { loadSettingsFromFile } = useSettingsLoader();
-	const { loadBoardsFromLocalStorage } = useBoardsLoader();
 
 	useEffect(() =>
 	{
 		loadSettingsFromFile();
-		loadBoardsFromLocalStorage();
 	}, []);
 
 	const router = createBrowserRouter([
@@ -30,13 +27,13 @@ function App()
 			Component: Kanban
 		},
 		{
-			path: "*",
-			Component: NotFound
-		},
-		/* {
 			path: "settings",
 			Component: SettingsPage
-		} */
+		},
+		{
+			path: "*",
+			Component: NotFound
+		}
 	]);
 
 	return <RouterProvider router={router}/>;

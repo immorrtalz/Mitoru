@@ -25,6 +25,7 @@
 		background: var(--main-bg-color);
 		border: 1px solid var(--main-border-color);
 		color: var(--main-fg-color);
+		outline: 0px solid transparent;
 		pointer-events: all;
 
 		&:focus
@@ -45,5 +46,14 @@
 		}
 
 		&.withIcon { padding-left: 48px; }
+
+		&:invalid
+		{
+			outline: 4px solid color-mix(in srgb, var(--negative) 75%, transparent);
+			background: color-mix(in srgb, var(--negative) 15%, var(--main-bg-color));
+			border: 1px solid transparent;
+
+			&:focus { background: color-mix(in srgb, var(--negative) 15%, var(--hover-main-bg-color)); }
+		}
 	}
 }

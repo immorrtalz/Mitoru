@@ -12,6 +12,7 @@
 	background: var(--main-bg-color);
 	backdrop-filter: var(--blur-bg);
 	border-bottom: 1px solid var(--main-border-color);
+	pointer-events: all;
 
 	& .leftContainer
 	{
@@ -33,8 +34,9 @@
 
 			& .appName
 			{
-				color: color-mix(in srgb, var(--accent) 25%, white 75%);
+				color: var(--colored-fg-color-75);
 				font-size: 28px;
+				user-select: none;
 			}
 		}
 	}

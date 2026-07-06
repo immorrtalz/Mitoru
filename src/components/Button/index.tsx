@@ -5,9 +5,7 @@ export enum ButtonType
 {
 	Primary,
 	Secondary,
-	Small,
-	SmallNegative,
-	Simple,
+	SimpleSecondary,
 	Positive,
 	Negative
 }
@@ -17,6 +15,7 @@ interface Props
 	type: ButtonType;
 	children?: ReactElement | ReactElement[] | string;
 	square?: boolean;
+	small?: boolean;
 	disabled?: boolean;
 	onClick?: (...args: any[]) => any;
 	className?: string;
@@ -32,15 +31,11 @@ export default function Button(props: Props)
 		if (!props.disabled) props.onClick?.(e);
 	};
 
-	const typeStyle = props.type === ButtonType.Primary ? styles.primary
-		: props.type === ButtonType.Secondary ? styles.secondary
-		: props.type === ButtonType.Small ? styles.small
-		: props.type === ButtonType.SmallNegative ? styles.smallNegative
-		: props.type === ButtonType.Positive ? styles.positive
-		: styles.negative;
+	const typeStyles = [styles.primary, styles.secondary, styles.simpleSecondary, styles.positive, styles.negative];
+	const typeStyle = typeStyles[props.type];
 
 	return (
-		<button className={`${styles.button} ${typeStyle} ${props.square ? styles.square : ''} ${props.className || ''}`} onClick={onClick} disabled={props.disabled}
+		<button className={`${styles.button} ${typeStyle} ${props.square ? styles.square : ''} ${props.small ? styles.small : ''} ${props.className || ''}`} onClick={onClick} disabled={props.disabled}
 			onPointerEnter={stopPropagation} onPointerDown={stopPropagation} onPointerUp={stopPropagation}>
 			{props.children}
 		</button>

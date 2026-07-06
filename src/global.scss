@@ -73,7 +73,7 @@
 :root
 {
 	--accent: #D966FF;
-	--dark: #101012;
+	--dark: #0A0A0B;
 
 	--positive: #44D936;
 	--negative: #CC2929;
@@ -132,6 +132,8 @@
 	--third-fg-color: var(--white-50);
 	--fourth-fg-color: var(--white-25);
 
+	--colored-fg-color-75: color-mix(in srgb, var(--accent), white 75%);
+
 	--main-bg-color: var(--white-5);
 	--hover-main-bg-color: var(--white-15);
 	--active-main-bg-color: var(--white-5);
@@ -187,12 +189,21 @@
 
 *, *::before, *::after, *:not(path):not(g) { transition: all 0.2s; }
 
-h1, h2, h3, h4, h5, h6, p, a
+h1, h2, h3, h4, h5, h6, p, a, li
 {
 	width: fit-content;
 	height: fit-content;
-	white-space: pre;
-	line-height: 120%;
+	white-space: pre-wrap;
+	text-wrap: pretty;
+	color: var(--main-fg-color);
+	user-select: text;
+	pointer-events: all;
+}
+
+ul
+{
+	list-style-type: "− ";
+	list-style-position: inside;
 }
 
 h1, h2, h3, h4, h5, h6 { font-weight: 700; }
@@ -216,6 +227,19 @@ body
 	width: 100%;
 	height: 100%;
 	background: linear-gradient(to bottom, color-mix(in srgb, var(--dark), white 3%), var(--dark));
+
+	&::before
+	{
+		content: "";
+		pointer-events: none;
+		opacity: 0.04;
+		z-index: 9999;
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='subtleNoiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23subtleNoiseFilter)'/%3E%3C/svg%3E");
+		background-repeat: repeat;
+		background-size: 256px 256px;
+		position: fixed;
+		inset: 0;
+	}
 }
 
 #root

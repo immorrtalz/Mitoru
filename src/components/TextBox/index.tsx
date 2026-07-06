@@ -6,6 +6,7 @@ interface Props
 {
 	svgIconName?: typeof names[number];
 	placeholder?: string;
+	minLength?: number;
 	maxLength?: number;
 	disabled?: boolean;
 	value?: string;
@@ -13,6 +14,7 @@ interface Props
 	onEditingEnded?: (...args: any[]) => any;
 	onEnterPressed?: (...args: any[]) => any;
 	className?: string;
+	autofocus?: boolean;
 }
 
 export function TextBox(props: Props)
@@ -54,7 +56,16 @@ export function TextBox(props: Props)
 	return (
 		<div className={`${styles.container} ${props.className || ''}`}>
 			{ props.svgIconName && <SVG className={styles.icon} name={props.svgIconName}/> }
-			<input className={`${styles.textBox} ${props.svgIconName ? styles.withIcon : ""}`} type="text" placeholder={props.placeholder} maxLength={props.maxLength || 50}
-				onInput={onInput} onBlur={onEditingEnded} onKeyDown={onEnterKeyDown} disabled={props.disabled} value={value}/>
+			<input type="text"
+				className={`${styles.textBox} ${props.svgIconName ? styles.withIcon : ""}`}
+				placeholder={props.placeholder}
+				minLength={props.minLength}
+				maxLength={props.maxLength}
+				onInput={onInput}
+				onBlur={onEditingEnded}
+				onKeyDown={onEnterKeyDown}
+				disabled={props.disabled}
+				value={value}
+				autoFocus={props.autofocus}/>
 		</div>);
 }

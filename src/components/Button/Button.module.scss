@@ -19,7 +19,6 @@
 	pointer-events: all;
 	font-size: var(--main-font-size);
 	font-weight: 500;
-	line-height: 100%;
 	cursor: pointer;
 
 	& > svg
@@ -45,14 +44,31 @@
 			color: var(--black-65);
 			fill: var(--black-65);
 		}
+
+		&.positive, &.negative
+		{
+			color: var(--main-fg-color);
+			fill: var(--main-fg-color);
+
+			&:active
+			{
+				color: var(--active-main-fg-color);
+				fill: var(--active-main-fg-color);
+			}
+		}
+
+		&.positive { --primary-color: var(--positive); }
+		&.negative { --primary-color: var(--negative); }
 	}
 
-	&.secondary
+	&.secondary, &.simpleSecondary
 	{
 		background: var(--main-bg-color);
 		color: var(--main-fg-color);
 		fill: var(--main-fg-color);
 		border: 1px solid var(--main-border-color);
+
+		&.simpleSecondary { background: transparent; }
 
 		&:hover
 		{
@@ -69,87 +85,8 @@
 			fill: var(--active-main-fg-color);
 			border-color: transparent;
 		}
-	}
 
-	&.small, &.smallNegative
-	{
-		--mix-color: transparent;
-
-		height: 32px;
-		font-size: 14px;
-		color: var(--main-fg-color);
-		fill: var(--main-fg-color);
-		border-radius: var(--smaller-border-radius);
-
-		& > svg
-		{
-			width: 32px;
-			height: 32px;
-		}
-
-		&:hover
-		{
-			background: color-mix(in srgb, white 10%, var(--mix-color) 75%);
-			color: color-mix(in srgb, var(--hover-main-fg-color), var(--mix-color) 15%);
-			fill: color-mix(in srgb, var(--hover-main-fg-color), var(--mix-color) 15%);
-		}
-
-		&:active
-		{
-			background: color-mix(in srgb, white 5%, var(--mix-color) 35%);
-			color: color-mix(in srgb, var(--active-main-fg-color), var(--mix-color) 15%);
-			fill: color-mix(in srgb, var(--active-main-fg-color), var(--mix-color) 15%);
-			border-color: transparent;
-		}
-	}
-
-	&.smallNegative { --mix-color: var(--negative); }
-
-	&.simple
-	{
-		height: 32px;
-		padding: 0 8px;
-		font-size: 14px;
-		color: var(--main-fg-color);
-		fill: var(--main-fg-color);
-		border-radius: var(--smaller-border-radius);
-
-		& > svg
-		{
-			width: 32px;
-			height: 32px;
-		}
-
-		&:hover
-		{
-			background: var(--white-10);
-			color: var(--hover-main-fg-color);
-			fill: var(--hover-main-fg-color);
-		}
-
-		&:active
-		{
-			background: var(--white-5);
-			color: var(--active-main-fg-color);
-			fill: var(--active-main-fg-color);
-			border-color: transparent;
-		}
-	}
-
-	&.positive { --primary-color: var(--positive); }
-
-	&.negative
-	{
-		--primary-color: var(--negative);
-
-		color: var(--main-fg-color);
-		fill: var(--main-fg-color);
-
-		&:active
-		{
-			color: var(--active-main-fg-color);
-			fill: var(--active-main-fg-color);
-		}
+		&.simpleSecondary { border: none; }
 	}
 
 	&.square
@@ -157,6 +94,13 @@
 		width: auto;
 		aspect-ratio: 1;
 		padding: 0;
+	}
+
+	&.small
+	{
+		height: 32px;
+		font-size: 14px;
+		border-radius: var(--smaller-border-radius);
 	}
 
 	&:disabled

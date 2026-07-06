@@ -4,22 +4,30 @@ import './global.scss';
 import App from "./App";
 
 import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
-import useBoardsLoader from "./hooks/Loaders/useBoardsLoader";
+import useBoardsPersistence from "./hooks/useBoardsPersistence";
+import useKanban, { Id, KanbanState } from "./hooks/useKanban";
+import useGistAPI from "./hooks/useGistAPI";
 
 import { initialSettings, Settings } from "./misc/settings";
-import { Board } from "./misc/boards";
+import { loadBoardsFromLocalStorage } from "./misc/boards";
 
 import SettingsContext from "./context/SettingsContext";
 import BoardsContext from "./context/BoardsContext";
+import GistAPIContext from "./context/GistAPIContext";
+import { DialogProvider } from "./context/DialogContext";
 
 export function AppRoot()
 {
 	const [settings, internal_setSettings] = useState<Settings>(initialSettings);
 	const { saveSettingsToFile } = useSettingsLoader();
 
-	const [boards, internal_setBoards] = useState<Board[]>([]);
-	const [currentBoardId, setCurrentBoardId] = useState(NaN);
-	const { saveBoardsToLocalStorage } = useBoardsLoader();
+	// Lazy initializer: runs exactly once, synchronously, before the first render —
+	// so useKanban never starts out empty and there's nothing left to "catch up" on later.
+	const [initialBoardsState] = useState<KanbanState>(loadBoardsFromLocalStorage);
+	const kanban = useKanban(initialBoardsState);
+	const gistAPI = useGistAPI(kanban.state, kanban.loadState);
+
+	useBoardsPersistence(kanban.state);
 
 	const setSettings = (newSettings: Settings) =>
 	{
@@ -27,18 +35,16 @@ export function AppRoot()
 		saveSettingsToFile(newSettings);
 	};
 
-	const setBoards = (newBoards: Board[]) =>
-	{
-		internal_setBoards(newBoards);
-		saveBoardsToLocalStorage(newBoards);
-	};
-
 	return (
 		<React.StrictMode>
 			<SettingsContext.Provider value={{ settings, setSettings }}>
-				<BoardsContext.Provider value={{ boards, setBoards, currentBoardId, setCurrentBoardId }}>
-					<App/>
-				</BoardsContext.Provider>
+				<DialogProvider>
+					<BoardsContext.Provider value={kanban}>
+						<GistAPIContext.Provider value={gistAPI}>
+							<App/>
+						</GistAPIContext.Provider>
+					</BoardsContext.Provider>
+				</DialogProvider>
 			</SettingsContext.Provider>
 		</React.StrictMode>);
 }

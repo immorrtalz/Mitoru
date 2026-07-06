@@ -244,6 +244,16 @@
 		"en": "This action cannot be undone",
 		"ru": "Это действие нельзя будет отменить"
 	},
+	"rename_the_column":
+	{
+		"en": "Rename the column",
+		"ru": "Переименовать колонку"
+	},
+	"enter_new_column_name":
+	{
+		"en": "Enter new column name",
+		"ru": "Введите новое название колонки"
+	},
 	"delete":
 	{
 		"en": "Delete",
