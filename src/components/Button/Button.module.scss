@@ -19,7 +19,27 @@
 	pointer-events: all;
 	font-size: var(--main-font-size);
 	font-weight: 500;
+	overflow: hidden;
+	text-wrap: nowrap;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	cursor: pointer;
+
+	& > .text
+	{
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		pointer-events: none;
+		color: inherit;
+		font-size: inherit;
+		font-weight: inherit;
+		text-wrap: inherit;
+		text-overflow: inherit;
+		white-space: inherit;
+		overflow: inherit;
+	}
 
 	& > svg
 	{
@@ -101,6 +121,40 @@
 		height: 32px;
 		font-size: 14px;
 		border-radius: var(--smaller-border-radius);
+	}
+
+	&.smallSVG
+	{
+		gap: 4px;
+
+		& > svg
+		{
+			width: 24px;
+			height: 24px;
+		}
+	}
+
+	&.dimmed:not(.primary):not(.positive):not(.negative) { color: var(--active-main-fg-color); }
+	&.dimmed:not(.primary):not(.positive):not(.negative), &.dimmedSVG:not(.primary):not(.positive):not(.negative) { fill: var(--active-main-fg-color); }
+
+	&.leftAligned, &.rightAligned { padding: 0 8px; }
+
+	&.leftAligned
+	{
+		justify-content: flex-start;
+		text-align: left;
+	}
+
+	&.centerAligned
+	{
+		justify-content: center;
+		text-align: center;
+	}
+
+	&.rightAligned
+	{
+		justify-content: flex-end;
+		text-align: right;
 	}
 
 	&:disabled

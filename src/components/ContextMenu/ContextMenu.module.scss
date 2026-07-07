@@ -1,0 +1,32 @@
+.overlay
+{
+	position: fixed;
+	inset: 0;
+	background: color-mix(in srgb, var(--dark) 0%, transparent);
+	backdrop-filter: blur(0px);
+	pointer-events: all;
+	z-index: 1000;
+}
+
+.container
+{
+	position: fixed;
+	transform: translateY(8px);
+	width: 192px;
+	height: fit-content;
+	padding: 4px;
+	border-radius: calc(var(--smaller-border-radius) + 4px);
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	gap: 2px;
+	background: var(--main-bg-color);
+	backdrop-filter: var(--blur-bg);
+	border: 1px solid var(--main-border-color);
+	box-shadow: var(--main-box-shadow);
+	pointer-events: all;
+	z-index: 1000;
+	transition: all 0s;
+
+	& > * { width: 100%; }
+}

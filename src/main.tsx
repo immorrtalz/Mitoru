@@ -5,7 +5,7 @@ import App from "./App";
 
 import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
 import useBoardsPersistence from "./hooks/useBoardsPersistence";
-import useKanban, { Id, KanbanState } from "./hooks/useKanban";
+import useKanban, { KanbanState } from "./hooks/useKanban";
 import useGistAPI from "./hooks/useGistAPI";
 
 import { initialSettings, Settings } from "./misc/settings";
@@ -15,6 +15,7 @@ import SettingsContext from "./context/SettingsContext";
 import BoardsContext from "./context/BoardsContext";
 import GistAPIContext from "./context/GistAPIContext";
 import { DialogProvider } from "./context/DialogContext";
+import { ContextMenuProvider } from "./context/ContextMenuContext";
 
 export function AppRoot()
 {
@@ -39,11 +40,13 @@ export function AppRoot()
 		<React.StrictMode>
 			<SettingsContext.Provider value={{ settings, setSettings }}>
 				<DialogProvider>
-					<BoardsContext.Provider value={kanban}>
-						<GistAPIContext.Provider value={gistAPI}>
-							<App/>
-						</GistAPIContext.Provider>
-					</BoardsContext.Provider>
+					<ContextMenuProvider>
+						<BoardsContext.Provider value={kanban}>
+							<GistAPIContext.Provider value={gistAPI}>
+								<App/>
+							</GistAPIContext.Provider>
+						</BoardsContext.Provider>
+					</ContextMenuProvider>
 				</DialogProvider>
 			</SettingsContext.Provider>
 		</React.StrictMode>);

@@ -41,7 +41,7 @@ export const DialogContext = createContext<DialogContextValue | null>(null);
 interface ValueBox<T> { current: T; }
 
 // Internal only - owns the TextBox's live value, reports validity up to the dialog chrome via `handle`, and calls `onConfirm` directly when Enter is pressed.
-function PromptDialogContent({ initialValue, minLength, maxLength, validate, handle, valueBox, onConfirm }:
+const PromptDialogContent = ({ initialValue, minLength, maxLength, validate, handle, valueBox, onConfirm }:
 {
 	initialValue: string;
 	minLength?: number;
@@ -50,7 +50,7 @@ function PromptDialogContent({ initialValue, minLength, maxLength, validate, han
 	handle: DialogHandle;
 	valueBox: ValueBox<string>;
 	onConfirm: (result: string) => void | false;
-})
+}) =>
 {
 	const [value, setValue] = useState(initialValue);
 
@@ -94,7 +94,6 @@ export function DialogProvider({ children }: { children: React.ReactNode })
 		const id = `dialog-${nextId++}`;
 
 		// Wrap confirm/cancel so the dialog closes itself by default.
-		// Returning `false` from your handler keeps it open (e.g. failed async validation).
 		const entry: DialogEntry =
 		{
 			...props,

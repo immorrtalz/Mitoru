@@ -42,7 +42,7 @@ function SettingsPage()
 
 			<div className={styles.settingsPageContainer}>
 				<div className={styles.settingsContentContainer}>
-					<Button className={styles.backButton} type={ButtonType.Secondary} small onClick={() => history.back()}>Back</Button>
+					<Button className={styles.backButton} type={ButtonType.Secondary} small onClick={() => history.back()}>{translate("back")}</Button>
 
 					<h2>{translate("settings")}</h2>
 
@@ -94,7 +94,7 @@ function SettingsPage()
 					<Button type={ButtonType.Primary}
 						onClick={() => setPassPhraseDialogOpen(true)}
 						disabled={githubAPIKeyValue === "" && gistIdValue === ""}>
-						Confirm
+						{translate("confirm")}
 					</Button>
 				</div>
 			</div>

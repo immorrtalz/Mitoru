@@ -40,7 +40,7 @@ function Home()
 		openPromptDialog(
 		{
 			title: translate("rename_the_board"),
-			description: `${translate("enter_new_board_name")}\.\n${translate("max_length_is")} ${MAX_BOARD_TITLE_LENGTH}`,
+			description: `${translate("enter_a_new_board_name")}\.\n${translate("max_length_is")} ${MAX_BOARD_TITLE_LENGTH}`,
 			confirmTitle: translate('rename'),
 			initialValue: currentTitle,
 			maxLength: MAX_BOARD_TITLE_LENGTH,
@@ -84,7 +84,7 @@ function Home()
 				}
 				</div>
 
-				<Button type={ButtonType.Primary} onClick={createNewBoard}>{translate("create_new_board")}</Button>
+				<Button type={ButtonType.Primary} onClick={createNewBoard}>{translate("create_a_new_board")}</Button>
 			</div>
 
 		</div>

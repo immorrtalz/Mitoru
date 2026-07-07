@@ -23,8 +23,8 @@ export default function DialogWindow(props: Props)
 {
 	const { translate } = useTranslations();
 
-	const onConfirm = (e: React.MouseEvent<HTMLElement>) => props.onConfirm?.(e);
 	const onCancel = (e: React.MouseEvent<HTMLElement>) => props.onCancel?.(e);
+	const onConfirm = (e: React.MouseEvent<HTMLElement>) => props.onConfirm?.(e);
 
 	return (
 		<>

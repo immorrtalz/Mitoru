@@ -41,6 +41,7 @@
 				text-overflow: ellipsis;
 				overflow: hidden;
 				text-wrap: nowrap;
+				white-space: nowrap;
 			}
 
 			& .columnTasksCountText
@@ -52,4 +53,6 @@
 
 		& > button { fill: var(--third-fg-color); }
 	}
+
+	& .addTaskButton { width: 100%; }
 }

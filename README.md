@@ -16,6 +16,9 @@ Open source, designed for individuals and available in web
 > [!NOTE]
 > This app uses `Web Crypto API`, which requires a secure context (HTTPS or localhost).
 
+> [!NOTE]
+> This project was called "Mitoru" (from japanese みとる (見取る) "to perceive", to understand", "to observe") since kanban is a special form of representing information in a convenient, easily understandable way.
+
 ## Repository structure
 ### Branches
 

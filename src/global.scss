@@ -75,7 +75,7 @@
 	--accent: #D966FF;
 	--dark: #0A0A0B;
 
-	--positive: #44D936;
+	--positive: #20B020;
 	--negative: #CC2929;
 
 	--white-0: hsl(from white h s l / 0);
@@ -150,6 +150,8 @@
 	--main-font-size: 16px;
 	--smaller-font-size: 12px;
 	--larger-font-size: 20px;
+
+	--main-box-shadow: 0 8px 32px 0 var(--black-35);
 }
 
 *, *::before, *::after

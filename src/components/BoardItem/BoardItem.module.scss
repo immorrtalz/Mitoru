@@ -42,6 +42,8 @@
 		flex-shrink: 1;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
+		white-space: nowrap;
+		overflow: hidden;
 		line-height: 100%;
 	}
 

@@ -37,6 +37,9 @@
 				color: var(--colored-fg-color-75);
 				font-size: 28px;
 				user-select: none;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
 			}
 		}
 	}

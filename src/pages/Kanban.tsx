@@ -47,10 +47,10 @@ function Kanban()
 					return <KanbanColumn key={`column-${column.id}`} board={board} column={column}/>;
 				}) }
 
-				<Button type={ButtonType.Secondary} onClick={createNewColumn}>
+				<Button type={ButtonType.Secondary} onClick={createNewColumn} dimmed>
 					<>
 						<SVG name='plus'/>
-						{translate('create_new_column')}
+						{translate('create_a_new_column')}
 					</>
 				</Button>
 			</div>

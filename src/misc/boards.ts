@@ -12,17 +12,13 @@ const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [] };
 export const isNewBoardTitleValid = (newTitle: string, currentTitle?: string) =>
 {
 	const trimmedTitle = newTitle.trim();
-	const isTitleAlphaNumericWithSpacesDotsAndCommas = /^[a-zA-Z0-9а-яА-Я .,]*$/.test(trimmedTitle);
-
-	return trimmedTitle !== '' && trimmedTitle !== currentTitle && trimmedTitle.length <= MAX_BOARD_TITLE_LENGTH && isTitleAlphaNumericWithSpacesDotsAndCommas;
+	return trimmedTitle !== '' && trimmedTitle !== currentTitle && trimmedTitle.length <= MAX_BOARD_TITLE_LENGTH;
 };
 
 export const isNewColumnTitleValid = (newTitle: string, currentTitle?: string) =>
 {
 	const trimmedTitle = newTitle.trim();
-	const isTitleAlphaNumericWithSpacesDotsAndCommas = /^[a-zA-Z0-9а-яА-Я .,]*$/.test(trimmedTitle);
-
-	return trimmedTitle !== '' && trimmedTitle !== currentTitle && trimmedTitle.length <= MAX_COLUMN_TITLE_LENGTH && isTitleAlphaNumericWithSpacesDotsAndCommas;
+	return trimmedTitle !== '' && trimmedTitle !== currentTitle && trimmedTitle.length <= MAX_COLUMN_TITLE_LENGTH;
 };
 
 // Light structural check - good enough to catch "this isn't even the right shape"

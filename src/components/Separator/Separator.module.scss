@@ -1,0 +1,20 @@
+.separator
+{
+	--paddingRightOrTop: 0;
+	--paddingLeftOrBottom: 0;
+	background: var(--main-border-color);
+
+	&.horizontal
+	{
+		width: calc(100% + var(--paddingRightOrTop) + var(--paddingLeftOrBottom));
+		height: 1px;
+		margin: calc(var(--paddingRightOrTop) * 0.5) calc(var(--paddingRightOrTop) * -1) calc(var(--paddingLeftOrBottom) * 0.5) calc(var(--paddingLeftOrBottom) * -1);
+	}
+
+	&.vertical
+	{
+		width: 1px;
+		height: calc(100% + var(--paddingRightOrTop) + var(--paddingLeftOrBottom));
+		margin: calc(var(--paddingRightOrTop) * -1) calc(var(--paddingRightOrTop) * 0.5) calc(var(--paddingLeftOrBottom) * -1) calc(var(--paddingLeftOrBottom) * 0.5);
+	}
+}

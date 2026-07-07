@@ -36,6 +36,8 @@ export function TopBar(props: Props)
 			<Button type={ButtonType.Secondary} square onClick={getGistContent} disabled={!isOctokitInitialized()}>Pull</Button>
 			</div>
 
+			<Button type={ButtonType.Secondary} square onClick={() => window.open("https://github.com/immorrtalz/Mitoru", "_blank")}>GitHub</Button>
+
 			{
 				location.pathname !== "/settings" &&
 					<Button type={ButtonType.Secondary} square onClick={() => navigate("/settings")}>
