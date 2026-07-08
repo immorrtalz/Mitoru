@@ -1,0 +1,79 @@
+.checkbox
+{
+	appearance: none;
+	-webkit-appearance: none;
+	outline: none;
+	border: none;
+	background: transparent;
+	width: 32px;
+	height: 32px;
+	border-radius: var(--smaller-border-radius);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+
+	& > input
+	{
+		appearance: none;
+		-webkit-appearance: none;
+		outline: none;
+		border: none;
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		pointer-events: all;
+		cursor: pointer;
+
+		&:disabled { pointer-events: none; }
+	}
+
+	& > svg
+	{
+		display: none;
+		width: 100%;
+		height: 100%;
+		fill: inherit;
+	}
+
+	&:has(input:checked) > svg { display: block; }
+
+	&.default, &.simple
+	{
+		background: var(--main-bg-color);
+		fill: var(--main-fg-color);
+		border: 1px solid var(--main-border-color);
+
+		&:hover
+		{
+			background: var(--hover-main-bg-color);
+			fill: var(--hover-main-fg-color);
+			border-color: transparent;
+		}
+
+		&:active
+		{
+			background: var(--active-main-bg-color);
+			fill: var(--active-main-fg-color);
+			border-color: transparent;
+		}
+
+		&.simple { border: none; }
+	}
+
+	&.small
+	{
+		width: 24px;
+		height: 24px;
+	}
+
+	&.dimmed { fill: var(--active-main-fg-color); }
+
+	&:has(input:disabled)
+	{
+		background: var(--white-2);
+		fill: var(--white-25);
+	}
+}

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import styles from "./Kanban.module.scss";
 
@@ -9,9 +9,8 @@ import KanbanColumn from "../components/KanbanColumn";
 
 import useTranslations from "../hooks/useTranslations";
 import useBoardFromRoute from "../hooks/useBoardFromRoute";
-import { Color, getNextId } from "../misc/utils";
 
-import BoardsContext, { useBoardsContext } from "../context/BoardsContext";
+import { useBoardsContext } from "../context/BoardsContext";
 
 function Kanban()
 {
@@ -40,12 +39,18 @@ function Kanban()
 			<TopBar pageName={boardName}/>
 
 			<div className={styles.kanbanPageContainer}>
-				{ board.columnsOrder.map(columnId =>
+			{
+				board.columnsOrder.map(columnId =>
 				{
 					const column = board.columns[columnId];
 					if (!column) return null;
-					return <KanbanColumn key={`column-${column.id}`} board={board} column={column}/>;
-				}) }
+
+					const taskIds = board.tasksOrderInColumn[columnId] ?? [];
+					const tasks = taskIds.map(id => board.tasks[id]).filter(Boolean);
+
+					return <KanbanColumn key={`column-${column.id}`} boardId={board.id} column={column} tasks={tasks}/>;
+				})
+			}
 
 				<Button type={ButtonType.Secondary} onClick={createNewColumn} dimmed>
 					<>
