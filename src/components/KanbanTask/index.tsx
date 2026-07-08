@@ -91,13 +91,6 @@ export default function KanbanTask(props: Props)
 				{ taskTags.map(tag => <KanbanTag key={tag.id} title={tag.title}/>) }
 				</div>
 		}
-			<div className={styles.taskTagsContainer}>
-				<KanbanTag title="Just a tag title"/>
-				<KanbanTag title="Meow"/>
-				<KanbanTag title="Just a tag title lol"/>
-				<KanbanTag title="Lorem ipsum"/>
-				<KanbanTag title="Iprem losum"/>
-			</div>
 		</div>
 	);
 }
