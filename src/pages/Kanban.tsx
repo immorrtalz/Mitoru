@@ -48,7 +48,7 @@ function Kanban()
 					const taskIds = board.tasksOrderInColumn[columnId] ?? [];
 					const tasks = taskIds.map(id => board.tasks[id]).filter(Boolean);
 
-					return <KanbanColumn key={`column-${column.id}`} boardId={board.id} column={column} tasks={tasks}/>;
+					return <KanbanColumn key={`column-${column.id}`} boardId={board.id} column={column} tasks={tasks} tags={board.tags}/>;
 				})
 			}
 
