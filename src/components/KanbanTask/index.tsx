@@ -1,9 +1,10 @@
 import styles from './KanbanTask.module.scss';
 
-import Button, { ButtonAlignType, ButtonType } from '../Button';
+import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import Checkbox, { CheckboxType } from '../Checkbox';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
+import KanbanTag from '../KanbanTag';
 
 import useTranslations from '../../hooks/useTranslations';
 import { Id, Tag, Task } from '../../hooks/useKanban';
@@ -12,8 +13,8 @@ import useContextMenu from '../../hooks/useContextMenu';
 
 import { useBoardsContext } from '../../context/BoardsContext';
 
-import { Orientation } from '../../misc/utils';
-import KanbanTag from '../KanbanTag';
+import { HorizontalAlign, Orientation } from '../../misc/utils';
+import { isNewTaskTitleValid, MAX_TASK_TITLE_LENGTH } from '../../misc/boards';
 
 interface Props
 {
@@ -33,9 +34,23 @@ export default function KanbanTask(props: Props)
 	const onClick = (e: React.MouseEvent<HTMLElement>) => props.onClick?.(e);
 
 	const { translate } = useTranslations();
-	const { toggleTaskCompleted, deleteTask } = useBoardsContext();
-	const { openDialog } = useDialog();
+	const { toggleTaskCompleted, renameTask, deleteTask } = useBoardsContext();
+	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
+
+	const onTaskRenameDialog = (currentTitle: string) =>
+	{
+		openPromptDialog(
+		{
+			title: translate("rename_the_task"),
+			description: `${translate("enter_a_new_task_name")}\.\n${translate("max_length_is")} ${MAX_TASK_TITLE_LENGTH}`,
+			confirmTitle: translate('rename'),
+			initialValue: currentTitle,
+			maxLength: MAX_TASK_TITLE_LENGTH,
+			validate: v => isNewTaskTitleValid(v.trim(), currentTitle),
+			onConfirm: result => renameTask(boardId, task.id, result.trim())
+		});
+	};
 
 	const onTaskDeleteDialog = () =>
 	{
@@ -44,7 +59,7 @@ export default function KanbanTask(props: Props)
 			title: translate("delete_the_task"),
 			description: `${translate("are_you_sure_delete_the_task")} "${task.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmType: ButtonType.Negative,
+			confirmButtonVariant: ButtonVariant.Negative,
 			onConfirm: () => deleteTask(boardId, task.id)
 		});
 	};
@@ -54,17 +69,23 @@ export default function KanbanTask(props: Props)
 		openContextMenu(
 		{
 			children: <>
-				<Button type={ButtonType.SimpleSecondary} align={ButtonAlignType.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					onClick={() => onTaskRenameDialog(task.title)}>
+					<SVG name="edit"/>
+					{translate("rename")}
+				</Button>
+
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					{translate("color")}
 				</Button>
 
-				<Button type={ButtonType.SimpleSecondary} align={ButtonAlignType.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button type={ButtonType.Negative} align={ButtonAlignType.Left} small smallSVG dimmedSVG onClick={onTaskDeleteDialog}>
+				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -80,7 +101,7 @@ export default function KanbanTask(props: Props)
 
 				<p className={styles.taskHeaderText}>{task.title}</p>
 
-				<Button type={ButtonType.SimpleSecondary} small square onClick={e => onTaskContextMenu(e.currentTarget.getBoundingClientRect())}>
+				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onTaskContextMenu(e.currentTarget.getBoundingClientRect())}>
 					<SVG name='menuDots'/>
 				</Button>
 			</div>

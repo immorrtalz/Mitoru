@@ -36,6 +36,7 @@
 		& .taskHeaderText
 		{
 			height: 100%;
+			padding-top: 2px;
 			flex-grow: 1;
 			text-wrap: wrap;
 			user-select: none;
@@ -44,8 +45,6 @@
 			-ms-user-select: none;
 			pointer-events: none;
 		}
-
-		& > button { fill: var(--third-fg-color); }
 	}
 
 	& .taskTagsContainer

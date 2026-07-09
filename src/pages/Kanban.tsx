@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import styles from "./Kanban.module.scss";
 
 import { SVG } from "../components/SVG";
-import Button, { ButtonType } from "../components/Button";
+import Button, { ButtonStyle } from "../components/Button";
 import { TopBar } from "../components/TopBar";
 import KanbanColumn from "../components/KanbanColumn";
 
@@ -52,11 +52,9 @@ function Kanban()
 				})
 			}
 
-				<Button type={ButtonType.Secondary} onClick={createNewColumn} dimmed>
-					<>
-						<SVG name='plus'/>
-						{translate('create_a_new_column')}
-					</>
+				<Button buttonStyle={ButtonStyle.Outlined} dimmed onClick={createNewColumn}>
+					<SVG name='plus'/>
+					{translate('create_a_new_column')}
 				</Button>
 			</div>
 		</div>

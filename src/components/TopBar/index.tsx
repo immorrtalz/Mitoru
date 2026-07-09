@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import styles from './TopBar.module.scss';
 
 import { SVG } from '../SVG';
-import Button, { ButtonType } from '../Button';
+import Button, { ButtonStyle } from '../Button';
 
 import { useGistAPIContext } from '../../context/GistAPIContext';
 
@@ -31,16 +31,14 @@ export function TopBar(props: Props)
 
 			{ props.pageName && <h5>{props.pageName}</h5> }
 
-			<Button type={ButtonType.Secondary} square onClick={initOctokit} disabled={isOctokitInitialized()}>initOctokit</Button>
-			<Button type={ButtonType.Secondary} square onClick={updateGist} disabled={!isOctokitInitialized()}>Push</Button>
-			<Button type={ButtonType.Secondary} square onClick={getGistContent} disabled={!isOctokitInitialized()}>Pull</Button>
+			<Button buttonStyle={ButtonStyle.Outlined} square onClick={initOctokit} disabled={isOctokitInitialized()}>initOctokit</Button>
+			<Button buttonStyle={ButtonStyle.Outlined} square onClick={updateGist} disabled={!isOctokitInitialized()}>Push</Button>
+			<Button buttonStyle={ButtonStyle.Outlined} square onClick={getGistContent} disabled={!isOctokitInitialized()}>Pull</Button>
 			</div>
-
-			<Button type={ButtonType.Secondary} square onClick={() => window.open("https://github.com/immorrtalz/Mitoru", "_blank")}>GitHub</Button>
 
 			{
 				location.pathname !== "/settings" &&
-					<Button type={ButtonType.Secondary} square onClick={() => navigate("/settings")}>
+					<Button buttonStyle={ButtonStyle.Outlined} square onClick={() => navigate("/settings")}>
 						<SVG name="settings"/>
 					</Button>
 			}

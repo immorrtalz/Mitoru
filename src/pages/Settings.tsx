@@ -2,16 +2,17 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import styles from "./Settings.module.scss";
 
-import Button, { ButtonType } from "../components/Button";
 import { TopBar } from "../components/TopBar";
+import Button, { ButtonStyle, ButtonVariant } from "../components/Button";
 import { TextBox } from "../components/TextBox";
 
-import SettingsContext from '../context/SettingsContext';
-import { settingTranslationKeys, settingOptions, Settings } from "../misc/settings";
-
 import useTranslations from "../hooks/useTranslations";
-import DialogWindow from "../components/DialogWindow";
+import useDialog from "../hooks/useDialog";
+
+import { settingTranslationKeys, settingOptions, Settings } from "../misc/settings";
 import { clearStoredToken, hasStoredToken } from "../misc/cryptoUtils";
+
+import SettingsContext from '../context/SettingsContext';
 import { useGistAPIContext } from "../context/GistAPIContext";
 
 function SettingsPage()
@@ -20,9 +21,24 @@ function SettingsPage()
 	const { settings, setSettings } = useContext(SettingsContext);
 	const { translate } = useTranslations();
 	const { initOctokit, createGist, getGistContent, updateGist } = useGistAPIContext();
+	const { openPromptDialog } = useDialog();
 
-	const [passPhraseDialogOpen, setPassPhraseDialogOpen] = useState(false);
-	const [passPhraseValue, setPassPhraseValue] = useState("");
+	const onPassPhraseDialog = () =>
+	{
+		openPromptDialog(
+		{
+			title: "Enter the passphrase",
+			description: `At least 8 characters long.\nThis will overwrite any existing API key and/or gist id in localStorage.`,
+			validate: v => v.trim().length >= 8,
+			onConfirm: result =>
+			{
+				initOctokit(result, githubAPIKeyValue === "" ? undefined : githubAPIKeyValue);
+				setGithubAPIKeyValue("");
+				setGistIdValue("");
+			}
+		});
+	};
+
 	const [githubAPIKeyValue, setGithubAPIKeyValue] = useState("");
 	const [gistIdValue, setGistIdValue] = useState("");
 
@@ -42,7 +58,7 @@ function SettingsPage()
 
 			<div className={styles.settingsPageContainer}>
 				<div className={styles.settingsContentContainer}>
-					<Button className={styles.backButton} type={ButtonType.Secondary} small onClick={() => history.back()}>{translate("back")}</Button>
+					<Button className={styles.backButton} buttonStyle={ButtonStyle.Outlined} small onClick={() => history.back()}>{translate("back")}</Button>
 
 					<h2>{translate("settings")}</h2>
 
@@ -59,7 +75,7 @@ function SettingsPage()
 
 					<div className={styles.smallGapColumnContainer}>
 						<p>GitHub API key</p>
-						<TextBox
+						<TextBox disabled
 							value={githubAPIKeyValue}
 							placeholder={hasStoredToken() ? "*********************************************************************************************" : ""}
 							onInput={e =>
@@ -71,7 +87,7 @@ function SettingsPage()
 
 					<div className={styles.smallGapColumnContainer}>
 						<p>Gist URL or id</p>
-						<TextBox
+						<TextBox disabled
 							value={gistIdValue === "" ? undefined : gistIdValue}
 							onInput={e =>
 							{
@@ -80,9 +96,9 @@ function SettingsPage()
 							}}/>
 					</div>
 
-					<Button type={ButtonType.Secondary}>Export kanban data</Button>
+					<Button buttonStyle={ButtonStyle.Outlined} disabled>Export kanban data</Button>
 
-					<Button type={ButtonType.Negative} onClick={() =>
+					<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} onClick={() =>
 					{
 						setGithubAPIKeyValue("");
 						setGistIdValue("");
@@ -91,41 +107,15 @@ function SettingsPage()
 						Reset API key and gist id
 					</Button>
 
-					<Button type={ButtonType.Primary}
-						onClick={() => setPassPhraseDialogOpen(true)}
+					<Button buttonStyle={ButtonStyle.Primary}
+						onClick={onPassPhraseDialog}
 						disabled={githubAPIKeyValue === "" && gistIdValue === ""}>
 						{translate("confirm")}
 					</Button>
+
+					<Button buttonStyle={ButtonStyle.Outlined} onClick={() => window.open("https://github.com/immorrtalz/Mitoru", "_blank")}>Source code on GitHub</Button>
 				</div>
 			</div>
-
-		{
-			passPhraseDialogOpen && <DialogWindow
-				title="Enter the passphrase"
-				description={`At least 8 characters long.\nThis will overwrite any existing API key and/or gist id in localStorage.`}
-				onCancel={() =>
-				{
-					setPassPhraseValue("");
-					setPassPhraseDialogOpen(false);
-				}}
-				confirmDisabled={passPhraseValue.length < 8}
-				onConfirm={() =>
-				{
-					initOctokit(passPhraseValue, githubAPIKeyValue === "" ? undefined : githubAPIKeyValue);
-					setPassPhraseValue("");
-					setPassPhraseDialogOpen(false);
-					setGithubAPIKeyValue("");
-					setGistIdValue("");
-				}}>
-
-					<TextBox
-						value={passPhraseValue}
-						minLength={8}
-						maxLength={256}
-						onInput={e => setPassPhraseValue((e.target as HTMLInputElement).value)}
-						autofocus/>
-			</DialogWindow>
-		}
 		</div>
 	);
 }

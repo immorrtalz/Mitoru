@@ -14,6 +14,20 @@ export enum Orientation
 	Vertical
 }
 
+export enum HorizontalAlign
+{
+	Left,
+	Center,
+	Right
+}
+
+export enum VerticalAlign
+{
+	Top,
+	Center,
+	Bottom
+}
+
 export interface Color
 {
 	h: number;

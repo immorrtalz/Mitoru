@@ -1,6 +1,6 @@
 import styles from './KanbanColumn.module.scss';
 
-import Button, { ButtonAlignType, ButtonType } from '../Button';
+import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import KanbanTask from '../KanbanTask';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
@@ -13,7 +13,7 @@ import useContextMenu from '../../hooks/useContextMenu';
 import { useBoardsContext } from '../../context/BoardsContext';
 
 import { isNewColumnTitleValid, MAX_COLUMN_TITLE_LENGTH } from '../../misc/boards';
-import { Orientation } from '../../misc/utils';
+import { HorizontalAlign, Orientation } from '../../misc/utils';
 
 interface Props
 {
@@ -65,7 +65,7 @@ export default function KanbanColumn(props: Props)
 			title: translate("delete_the_column"),
 			description: `${translate("are_you_sure_delete_the_column")} "${column.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmType: ButtonType.Negative,
+			confirmButtonVariant: ButtonVariant.Negative,
 			onConfirm: () => deleteColumn(boardId, column.id)
 		});
 	};
@@ -81,7 +81,7 @@ export default function KanbanColumn(props: Props)
 		openContextMenu(
 		{
 			children: <>
-				<Button type={ButtonType.SimpleSecondary} align={ButtonAlignType.Left} small smallSVG dimmedSVG
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 					onClick={createNewTask}>
 					<SVG name="plus"/>
 					{translate("create_a_new_task")}
@@ -89,23 +89,23 @@ export default function KanbanColumn(props: Props)
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button type={ButtonType.SimpleSecondary} align={ButtonAlignType.Left} small smallSVG dimmedSVG
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 					onClick={() => onColumnRenameDialog(column.title)}>
 					<SVG name="edit"/>
 					{translate("rename")}
 				</Button>
 
-				<Button type={ButtonType.SimpleSecondary} align={ButtonAlignType.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					{translate("color")}
 				</Button>
 
-				<Button type={ButtonType.SimpleSecondary} align={ButtonAlignType.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button type={ButtonType.Negative} align={ButtonAlignType.Left} small smallSVG dimmedSVG onClick={onColumnDeleteDialog}>
+				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -122,12 +122,12 @@ export default function KanbanColumn(props: Props)
 					<p className={styles.columnTasksCountText}>{tasks.length} {translate(tasksCountTranslationKey)}</p>
 				</div>
 
-				<Button type={ButtonType.SimpleSecondary} small square onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
+				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
 			</div>
 
 			{ tasks.map(task => <KanbanTask key={`task-${task.id}`} boardId={boardId} task={task} tags={tags}/>) }
 
-			<Button className={styles.addTaskButton} type={ButtonType.SimpleSecondary} align={ButtonAlignType.Left} dimmed
+			<Button className={styles.addTaskButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} dimmed
 				onClick={createNewTask}>
 				<SVG name="plus"/>
 				{translate("create_a_new_task")}

@@ -25,6 +25,32 @@
 	white-space: nowrap;
 	cursor: pointer;
 
+	--fgColor: var(--main-fg-color);
+	--fgColorHover: var(--hover-main-fg-color);
+	--fgColorActive: var(--active-main-fg-color);
+
+	--bgColor: var(--main-bg-color);
+	--bgColorHover: var(--hover-main-bg-color);
+	--bgColorActive: var(--active-main-bg-color);
+
+	background: var(--bgColor);
+	color: var(--fgColor);
+	fill: var(--fgColor);
+
+	&:hover
+	{
+		background: var(--bgColorHover);
+		color: var(--fgColorHover);
+		fill: var(--fgColorHover);
+	}
+
+	&:active
+	{
+		background: var(--bgColorActive);
+		color: var(--fgColorActive);
+		fill: var(--fgColorActive);
+	}
+
 	& > .text
 	{
 		user-select: none;
@@ -48,66 +74,91 @@
 		fill: inherit;
 	}
 
-	&.primary, &.positive, &.negative
+	&.primary
 	{
-		--primary-color: var(--accent);
+		--baseColor: var(--accent);
 
-		background: var(--primary-color);
-		color: var(--black-75);
-		fill: var(--black-75);
+		--fgColor: var(--black-75);
+		--fgColorHover: var(--black-85);
+		--fgColorActive: var(--black-65);
+
+		--bgColor: var(--baseColor);
+		--bgColorHover: color-mix(in srgb, var(--baseColor), white 15%);
+		--bgColorActive: color-mix(in srgb, var(--baseColor), black 25%);
+
 		font-weight: 600;
-
-		&:hover { background: color-mix(in srgb, var(--primary-color), white 15%); }
-
-		&:active
-		{
-			background: color-mix(in srgb, var(--primary-color), black 25%);
-			color: var(--black-65);
-			fill: var(--black-65);
-		}
 
 		&.positive, &.negative
 		{
-			color: var(--main-fg-color);
-			fill: var(--main-fg-color);
+			--baseColor: var(--positive);
 
-			&:active
-			{
-				color: var(--active-main-fg-color);
-				fill: var(--active-main-fg-color);
-			}
+			--fgColor: var(--main-fg-color);
+			--fgColorHover: var(--hover-main-fg-color);
+			--fgColorActive: var(--active-main-fg-color);
+
+			font-weight: 600;
 		}
 
-		&.positive { --primary-color: var(--positive); }
-		&.negative { --primary-color: var(--negative); }
+		&.negative { --baseColor: var(--negative); }
 	}
 
-	&.secondary, &.simpleSecondary
+	&.secondary, &.outlined, &.ghost
 	{
-		background: var(--main-bg-color);
-		color: var(--main-fg-color);
-		fill: var(--main-fg-color);
-		border: 1px solid var(--main-border-color);
+		--fgColor: var(--main-fg-color);
+		--fgColorHover: var(--hover-main-fg-color);
+		--fgColorActive: var(--active-main-fg-color);
 
-		&.simpleSecondary { background: transparent; }
+		--bgColor: var(--main-bg-color);
+		--bgColorHover: var(--hover-main-bg-color);
+		--bgColorActive: var(--active-main-bg-color);
 
-		&:hover
+		&.positive, &.negative
 		{
-			background: var(--hover-main-bg-color);
-			color: var(--hover-main-fg-color);
-			fill: var(--hover-main-fg-color);
-			border-color: transparent;
+			--baseColor: var(--positive);
+			--secondColor: var(--positive-light);
+
+			--fgColor: var(--secondColor);
+			--fgColorHover: var(--secondColor);
+			--fgColorActive: color-mix(in srgb, var(--secondColor) 50%, transparent);
+
+			--bgColor: color-mix(in srgb, var(--baseColor) 25%, transparent);
+			--bgColorHover: color-mix(in srgb, var(--baseColor) 50%, transparent);
+			--bgColorActive: color-mix(in srgb, var(--baseColor) 35%, transparent);
+
+			font-weight: 600;
 		}
 
-		&:active
+		&.negative
 		{
-			background: var(--active-main-bg-color);
-			color: var(--active-main-fg-color);
-			fill: var(--active-main-fg-color);
-			border-color: transparent;
+			--baseColor: var(--negative);
+			--secondColor: var(--negative-light);
+		}
+	}
+
+	&.outlined
+	{
+		--borderBaseColor: var(--main-border-color);
+		border: 1px solid var(--borderBaseColor);
+
+		&.positive, &.negative
+		{
+			--borderBaseColor: var(--positive-light);
+			border-color: color-mix(in srgb, var(--borderBaseColor) 25%, transparent);
 		}
 
-		&.simpleSecondary { border: none; }
+		&.negative { --borderBaseColor: var(--negative-light); }
+
+		&:hover, &:active { border-color: transparent; }
+	}
+
+	&.ghost, &.ghost.positive, &.ghost.negative { --bgColor: transparent; }
+
+	&.small
+	{
+		height: 32px;
+		padding: 8px;
+		font-size: 14px;
+		border-radius: var(--smaller-border-radius);
 	}
 
 	&.square
@@ -115,13 +166,6 @@
 		width: auto;
 		aspect-ratio: 1;
 		padding: 0;
-	}
-
-	&.small
-	{
-		height: 32px;
-		font-size: 14px;
-		border-radius: var(--smaller-border-radius);
 	}
 
 	&.smallSVG
@@ -135,8 +179,8 @@
 		}
 	}
 
-	&.dimmed:not(.primary):not(.positive):not(.negative) { color: var(--active-main-fg-color); }
-	&.dimmed:not(.primary):not(.positive):not(.negative), &.dimmedSVG:not(.primary):not(.positive):not(.negative) { fill: var(--active-main-fg-color); }
+	&.dimmed > * { opacity: 0.65; }
+	&.dimmedSVG > svg { opacity: 0.65; }
 
 	&.leftAligned, &.rightAligned { padding: 0 8px; }
 
@@ -160,9 +204,7 @@
 
 	&:disabled
 	{
-		background: var(--white-2);
-		color: var(--white-25);
-		fill: var(--white-25);
+		opacity: 0.25;
 		pointer-events: none;
 	}
 }

@@ -15,13 +15,14 @@
 	& .columnHeader
 	{
 		width: 100%;
-		height: 48px;
+		height: fit-content;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
 		gap: 8px;
 		flex-shrink: 0;
 		padding-left: 8px;
+		margin-bottom: 8px;
 
 		& .columnHeaderTexts
 		{
@@ -37,11 +38,9 @@
 			& .columnTitleText
 			{
 				width: 100%;
+				height: fit-content;
 				font-weight: 600;
-				text-overflow: ellipsis;
-				overflow: hidden;
-				text-wrap: nowrap;
-				white-space: nowrap;
+				text-wrap: wrap;
 			}
 
 			& .columnTasksCountText
@@ -50,8 +49,6 @@
 				font-size: var(--smaller-font-size);
 			}
 		}
-
-		& > button { fill: var(--third-fg-color); }
 	}
 
 	& .addTaskButton { width: 100%; }
