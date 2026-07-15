@@ -31,14 +31,41 @@
 			pointer-events: all;
 			cursor: pointer;
 
-			& .appName
+			& .logoTextsContainer
 			{
-				color: var(--colored-fg-color-75);
-				font-size: 28px;
-				user-select: none;
-				-webkit-user-select: none;
-				-moz-user-select: none;
-				-ms-user-select: none;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				flex-wrap: nowrap;
+
+				& .appName
+				{
+					height: 32px;
+					color: var(--colored-fg-color-75);
+					font-size: 28px;
+					text-wrap: nowrap;
+					user-select: none;
+					-webkit-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+				}
+
+				& .subText
+				{
+					height: 16px;
+					background: var(--accent);
+					padding: 0 6px;
+					border-radius: var(--smaller-border-radius);
+					color: var(--black-75);
+					font-size: var(--smaller-font-size);
+					font-weight: 600;
+					letter-spacing: 0.25px;
+					text-wrap: nowrap;
+					user-select: none;
+					-webkit-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+				}
 			}
 		}
 	}

@@ -10,8 +10,10 @@ import useTranslations from '../../hooks/useTranslations';
 import { Id, Tag, Task } from '../../hooks/useKanban';
 import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
+import useTaskView from '../../hooks/useTaskView';
 
 import { useBoardsContext } from '../../context/BoardsContext';
+import { TaskViewHandle } from '../../context/TaskViewContext';
 
 import { HorizontalAlign, Orientation } from '../../misc/utils';
 import { isNewTaskTitleValid, MAX_TASK_TITLE_LENGTH } from '../../misc/boards';
@@ -29,14 +31,21 @@ export default function KanbanTask(props: Props)
 {
 	const boardId = props.boardId;
 	const task = props.task;
+	const tags = props.tags;
 	const taskTags = task.tagsIds.map(id => props.tags[id]).filter(Boolean);
-
-	const onClick = (e: React.MouseEvent<HTMLElement>) => props.onClick?.(e);
+	let closeTaskViewWindowHandle: TaskViewHandle | null = null;
 
 	const { translate } = useTranslations();
 	const { toggleTaskCompleted, renameTask, deleteTask } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
+	const { openTaskView } = useTaskView();
+
+	const onClick = (e: React.MouseEvent<HTMLElement>) =>
+	{
+		closeTaskViewWindowHandle = openTaskView({ boardId, taskId: task.id, tags, onTaskContextMenu });
+		props.onClick?.(e);
+	};
 
 	const onTaskRenameDialog = (currentTitle: string) =>
 	{
@@ -60,35 +69,50 @@ export default function KanbanTask(props: Props)
 			description: `${translate("are_you_sure_delete_the_task")} "${task.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
 			confirmButtonVariant: ButtonVariant.Negative,
-			onConfirm: () => deleteTask(boardId, task.id)
+			onConfirm: () =>
+			{
+				closeTaskViewWindowHandle?.close();
+				deleteTask(boardId, task.id);
+			}
 		});
 	};
 
-	const onTaskContextMenu = (triggerButtonRect: DOMRect) =>
+	const onTaskContextMenu = (triggerButtonRect: DOMRect, options: ('rename' | 'color' | 'duplicate' | 'delete')[] = ['rename', 'color', 'duplicate', 'delete']) =>
 	{
 		openContextMenu(
 		{
 			children: <>
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
-					onClick={() => onTaskRenameDialog(task.title)}>
-					<SVG name="edit"/>
-					{translate("rename")}
-				</Button>
-
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
-					{translate("color")}
-				</Button>
-
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
-					{translate("duplicate")}
-				</Button>
-
-				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
-
-				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
-					<SVG name="delete"/>
-					{translate("delete")}
-				</Button>
+			{
+				options.includes('rename') &&
+					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => onTaskRenameDialog(task.title)}>
+						<SVG name="edit"/>
+						{translate("rename")}
+					</Button>
+			}
+			{
+				options.includes('color') &&
+					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						{translate("color")}
+					</Button>
+			}
+			{
+				options.includes('duplicate') &&
+					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						{translate("duplicate")}
+					</Button>
+			}
+			{
+				(options.includes('delete') && options.length > 1) &&
+					<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
+			}
+			{
+				options.includes('delete') &&
+					<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
+						<SVG name="delete"/>
+						{translate("delete")}
+					</Button>
+			}
 			</>,
 			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
 		});
@@ -97,7 +121,9 @@ export default function KanbanTask(props: Props)
 	return (
 		<div className={`${styles.kanbanTask} ${props.className || ''}`} onClick={onClick}>
 			<div className={styles.taskHeader}>
-				<Checkbox type={CheckboxType.Simple} small checked={task.isCompleted} onChange={() => toggleTaskCompleted(boardId, task.id)}/>
+				<Checkbox type={CheckboxType.Simple} small checked={task.isCompleted}
+					onClick={e => e.stopPropagation()}
+					onChange={() => toggleTaskCompleted(boardId, task.id)}/>
 
 				<p className={styles.taskHeaderText}>{task.title}</p>
 

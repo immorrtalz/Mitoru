@@ -16,6 +16,7 @@ import BoardsContext from "./context/BoardsContext";
 import GistAPIContext from "./context/GistAPIContext";
 import { DialogProvider } from "./context/DialogContext";
 import { ContextMenuProvider } from "./context/ContextMenuContext";
+import { TaskViewProvider } from "./context/TaskViewContext";
 
 export function AppRoot()
 {
@@ -42,9 +43,11 @@ export function AppRoot()
 				<DialogProvider>
 					<ContextMenuProvider>
 						<BoardsContext.Provider value={kanban}>
-							<GistAPIContext.Provider value={gistAPI}>
-								<App/>
-							</GistAPIContext.Provider>
+							<TaskViewProvider>
+								<GistAPIContext.Provider value={gistAPI}>
+									<App/>
+								</GistAPIContext.Provider>
+							</TaskViewProvider>
 						</BoardsContext.Provider>
 					</ContextMenuProvider>
 				</DialogProvider>

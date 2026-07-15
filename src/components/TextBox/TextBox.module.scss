@@ -1,8 +1,23 @@
 .container
 {
 	width: 100%;
-	height: 48px;
+	height: 40px;
 	border-radius: var(--main-border-radius);
+
+	&.multiline
+	{
+		height: fit-content;
+
+		& .textBox
+		{
+			height: auto;
+			min-height: 40px;
+			transition: all 0.2s, height 0s;
+			field-sizing: content;
+		}
+	}
+
+	&.resizable .textBox { resize: vertical; }
 
 	& .icon
 	{
@@ -17,16 +32,21 @@
 	{
 		appearance: none;
 		-webkit-appearance: none;
+		display: block;
 		outline: none;
 		width: 100%;
 		height: 100%;
-		padding: 8px 16px;
+		padding: 8px;
 		border-radius: inherit;
 		background: var(--main-bg-color);
 		border: 1px solid var(--main-border-color);
 		color: var(--main-fg-color);
 		outline: 0px solid transparent;
+		resize: none;
 		pointer-events: all;
+		font-size: inherit;
+		font-weight: inherit;
+		color: inherit;
 
 		&:focus
 		{
@@ -55,5 +75,11 @@
 
 			&:focus { background: color-mix(in srgb, var(--negative) 15%, var(--hover-main-bg-color)); }
 		}
+	}
+
+	&.ghost .textBox:not(:focus):not(:hover):not(:active)
+	{
+		background: transparent;
+		border-color: transparent;
 	}
 }
