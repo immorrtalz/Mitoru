@@ -45,6 +45,8 @@
 	pointer-events: all;
 	z-index: 1000;
 
+	& > * { width: 100%; }
+
 	& .headerContainer
 	{
 		width: 100%;

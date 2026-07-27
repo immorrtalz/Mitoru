@@ -1,18 +1,20 @@
-import Button, { ButtonStyle } from '../Button';
+import { useState } from 'react';
 import styles from './TaskViewWindow.module.scss';
 
+import Button, { ButtonStyle } from '../Button';
 import { TextBox, TextBoxStyle } from '../TextBox';
 import Checkbox, { CheckboxType } from '../Checkbox';
+import KanbanChecklist from '../KanbanChecklist';
 import KanbanTag from '../KanbanTag';
 import { SVG } from '../SVG';
-
-import { isNewTaskTextValid, isNewTaskTitleValid } from '../../misc/boards';
 
 import useTranslations from "../../hooks/useTranslations";
 import { Id, Tag } from '../../hooks/useKanban';
 
+import { isNewTaskTextValid, isNewTaskTitleValid } from '../../misc/boards';
+
 import { useBoardsContext } from '../../context/BoardsContext';
-import { useState } from 'react';
+import { HorizontalAlign } from '../../misc/utils';
 
 interface Props
 {
@@ -28,7 +30,7 @@ interface Props
 export default function TaskViewWindow(props: Props)
 {
 	const { translate } = useTranslations();
-	const { state, toggleTaskCompleted, renameTask, setTaskText } = useBoardsContext();
+	const { state, toggleTaskCompleted, renameTask, setTaskText, createChecklist } = useBoardsContext();
 
 	const boardId = props.boardId;
 	const task = state.boards[boardId]?.tasks[props.taskId];
@@ -38,6 +40,12 @@ export default function TaskViewWindow(props: Props)
 
 	const [titleResetToken, setTitleResetToken] = useState(0);
 	const [textResetToken, setTextResetToken] = useState(0);
+
+	const createNewChecklist = () =>
+	{
+		const checklistNumber = task.checklistsOrder.length + 1;
+		createChecklist(boardId, task.id, `${translate("checklist")} ${checklistNumber}`);
+	};
 
 	return (
 		<>
@@ -90,6 +98,16 @@ export default function TaskViewWindow(props: Props)
 							setTaskText(boardId, task.id, value);
 						else setTextResetToken(t => t + 1);
 					}}/>
+
+			{
+				task.checklistsOrder.map(checklistId =>
+					<KanbanChecklist key={`checklist-${checklistId}`} boardId={boardId} taskId={task.id} checklistId={checklistId}/>)
+			}
+
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={createNewChecklist}>
+					<SVG name="plus"/>
+					{translate("create_a_new_checklist")}
+				</Button>
 			</div>
 		</>
 	);
