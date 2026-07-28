@@ -3,6 +3,7 @@ import styles from './KanbanChecklist.module.scss';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import { TextBox, TextBoxStyle } from '../TextBox';
+import KanbanChecklistItem from '../KanbanChecklistItem';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
 
@@ -22,7 +23,6 @@ interface Props
 	taskId: Id;
 	checklistId: Id;
 	className?: string;
-	onClick?: (...args: any[]) => any;
 }
 
 export default function KanbanChecklist(props: Props)
@@ -122,6 +122,20 @@ export default function KanbanChecklist(props: Props)
 			</div>
 
 			<div className={styles.checklistItemsContainer}>
+			{
+				checklist.itemsOrder.map(checklistItemId =>
+				{
+					const checklistItem = checklist.items[checklistItemId];
+
+					return <KanbanChecklistItem
+							key={checklistItem.id}
+							boardId={boardId}
+							taskId={task.id}
+							checklistId={checklist.id}
+							checklistItemId={checklistItem.id}/>;
+				})
+			}
+
 				<Button className={styles.addTaskButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed
 					onClick={createNewChecklistItem}>
 					<SVG name="plus"/>

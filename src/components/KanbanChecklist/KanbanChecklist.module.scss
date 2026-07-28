@@ -2,11 +2,21 @@
 {
 	width: 100%;
 	height: fit-content;
+	padding-left: 8px;
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	gap: 8px;
 	flex-shrink: 0;
+
+	&::before
+	{
+		content: '';
+		position: absolute;
+		inset: -12px -8px -8px -8px;
+		background: var(--main-bg-color);
+		border-radius: var(--main-border-radius);
+	}
 
 	& .checklistHeader
 	{
@@ -31,6 +41,7 @@
 			& .checklistHeaderText
 			{
 				height: fit-content;
+				margin-left: -8px;
 				flex-grow: 1;
 				text-wrap: pretty;
 				overflow: hidden;
@@ -42,7 +53,6 @@
 
 			& .checklistItemsCountText
 			{
-				padding-left: 8px;
 				color: var(--third-fg-color);
 				font-size: var(--smaller-font-size);
 			}
@@ -53,11 +63,13 @@
 	{
 		width: 100%;
 		height: fit-content;
+		padding-left: 8px;
 		display: flex;
 		flex-direction: column;
 		flex-wrap: nowrap;
 		gap: 8px;
 		flex-shrink: 0;
+		border-left: 1px solid var(--main-border-color);
 
 		& > * { width: 100%; }
 	}
