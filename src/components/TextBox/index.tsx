@@ -94,6 +94,7 @@ export function TextBox(props: Props)
 					onKeyDown={onEnterKeyDown}
 					disabled={props.disabled}
 					value={value}
+					autoFocus={props.autofocus}
 					spellCheck={false}/>
 		}
 		</div>);

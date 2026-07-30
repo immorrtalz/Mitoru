@@ -1,5 +1,6 @@
 {
 	"settings": "Settings",
+	"manage_board_tags": "Manage board tags",
 	"language": "Language",
 	"source_code_title": "Source",
 	"setting_locale_en": "English",
@@ -28,6 +29,7 @@
 	"enter_a_new_column_name": "Enter a new column name",
 	"enter_a_new_task_name": "Enter a new task name",
 	"enter_a_new_tag_name": "Enter a new tag name",
+	"enter_a_tag_name": "Enter a tag name",
 	"enter_a_new_checklist_name": "Enter a new checklist name",
 	"enter_a_new_checklist_item_name": "Enter a new checklist item name",
 	"delete_the_board": "Delete the board",
@@ -57,5 +59,9 @@
 	"checklist_items_count_one": "checklist item",
 	"checklist_items_count_two_three_four": "checklist items",
 	"checklist_items_count_multiple": "checklist items",
-	"checklist_item": "Checklist item"
+	"checklist_item": "Checklist item",
+	"new_tag": "new tag",
+	"tags_count_one": "tag",
+	"tags_count_two_three_four": "tags",
+	"tags_count_multiple": "tags"
 }

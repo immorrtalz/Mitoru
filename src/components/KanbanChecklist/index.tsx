@@ -135,13 +135,13 @@ export default function KanbanChecklist(props: Props)
 							checklistItemId={checklistItem.id}/>;
 				})
 			}
-
-				<Button className={styles.addTaskButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed
-					onClick={createNewChecklistItem}>
-					<SVG name="plus"/>
-					{translate("create_a_new_checklist_item")}
-				</Button>
 			</div>
+
+			<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed
+				onClick={createNewChecklistItem}>
+				<SVG name="plus"/>
+				{translate("create_a_new_checklist_item")}
+			</Button>
 		</div>
 	);
 }

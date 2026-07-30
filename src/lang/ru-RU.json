@@ -1,5 +1,6 @@
 {
 	"settings": "Настройки",
+	"manage_board_tags": "Управление тегами доски",
 	"language": "Язык",
 	"source_code_title": "Исходный код",
 	"setting_locale_en": "Английский",
@@ -28,6 +29,7 @@
 	"enter_a_new_column_name": "Введите новое название колонки",
 	"enter_a_new_task_name": "Введите новое название задачи",
 	"enter_a_new_tag_name": "Введите новое название тега",
+	"enter_a_tag_name": "Введите название тега",
 	"enter_a_new_checklist_name": "Введите новое название списка",
 	"enter_a_new_checklist_item_name": "Введите новое название пункта списка",
 	"delete_the_board": "Удалить доску",
@@ -57,5 +59,9 @@
 	"checklist_items_count_one": "пункт списка",
 	"checklist_items_count_two_three_four": "пункта списка",
 	"checklist_items_count_multiple": "пунктов списка",
-	"checklist_item": "Пункт списка"
+	"checklist_item": "Пункт списка",
+	"new_tag": "новый тег",
+	"tags_count_one": "тег",
+	"tags_count_two_three_four": "тега",
+	"tags_count_multiple": "тегов"
 }

@@ -11,6 +11,7 @@ import useTranslations from "../hooks/useTranslations";
 import useBoardFromRoute from "../hooks/useBoardFromRoute";
 
 import { useBoardsContext } from "../context/BoardsContext";
+import TagsViewWindow from "../components/TagsViewWindow";
 
 function Kanban()
 {
@@ -36,7 +37,7 @@ function Kanban()
 
 	return (
 		<div className='mainContainer'>
-			<TopBar pageName={boardName}/>
+			<TopBar pageName={boardName} boardId={boardId}/>
 
 			<div className={styles.kanbanPageContainer}>
 			{

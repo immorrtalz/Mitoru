@@ -50,44 +50,41 @@
 	& .headerContainer
 	{
 		width: 100%;
-		height: fit-content;
+		height: 100%;
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		flex-wrap: nowrap;
-		gap: 16px;
-		flex-shrink: 0;
+		gap: 2px;
+		flex-shrink: 1;
+		flex-grow: 1;
+		overflow: hidden;
 
-		& .taskHeaderText
+		& .tagsCountText
 		{
-			height: fit-content;
-			flex-grow: 1;
-			text-wrap: pretty;
-			overflow: hidden;
-			font-size: calc(var(--h4-font-size));
-			font-weight: 700;
-			margin-top: -8px;
+			color: var(--third-fg-color);
+			font-size: var(--smaller-font-size);
 		}
 	}
 
-	& .taskTagsContainer
+	& .tagsContainer
 	{
 		width: 100%;
 		height: fit-content;
 		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		gap: 4px;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		gap: 2px;
 		flex-shrink: 0;
-	}
 
-	& .descriptionText
-	{
-		width: 100%;
-		text-align: left;
-		text-wrap: pretty;
-		white-space: pre-wrap;
-		flex-shrink: 0;
-		color: var(--second-fg-color);
-		border-radius: var(--smaller-border-radius);
+		& .tagContainer
+		{
+			width: 100%;
+			height: fit-content;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: center;
+			justify-content: space-between;
+		}
 	}
 }

@@ -17,14 +17,13 @@ import GistAPIContext from "./context/GistAPIContext";
 import { DialogProvider } from "./context/DialogContext";
 import { ContextMenuProvider } from "./context/ContextMenuContext";
 import { TaskViewProvider } from "./context/TaskViewContext";
+import { TagsViewProvider } from "./context/TagsViewContext";
 
 export function AppRoot()
 {
 	const [settings, internal_setSettings] = useState<Settings>(initialSettings);
 	const { saveSettingsToFile } = useSettingsLoader();
 
-	// Lazy initializer: runs exactly once, synchronously, before the first render —
-	// so useKanban never starts out empty and there's nothing left to "catch up" on later.
 	const [initialBoardsState] = useState<KanbanState>(loadBoardsFromLocalStorage);
 	const kanban = useKanban(initialBoardsState);
 	const gistAPI = useGistAPI(kanban.state, kanban.loadState);
@@ -43,11 +42,13 @@ export function AppRoot()
 				<DialogProvider>
 					<ContextMenuProvider>
 						<BoardsContext.Provider value={kanban}>
-							<TaskViewProvider>
-								<GistAPIContext.Provider value={gistAPI}>
-									<App/>
-								</GistAPIContext.Provider>
-							</TaskViewProvider>
+							<TagsViewProvider>
+								<TaskViewProvider>
+									<GistAPIContext.Provider value={gistAPI}>
+										<App/>
+									</GistAPIContext.Provider>
+								</TaskViewProvider>
+							</TagsViewProvider>
 						</BoardsContext.Provider>
 					</ContextMenuProvider>
 				</DialogProvider>

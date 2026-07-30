@@ -45,7 +45,7 @@
 				flex-grow: 1;
 				text-wrap: pretty;
 				overflow: hidden;
-				font-size: calc(var(--h6-font-size));
+				font-size: calc(var(--h5-font-size));
 				font-weight: 700;
 				margin-top: -4px;
 				border-radius: var(--smaller-border-radius);
@@ -70,7 +70,7 @@
 		gap: 8px;
 		flex-shrink: 0;
 		border-left: 1px solid var(--main-border-color);
-
-		& > * { width: 100%; }
 	}
+
+	& > button { width: 100%; }
 }

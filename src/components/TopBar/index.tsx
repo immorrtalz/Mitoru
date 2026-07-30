@@ -5,11 +5,15 @@ import styles from './TopBar.module.scss';
 import { SVG } from '../SVG';
 import Button, { ButtonStyle } from '../Button';
 
+import { Id } from '../../hooks/useKanban';
+import useTagsView from '../../hooks/useTagsView';
+
 import { useGistAPIContext } from '../../context/GistAPIContext';
 
 interface Props
 {
 	pageName?: string;
+	boardId?: Id;
 	children?: ReactElement | ReactElement[];
 	className?: string;
 }
@@ -18,6 +22,7 @@ export function TopBar(props: Props)
 {
 	const navigate = useNavigate();
 	const { isOctokitInitialized, initOctokit, getGistContent, updateGist } = useGistAPIContext();
+	const { openTagsView } = useTagsView();
 
 	const onReturnToHome = () => navigate("/");
 
@@ -39,12 +44,19 @@ export function TopBar(props: Props)
 			<Button buttonStyle={ButtonStyle.Outlined} square onClick={getGistContent} disabled={!isOctokitInitialized()}>Pull</Button>
 			</div>
 
-			{
-				location.pathname !== "/settings" &&
-					<Button buttonStyle={ButtonStyle.Outlined} square onClick={() => navigate("/settings")}>
-						<SVG name="settings"/>
-					</Button>
-			}
+		{
+			props.boardId !== undefined &&
+				<Button buttonStyle={ButtonStyle.Outlined} square onClick={() => props.boardId !== undefined ? openTagsView({ boardId: props.boardId }) : {}}>
+					<SVG name="edit"/>
+				</Button>
+		}
+
+		{
+			location.pathname !== "/settings" &&
+				<Button buttonStyle={ButtonStyle.Outlined} square onClick={() => navigate("/settings")}>
+					<SVG name="settings"/>
+				</Button>
+		}
 
 			{props.children}
 		</div>
