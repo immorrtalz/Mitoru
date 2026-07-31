@@ -1,80 +1,117 @@
-import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import styles from './KanbanColumn.module.scss';
 
-import Button, { ButtonType } from '../Button';
-import { SVG } from '../SVG';
+import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import KanbanTask from '../KanbanTask';
-
-import BoardsContext from '../../context/BoardsContext';
+import Separator from '../Separator';
+import { SVG } from '../SVG';
 
 import useTranslations, { TranslationKey } from '../../hooks/useTranslations';
-import { Color, getNextId } from '../../misc/utils';
-import { Task } from '../../misc/boards';
+import { Column, Id, Tag, Task } from '../../hooks/useKanban';
+import useDialog from '../../hooks/useDialog';
+import useContextMenu from '../../hooks/useContextMenu';
+
+import { useBoardsContext } from '../../context/BoardsContext';
+
+import { isNewColumnTitleValid, MAX_COLUMN_TITLE_LENGTH } from '../../misc/boards';
+import { HorizontalAlign, Orientation } from '../../misc/utils';
 
 interface Props
 {
-	id: number;
+	boardId: Id;
+	column: Column;
+	tasks: Task[];
+	tags: Record<Id, Tag>;
 	className?: string;
 }
 
 export default function KanbanColumn(props: Props)
 {
-	const navigate = useNavigate();
+	const boardId = props.boardId;
+	const column = props.column;
+	const tasks = props.tasks;
+	const tags = props.tags;
+
 	const { translate } = useTranslations();
-	const { boards, setBoards, currentBoardId } = useContext(BoardsContext);
+	const { renameColumn, deleteColumn, createTask } = useBoardsContext();
+	const { openDialog, openPromptDialog } = useDialog();
+	const { openContextMenu } = useContextMenu();
 
-	const board = boards.find(board => board.id === currentBoardId)!;
-
-	useEffect(() =>
-	{
-		if (board === undefined) navigate('/');
-	}, [board, navigate]);
-
-	if (board === undefined) return null;
-
-	const column = board.columns.find(column => column.id === props.id)!;
-
-	const tasksCountLastDigit = parseInt(column.tasksIds.length.toString().slice(-1));
-	const tasksCountLast2Digits = parseInt(column.tasksIds.length.toString().slice(-2));
+	const tasksCountLastDigit = parseInt(tasks.length.toString().slice(-1));
+	const tasksCountLast2Digits = parseInt(tasks.length.toString().slice(-2));
 
 	const tasksCountTranslationKey: TranslationKey =
 		tasksCountLastDigit === 1 && tasksCountLast2Digits !== 11 ? "tasks_count_one"
 		: (tasksCountLastDigit > 0 && tasksCountLastDigit < 5) && (tasksCountLast2Digits < 11 || tasksCountLast2Digits > 14) ? "tasks_count_two_three_four"
 		: "tasks_count_multiple";
 
+	const onColumnRenameDialog = (currentTitle: string) =>
+	{
+		openPromptDialog(
+		{
+			title: translate("rename_the_column"),
+			description: `${translate("enter_a_new_column_name")}\.\n${translate("max_length_is")} ${MAX_COLUMN_TITLE_LENGTH}`,
+			confirmTitle: translate('rename'),
+			initialValue: currentTitle,
+			maxLength: MAX_COLUMN_TITLE_LENGTH,
+			validate: v => isNewColumnTitleValid(v.trim(), currentTitle),
+			onConfirm: result => renameColumn(boardId, column.id, result.trim())
+		});
+	};
+
+	const onColumnDeleteDialog = () =>
+	{
+		openDialog(
+		{
+			title: translate("delete_the_column"),
+			description: `${translate("are_you_sure_delete_the_column")} "${column.title}"?\n${translate("this_action_cannot_be_undone")}.`,
+			confirmTitle: translate('delete'),
+			confirmButtonVariant: ButtonVariant.Negative,
+			onConfirm: () => deleteColumn(boardId, column.id)
+		});
+	};
+
 	const createNewTask = () =>
 	{
-		const newId = getNextId(board.tasks.map(task => task.id));
+		const taskNumber = tasks.length + 1;
+		createTask(boardId, column.id, `${translate("task")} ${taskNumber}`);
+	};
 
-		const newTask: Task =
+	const onColumnContextMenu = (triggerButtonRect: DOMRect) =>
+	{
+		openContextMenu(
 		{
-			id: newId,
-			title: `${translate("task")} ${newId}`,
-			color: { h: 0, s: 0, b: 0, a: 0 } as Color,
-			isCompleted: false,
-			tagsIds: [],
-			text: "",
-			checklistsIds: []
-		};
+			children: <>
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					onClick={createNewTask}>
+					<SVG name="plus"/>
+					{translate("create_a_new_task")}
+				</Button>
 
-		setBoards(boards.map(item =>
-		{
-			if (item.id !== board.id) return item;
+				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-			return {
-				...item,
-				columns: item.columns.map(column =>
-				{
-					if (column.id !== props.id) return column;
-					return {
-						...column,
-						tasksIds: [...column.tasksIds, newId]
-					};
-				}),
-				tasks: [...item.tasks, newTask]
-			};
-		}));
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					onClick={() => onColumnRenameDialog(column.title)}>
+					<SVG name="edit"/>
+					{translate("rename")}
+				</Button>
+
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					{translate("color")}
+				</Button>
+
+				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					{translate("duplicate")}
+				</Button>
+
+				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
+
+				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
+					<SVG name="delete"/>
+					{translate("delete")}
+				</Button>
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
+		});
 	};
 
 	return (
@@ -82,16 +119,19 @@ export default function KanbanColumn(props: Props)
 			<div className={styles.columnHeader}>
 				<div className={styles.columnHeaderTexts}>
 					<h6 className={styles.columnTitleText}>{column.title}</h6>
-					<p className={styles.columnTasksCountText}>{column.tasksIds.length} {translate(tasksCountTranslationKey)}</p>
+					<p className={styles.columnTasksCountText}>{tasks.length} {translate(tasksCountTranslationKey)}</p>
 				</div>
 
-				<Button type={ButtonType.Small} square onClick={createNewTask}><SVG name='plus'/></Button>
-				<Button type={ButtonType.Small} square><SVG name='menuDots'/></Button>
+				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
 			</div>
 
-			{
-				column.tasksIds.map(taskId => (<KanbanTask key={`task-${taskId}`} id={taskId}/>))
-			}
+			{ tasks.map(task => <KanbanTask key={`task-${task.id}`} boardId={boardId} task={task} tags={tags}/>) }
+
+			<Button className={styles.addTaskButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} dimmed
+				onClick={createNewTask}>
+				<SVG name="plus"/>
+				{translate("create_a_new_task")}
+			</Button>
 		</div>
 	);
 }

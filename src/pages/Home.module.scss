@@ -9,6 +9,8 @@
 	flex-wrap: nowrap;
 	gap: 32px;
 
+	& .boardsTitle { color: var(--colored-fg-color-75); }
+
 	& .boardsContainer
 	{
 		--masked-offset: 16px;

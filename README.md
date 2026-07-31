@@ -3,31 +3,31 @@
 [![License](https://img.shields.io/badge/license-GPL%20v3-yellow?color=goldenrod)](https://github.com/immorrtalz/Mitoru/blob/main/LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/immorrtalz/Mitoru?color=orange)]()
 [![CodeFactor](https://www.codefactor.io/repository/github/immorrtalz/Mitoru/badge)](https://www.codefactor.io/repository/github/immorrtalz/Mitoru)
-[![Discord](https://img.shields.io/discord/600372807062519848?label=developer's%20discord&color=slateblue)](https://discord.gg/GbzYVdF)
 
 Simple kanban board with modern design
 
 ---
 
-Open source, designed for small teams and individuals and available in web
+Open source, designed for individuals and available in web
+
+> [!TIP]
+> The static website is availale at **[mitoru.immorrtalz.com](https://mitoru.immorrtalz.com)**, the data is stored in your `localStorage`
 
 > [!NOTE]
-> It is planned to have two methods of use:
-> 
-> 1) static website availale at **[mitoru.immorrtalz.com](https://mitoru.immorrtalz.com)**, storing data locally in localStorage
-> 2) Docker image for self-hosting available in the **[Latest release](https://github.com/immorrtalz/Mitoru/releases/latest)** **[SUBJECT TO CHANGE, NOT SURE IF THIS WILL BE DONE]**
-> 
-> In any case, there will be an ability to import/export all json data.
+> This app uses `Web Crypto API`, which requires a secure context (HTTPS or localhost).
+
+> [!NOTE]
+> This project was called "Mitoru" (from japanese みとる (見取る) "to perceive", to understand", "to observe") since kanban is a special form of representing information in a convenient, easily understandable way.
 
 ## Repository structure
-After the first somewhat working release, the structure of this repository will be:
+### Branches
 
-[`main`](https://github.com/immorrtalz/Mitoru/tree/main) – somewhat stable, not broken, no active work, pushing working versions here
+[`main`](https://github.com/immorrtalz/Mitoru/tree/main) – stable version
 
-[`dev`](https://github.com/immorrtalz/Mitoru/tree/dev) – the app might not work, active development
+[`dev`](https://github.com/immorrtalz/Mitoru/tree/dev) – development, something might not work
 
-[`prod`](https://github.com/immorrtalz/Mitoru/tree/prod) – GitHub pages deploy source, pushing stable releases here
+[`prod`](https://github.com/immorrtalz/Mitoru/tree/prod) – static website deploy source, usually the latest version from the [`main`](https://github.com/immorrtalz/Mitoru/tree/main)
 
 ---
 
-Font "Montserrat" - Copyright © 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
+Font "Google Sans" - Copyright © Google LLC (https://fonts.google.com/specimen/Google+Sans)

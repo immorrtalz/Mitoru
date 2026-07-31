@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import styles from "./NotFound.module.scss";
 
-import Button, { ButtonType } from "../components/Button";
+import Button, { ButtonStyle } from "../components/Button";
 import { TopBar } from "../components/TopBar";
 
 import useTranslations from "../hooks/useTranslations";
@@ -17,7 +17,7 @@ function NotFound()
 			<div className={styles.content}>
 				<h1>404</h1>
 				<p>{translate("not_found")}</p>
-				<Button type={ButtonType.Primary} onClick={() => navigate("/")}>{translate("go_home")}</Button>
+				<Button buttonStyle={ButtonStyle.Primary} onClick={() => navigate("/")}>{translate("go_home")}</Button>
 			</div>
 		</div>
 	);

@@ -18,83 +18,148 @@
 	flex-shrink: 0;
 	pointer-events: all;
 	font-size: var(--main-font-size);
+	font-weight: 500;
+	overflow: clip;
+	text-wrap: nowrap;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	cursor: pointer;
+
+	--fgColor: var(--main-fg-color);
+	--fgColorHover: var(--hover-main-fg-color);
+	--fgColorActive: var(--active-main-fg-color);
+
+	--bgColor: var(--main-bg-color);
+	--bgColorHover: var(--hover-main-bg-color);
+	--bgColorActive: var(--active-main-bg-color);
+
+	background: var(--bgColor);
+	color: var(--fgColor);
+	fill: var(--fgColor);
+
+	&:hover
+	{
+		background: var(--bgColorHover);
+		color: var(--fgColorHover);
+		fill: var(--fgColorHover);
+	}
+
+	&:active
+	{
+		background: var(--bgColorActive);
+		color: var(--fgColorActive);
+		fill: var(--fgColorActive);
+	}
+
+	& > .text
+	{
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		pointer-events: none;
+		color: inherit;
+		font-size: inherit;
+		font-weight: inherit;
+		text-wrap: inherit;
+		text-overflow: inherit;
+		white-space: inherit;
+		overflow: inherit;
+	}
 
 	& > svg
 	{
 		width: 32px;
 		height: 32px;
+		fill: inherit;
 	}
 
 	&.primary
 	{
-		background: var(--accent);
-		color: var(--black-75);
-		fill: var(--black-75);
+		--baseColor: var(--accent);
+
+		--fgColor: var(--black-75);
+		--fgColorHover: var(--black-85);
+		--fgColorActive: var(--black-65);
+
+		--bgColor: var(--baseColor);
+		--bgColorHover: color-mix(in srgb, var(--baseColor), white 15%);
+		--bgColorActive: color-mix(in srgb, var(--baseColor), black 25%);
+
 		font-weight: 600;
 
-		&:hover { background: color-mix(in srgb, var(--accent), white 15%); }
-
-		&:active
+		&.positive, &.negative
 		{
-			background: color-mix(in srgb, var(--accent), black 25%);
-			color: var(--black-65);
-			fill: var(--black-65);
+			--baseColor: var(--positive);
+
+			--fgColor: var(--main-fg-color);
+			--fgColorHover: var(--hover-main-fg-color);
+			--fgColorActive: var(--active-main-fg-color);
+
+			font-weight: 600;
 		}
+
+		&.negative { --baseColor: var(--negative); }
 	}
 
-	&.secondary
+	&.secondary, &.outlined, &.ghost
 	{
-		background: var(--main-bg-color);
-		color: var(--main-fg-color);
-		fill: var(--main-fg-color);
-		border: 1px solid var(--main-border-color);
+		--fgColor: var(--main-fg-color);
+		--fgColorHover: var(--hover-main-fg-color);
+		--fgColorActive: var(--active-main-fg-color);
 
-		&:hover
+		--bgColor: var(--main-bg-color);
+		--bgColorHover: var(--hover-main-bg-color);
+		--bgColorActive: var(--active-main-bg-color);
+
+		&.positive, &.negative
 		{
-			background: var(--hover-main-bg-color);
-			color: var(--hover-main-fg-color);
-			fill: var(--hover-main-fg-color);
-			border-color: transparent;
+			--baseColor: var(--positive);
+			--secondColor: var(--positive-light);
+
+			--fgColor: var(--secondColor);
+			--fgColorHover: var(--secondColor);
+			--fgColorActive: color-mix(in srgb, var(--secondColor) 50%, transparent);
+
+			--bgColor: color-mix(in srgb, var(--baseColor) 25%, transparent);
+			--bgColorHover: color-mix(in srgb, var(--baseColor) 50%, transparent);
+			--bgColorActive: color-mix(in srgb, var(--baseColor) 35%, transparent);
+
+			font-weight: 600;
 		}
 
-		&:active
+		&.negative
 		{
-			background: var(--active-main-bg-color);
-			color: var(--active-main-fg-color);
-			fill: var(--active-main-fg-color);
-			border-color: transparent;
+			--baseColor: var(--negative);
+			--secondColor: var(--negative-light);
 		}
 	}
+
+	&.outlined
+	{
+		--borderBaseColor: var(--main-border-color);
+		border: 1px solid var(--borderBaseColor);
+
+		&.positive, &.negative
+		{
+			--borderBaseColor: var(--positive-light);
+			border-color: color-mix(in srgb, var(--borderBaseColor) 25%, transparent);
+		}
+
+		&.negative { --borderBaseColor: var(--negative-light); }
+
+		&:hover, &:active { border-color: transparent; }
+	}
+
+	&.ghost, &.ghost.positive, &.ghost.negative { --bgColor: transparent; }
 
 	&.small
 	{
 		height: 32px;
+		padding: 8px;
 		font-size: 14px;
-		color: var(--main-fg-color);
-		fill: var(--main-fg-color);
 		border-radius: var(--smaller-border-radius);
-
-		& > svg
-		{
-			width: 32px;
-			height: 32px;
-		}
-
-		&:hover
-		{
-			background: var(--white-10);
-			color: var(--hover-main-fg-color);
-			fill: var(--hover-main-fg-color);
-		}
-
-		&:active
-		{
-			background: var(--white-5);
-			color: var(--active-main-fg-color);
-			fill: var(--active-main-fg-color);
-			border-color: transparent;
-		}
+		gap: 4px;
 	}
 
 	&.square
@@ -104,11 +169,43 @@
 		padding: 0;
 	}
 
+	&.smallSVG
+	{
+		gap: 4px;
+
+		& > svg
+		{
+			width: 24px;
+			height: 24px;
+		}
+	}
+
+	&.dimmed > * { opacity: 0.65; }
+	&.dimmedSVG > svg { opacity: 0.65; }
+
+	&.leftAligned, &.rightAligned { padding: 0 8px; }
+
+	&.leftAligned
+	{
+		justify-content: flex-start;
+		text-align: left;
+	}
+
+	&.centerAligned
+	{
+		justify-content: center;
+		text-align: center;
+	}
+
+	&.rightAligned
+	{
+		justify-content: flex-end;
+		text-align: right;
+	}
+
 	&:disabled
 	{
-		background: var(--white-2);
-		color: var(--white-25);
-		fill: var(--white-25);
+		opacity: 0.25;
 		pointer-events: none;
 	}
 }

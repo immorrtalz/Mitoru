@@ -3,6 +3,31 @@ export const isNumber = (value: unknown): value is number => typeof value === 'n
 export const isString = (value: unknown): value is string => typeof value === 'string';
 export const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
 
+export type CSSPropertiesWithVars = React.CSSProperties &
+{
+	[key: `--${string}`]: string | number;
+};
+
+export enum Orientation
+{
+	Horizontal,
+	Vertical
+}
+
+export enum HorizontalAlign
+{
+	Left,
+	Center,
+	Right
+}
+
+export enum VerticalAlign
+{
+	Top,
+	Center,
+	Bottom
+}
+
 export interface Color
 {
 	h: number;

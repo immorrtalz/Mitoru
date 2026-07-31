@@ -1,47 +1,85 @@
-/* @font-face
+@font-face
 {
-	font-family: Montserrat;
+	font-family: "Google Sans";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./assets/fonts/GoogleSans-Regular.woff2') format('woff2');
+}
+
+@font-face
+{
+	font-family: "Google Sans";
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./assets/fonts/GoogleSans-RegularItalic.woff2') format('woff2');
+}
+
+@font-face
+{
+	font-family: "Google Sans";
 	font-style: normal;
 	font-weight: 500;
 	font-display: swap;
-	src: url('./assets/Montserrat-Medium-Cyrillic.woff2') format('woff2');
-	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+	src: url('./assets/fonts/GoogleSans-Medium.woff2') format('woff2');
 }
 
 @font-face
 {
-	font-family: Montserrat;
-	font-style: normal;
+	font-family: "Google Sans";
+	font-style: italic;
 	font-weight: 500;
 	font-display: swap;
-	src: url('./assets/Montserrat-Medium-Latin.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	src: url('./assets/fonts/GoogleSans-MediumItalic.woff2') format('woff2');
 }
 
 @font-face
 {
-	font-family: Montserrat;
+	font-family: "Google Sans";
 	font-style: normal;
 	font-weight: 600;
 	font-display: swap;
-	src: url('./assets/Montserrat-SemiBold-Cyrillic.woff2') format('woff2');
-	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+	src: url('./assets/fonts/GoogleSans-Semibold.woff2') format('woff2');
 }
 
 @font-face
 {
-	font-family: Montserrat;
-	font-style: normal;
+	font-family: "Google Sans";
+	font-style: italic;
 	font-weight: 600;
 	font-display: swap;
-	src: url('./assets/Montserrat-SemiBold-Latin.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-} */
+	src: url('./assets/fonts/GoogleSans-SemiboldItalic.woff2') format('woff2');
+}
+
+@font-face
+{
+	font-family: "Google Sans";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./assets/fonts/GoogleSans-Bold.woff2') format('woff2');
+}
+
+@font-face
+{
+	font-family: "Google Sans";
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./assets/fonts/GoogleSans-BoldItalic.woff2') format('woff2');
+}
 
 :root
 {
-	--accent: #F26549;
-	--dark: #101012;
+	--accent: #D966FF;
+	--dark: #0A0A0B;
+
+	--positive: #20B020;
+	--positive-light: #69E669;
+
+	--negative: #CC2626;
+	--negative-light: #FF6666;
 
 	--white-0: hsl(from white h s l / 0);
 	--white-2: hsl(from white h s l / 0.02);
@@ -97,22 +135,34 @@
 	--third-fg-color: var(--white-50);
 	--fourth-fg-color: var(--white-25);
 
+	--colored-fg-color-75: color-mix(in srgb, var(--accent), white 75%);
+
 	--main-bg-color: var(--white-5);
 	--hover-main-bg-color: var(--white-15);
 	--active-main-bg-color: var(--white-5);
 
 	--second-bg-color: var(--white-2);
 
+	--blur-bg: blur(50px);
+
+	--main-box-shadow: 0 8px 32px 0 var(--black-35);
+
 	--main-border-color: var(--white-10);
 
-	--blur-bg: blur(50px);
+	--larger-border-radius: 24px;
 	--main-border-radius: 16px;
 	--smaller-border-radius: 8px;
-	--larger-border-radius: 24px;
 
+	--larger-font-size: 20px;
 	--main-font-size: 16px;
 	--smaller-font-size: 12px;
-	--larger-font-size: 20px;
+
+	--h1-font-size: calc(var(--main-font-size) + 32px);	// 48
+	--h2-font-size: calc(var(--main-font-size) + 24px);	// 40
+	--h3-font-size: calc(var(--main-font-size) + 16px);	// 32
+	--h4-font-size: calc(var(--main-font-size) + 8px);		// 24
+	--h5-font-size: calc(var(--main-font-size) + 4px);		// 20
+	--h6-font-size: var(--main-font-size);						// 16
 }
 
 *, *::before, *::after
@@ -127,9 +177,9 @@
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 
-	font-family: Montserrat;
+	font-family: "Google Sans", system-ui, -apple-system, 'Segoe UI', sans-serif;
 	font-size: var(--main-font-size);
-	font-weight: 500;
+	font-weight: 400;
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -152,22 +202,33 @@
 
 *, *::before, *::after, *:not(path):not(g) { transition: all 0.2s; }
 
-h1, h2, h3, h4, h5, h6, p, a
+h1, h2, h3, h4, h5, h6, p, a, li
 {
 	width: fit-content;
 	height: fit-content;
-	white-space: pre;
-	line-height: 100%;
+	white-space: pre-wrap;
+	text-wrap: pretty;
+	color: var(--main-fg-color);
+	user-select: text;
+	pointer-events: all;
 }
+
+ul
+{
+	list-style-type: "− ";
+	list-style-position: inside;
+}
+
+svg { fill: var(--main-fg-color); }
 
 h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 
-h1 { font-size: calc(var(--main-font-size) + 32px); }	// 48
-h2 { font-size: calc(var(--main-font-size) + 24px); }	// 40
-h3 { font-size: calc(var(--main-font-size) + 16px); }	// 32
-h4 { font-size: calc(var(--main-font-size) + 8px); }	// 24
-h5 { font-size: calc(var(--main-font-size) + 4px); }	// 20
-h6 { font-size: var(--main-font-size); }					// 16
+h1 { font-size: calc(var(--h1-font-size)); }
+h2 { font-size: calc(var(--h2-font-size)); }
+h3 { font-size: calc(var(--h3-font-size)); }
+h4 { font-size: calc(var(--h4-font-size)); }
+h5 { font-size: calc(var(--h5-font-size)); }
+h6 { font-size: calc(var(--h6-font-size)); }
 
 html
 {
@@ -181,6 +242,19 @@ body
 	width: 100%;
 	height: 100%;
 	background: linear-gradient(to bottom, color-mix(in srgb, var(--dark), white 3%), var(--dark));
+
+	&::before
+	{
+		content: "";
+		pointer-events: none;
+		opacity: 0.04;
+		z-index: 9999;
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='subtleNoiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23subtleNoiseFilter)'/%3E%3C/svg%3E");
+		background-repeat: repeat;
+		background-size: 256px 256px;
+		position: fixed;
+		inset: 0;
+	}
 }
 
 #root

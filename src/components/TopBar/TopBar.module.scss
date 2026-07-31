@@ -10,8 +10,8 @@
 	flex-wrap: nowrap;
 	flex-shrink: 0;
 	background: var(--main-bg-color);
-	backdrop-filter: var(--blur-bg);
 	border-bottom: 1px solid var(--main-border-color);
+	pointer-events: all;
 
 	& .leftContainer
 	{
@@ -19,7 +19,7 @@
 		flex-direction: row;
 		align-items: center;
 		flex-wrap: nowrap;
-		gap: 8px;
+		gap: 24px;
 
 		& .logoContainer
 		{
@@ -31,7 +31,42 @@
 			pointer-events: all;
 			cursor: pointer;
 
-			& .appName { color: color-mix(in srgb, var(--accent) 25%, white 75%); }
+			& .logoTextsContainer
+			{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				flex-wrap: nowrap;
+
+				& .appName
+				{
+					height: 32px;
+					color: var(--colored-fg-color-75);
+					font-size: 28px;
+					text-wrap: nowrap;
+					user-select: none;
+					-webkit-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+				}
+
+				& .subText
+				{
+					height: 16px;
+					background: var(--accent);
+					padding: 0 6px;
+					border-radius: var(--smaller-border-radius);
+					color: var(--black-75);
+					font-size: var(--smaller-font-size);
+					font-weight: 600;
+					letter-spacing: 0.25px;
+					text-wrap: nowrap;
+					user-select: none;
+					-webkit-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+				}
+			}
 		}
 	}
 }

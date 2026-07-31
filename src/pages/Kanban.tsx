@@ -1,73 +1,61 @@
-import { useContext, useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import styles from "./Kanban.module.scss";
 
 import { SVG } from "../components/SVG";
-import Button, { ButtonType } from "../components/Button";
+import Button, { ButtonStyle } from "../components/Button";
 import { TopBar } from "../components/TopBar";
 import KanbanColumn from "../components/KanbanColumn";
 
 import useTranslations from "../hooks/useTranslations";
-import { Color, getNextId } from "../misc/utils";
-import { Column } from "../misc/boards";
+import useBoardFromRoute from "../hooks/useBoardFromRoute";
 
-import BoardsContext from "../context/BoardsContext";
+import { useBoardsContext } from "../context/BoardsContext";
+import TagsViewWindow from "../components/TagsViewWindow";
 
 function Kanban()
 {
 	const navigate = useNavigate();
-	const { boards, setBoards } = useContext(BoardsContext);
+	const { createColumn } = useBoardsContext();
 	const { translate } = useTranslations();
-
-	const params = useParams();
-	const boardId = params.boardId === undefined ? NaN : Number.parseInt(params.boardId, 10);
-	const board = Number.isFinite(boardId) ? boards.find(item => item.id === boardId) : undefined;
+	const { boardId, board } = useBoardFromRoute();
 
 	useEffect(() =>
 	{
 		if (board === undefined) navigate('/');
 	}, [board, navigate]);
 
-	if (board === undefined) return null;
+	if (board === undefined || boardId === undefined) return null;
 
 	const boardName = board.title;
 
 	const createNewColumn = () =>
 	{
-		const newId = getNextId(board.columns.map(column => column.id));
-
-		const newColumn: Column =
-		{
-			id: newId,
-			title: `${translate("column")} ${newId}`,
-			color: { h: 0, s: 0, b: 0, a: 0 } as Color,
-			tasksIds: []
-		};
-
-		setBoards(boards.map(item =>
-		{
-			if (item.id !== boardId) return item;
-
-			return {
-				...item,
-				columns: [...item.columns, newColumn]
-			};
-		}));
+		const columnNumber = board.columnsOrder.length + 1;
+		createColumn(boardId, `${translate("column")} ${columnNumber}`);
 	};
 
 	return (
 		<div className='mainContainer'>
-			<TopBar pageName={boardName}></TopBar>
+			<TopBar pageName={boardName} boardId={boardId}/>
 
 			<div className={styles.kanbanPageContainer}>
+			{
+				board.columnsOrder.map(columnId =>
 				{
-					board?.columns.map(column => (<KanbanColumn key={`column-${column.id}`} id={column.id}/>))
-				}
-				<Button type={ButtonType.Secondary} onClick={createNewColumn}>
-					<>
-						<SVG name='plus'/>
-						{translate('create_new_column')}
-					</>
+					const column = board.columns[columnId];
+					if (!column) return null;
+
+					const taskIds = board.tasksOrderInColumn[columnId] ?? [];
+					const tasks = taskIds.map(id => board.tasks[id]).filter(Boolean);
+
+					return <KanbanColumn key={`column-${column.id}`} boardId={board.id} column={column} tasks={tasks} tags={board.tags}/>;
+				})
+			}
+
+				<Button buttonStyle={ButtonStyle.Outlined} dimmed onClick={createNewColumn}>
+					<SVG name='plus'/>
+					{translate('create_a_new_column')}
 				</Button>
 			</div>
 		</div>

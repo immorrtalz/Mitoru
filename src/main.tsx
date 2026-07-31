@@ -4,22 +4,31 @@ import './global.scss';
 import App from "./App";
 
 import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
-import useBoardsLoader from "./hooks/Loaders/useBoardsLoader";
+import useBoardsPersistence from "./hooks/useBoardsPersistence";
+import useKanban, { KanbanState } from "./hooks/useKanban";
+import useGistAPI from "./hooks/useGistAPI";
 
 import { initialSettings, Settings } from "./misc/settings";
-import { Board } from "./misc/boards";
+import { loadBoardsFromLocalStorage } from "./misc/boards";
 
 import SettingsContext from "./context/SettingsContext";
 import BoardsContext from "./context/BoardsContext";
+import GistAPIContext from "./context/GistAPIContext";
+import { DialogProvider } from "./context/DialogContext";
+import { ContextMenuProvider } from "./context/ContextMenuContext";
+import { TaskViewProvider } from "./context/TaskViewContext";
+import { TagsViewProvider } from "./context/TagsViewContext";
 
 export function AppRoot()
 {
 	const [settings, internal_setSettings] = useState<Settings>(initialSettings);
 	const { saveSettingsToFile } = useSettingsLoader();
 
-	const [boards, internal_setBoards] = useState<Board[]>([]);
-	const [currentBoardId, setCurrentBoardId] = useState(NaN);
-	const { saveBoardsToLocalStorage } = useBoardsLoader();
+	const [initialBoardsState] = useState<KanbanState>(loadBoardsFromLocalStorage);
+	const kanban = useKanban(initialBoardsState);
+	const gistAPI = useGistAPI(kanban.state, kanban.loadState);
+
+	useBoardsPersistence(kanban.state);
 
 	const setSettings = (newSettings: Settings) =>
 	{
@@ -27,18 +36,22 @@ export function AppRoot()
 		saveSettingsToFile(newSettings);
 	};
 
-	const setBoards = (newBoards: Board[]) =>
-	{
-		internal_setBoards(newBoards);
-		saveBoardsToLocalStorage(newBoards);
-	};
-
 	return (
 		<React.StrictMode>
 			<SettingsContext.Provider value={{ settings, setSettings }}>
-				<BoardsContext.Provider value={{ boards, setBoards, currentBoardId, setCurrentBoardId }}>
-					<App/>
-				</BoardsContext.Provider>
+				<DialogProvider>
+					<ContextMenuProvider>
+						<BoardsContext.Provider value={kanban}>
+							<TagsViewProvider>
+								<TaskViewProvider>
+									<GistAPIContext.Provider value={gistAPI}>
+										<App/>
+									</GistAPIContext.Provider>
+								</TaskViewProvider>
+							</TagsViewProvider>
+						</BoardsContext.Provider>
+					</ContextMenuProvider>
+				</DialogProvider>
 			</SettingsContext.Provider>
 		</React.StrictMode>);
 }

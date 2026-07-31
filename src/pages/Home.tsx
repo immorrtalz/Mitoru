@@ -1,63 +1,54 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router";
 import styles from "./Home.module.scss";
 
-import { SVG } from "../components/SVG";
-import Button, { ButtonType } from "../components/Button";
+import Button, { ButtonVariant, ButtonStyle } from "../components/Button";
 import { TopBar } from "../components/TopBar";
 import BoardItem from "../components/BoardItem";
 
 import useTranslations from "../hooks/useTranslations";
-import { getNextId } from "../misc/utils";
-import { Board } from "../misc/boards";
 
-import BoardsContext from "../context/BoardsContext";
+import { useBoardsContext } from "../context/BoardsContext";
+import { Id } from "../hooks/useKanban";
 
 function Home()
 {
 	const navigate = useNavigate();
-	const { boards, setBoards, setCurrentBoardId } = useContext(BoardsContext);
+	const { state, createBoard } = useBoardsContext();
 	const { translate } = useTranslations();
-
+	
 	const createNewBoard = () =>
 	{
-		const newId = getNextId(boards.map(board => board.id));
-
-		const newBoard: Board =
-		{
-			id: newId,
-			title: `${translate("board")} ${newId}`,
-			tags: [],
-			columns: [],
-			tasks: []
-		};
-
-		setBoards([...boards, newBoard]);
+		const boardNumber = state.boardsOrder.length + 1;
+		createBoard(`${translate("board")} ${boardNumber}`);
 	};
 
-	const onBoardOpen = (id: number) =>
+	const onBoardOpen = (id: Id) =>
 	{
-		setCurrentBoardId(id);
 		navigate(`/kanban/${id}`);
 	};
 
 	return (
 		<div className='mainContainer'>
-			<TopBar>
-				<Button type={ButtonType.Primary} onClick={createNewBoard}>{translate("create_new_board")}</Button>
-			</TopBar>
+			<TopBar/>
 
 			<div className={styles.boardsPageContainer}>
-				<h2>{translate("boards")}</h2>
+				<h2 className={styles.boardsTitle}>{translate("boards")}</h2>
 
 				<div className={styles.boardsContainer}>
 				{
-					boards.map(board => (<BoardItem key={`board-${board.id}`} title={board.title} onClick={() => onBoardOpen(board.id)}/>))
+					state.boardsOrder.map(boardId =>
+					{
+						const board = state.boards[boardId];
+						if (!board) return null;
+
+						return <BoardItem key={`board-${board.id}`} board={board} onClick={() => onBoardOpen(board.id)}/>;
+					})
 				}
 				</div>
 
-				<Button type={ButtonType.Primary} onClick={createNewBoard}>{translate("create_new_board")}</Button>
+				<Button buttonStyle={ButtonStyle.Primary} onClick={createNewBoard}>{translate("create_a_new_board")}</Button>
 			</div>
+
 		</div>
 	);
 }
