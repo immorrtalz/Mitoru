@@ -332,7 +332,14 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
-					task.tagsIds.includes(tagId) ? task : { ...task, tagsIds: [...task.tagsIds, tagId] })));
+				{
+					if (task.tagsIds.includes(tagId)) return task;
+
+					const tagsOrder = Object.keys(board.tags);
+					const tagsIds = [...task.tagsIds, tagId].sort((a, b) => tagsOrder.indexOf(a) - tagsOrder.indexOf(b));
+
+					return { ...task, tagsIds };
+				})));
 	};
 
 	const removeTagFromTask = (boardId: Id, taskId: Id, tagId: Id) =>

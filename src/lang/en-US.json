@@ -52,6 +52,8 @@
 	"boards": "Boards",
 	"column": "Column",
 	"task": "Task",
+	"tag": "Tag",
+	"tags": "Tags",
 	"tasks_count_one": "task",
 	"tasks_count_two_three_four": "tasks",
 	"tasks_count_multiple": "tasks",

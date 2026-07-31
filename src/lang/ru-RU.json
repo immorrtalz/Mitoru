@@ -52,6 +52,8 @@
 	"boards": "Доски",
 	"column": "Колонка",
 	"task": "Задача",
+	"tag": "Тег",
+	"tags": "Теги",
 	"tasks_count_one": "задача",
 	"tasks_count_two_three_four": "задачи",
 	"tasks_count_multiple": "задач",

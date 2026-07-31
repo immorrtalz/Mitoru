@@ -71,7 +71,7 @@ export default function TaskViewWindow(props: Props)
 							else setTitleResetToken(t => t + 1);
 						}}/>
 
-					<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => props.onTaskContextMenu(e.currentTarget.getBoundingClientRect(), ['color', 'duplicate', 'delete'])}>
+					<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => props.onTaskContextMenu(e.currentTarget.getBoundingClientRect(), ['color', 'duplicate', 'tags', 'delete'])}>
 						<SVG name='menuDots'/>
 					</Button>
 				</div>

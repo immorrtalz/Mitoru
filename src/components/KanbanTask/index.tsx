@@ -29,17 +29,19 @@ interface Props
 
 export default function KanbanTask(props: Props)
 {
+	const { translate } = useTranslations();
+	const { state, toggleTaskCompleted, renameTask, deleteTask, createTagToTask, removeTagFromTask } = useBoardsContext();
+	const { openDialog, openPromptDialog } = useDialog();
+	const { openContextMenu } = useContextMenu();
+	const { openTaskView } = useTaskView();
+
 	const boardId = props.boardId;
 	const task = props.task;
 	const tags = props.tags;
 	const taskTags = task.tagsIds.map(id => props.tags[id]).filter(Boolean);
-	let closeTaskViewWindowHandle: TaskViewHandle | null = null;
+	const boardTags = state.boards[boardId]?.tags ?? {};
 
-	const { translate } = useTranslations();
-	const { toggleTaskCompleted, renameTask, deleteTask } = useBoardsContext();
-	const { openDialog, openPromptDialog } = useDialog();
-	const { openContextMenu } = useContextMenu();
-	const { openTaskView } = useTaskView();
+	let closeTaskViewWindowHandle: TaskViewHandle | null = null;
 
 	const onClick = (e: React.MouseEvent<HTMLElement>) =>
 	{
@@ -77,7 +79,7 @@ export default function KanbanTask(props: Props)
 		});
 	};
 
-	const onTaskContextMenu = (triggerButtonRect: DOMRect, options: ('rename' | 'color' | 'duplicate' | 'delete')[] = ['rename', 'color', 'duplicate', 'delete']) =>
+	const onTaskContextMenu = (triggerButtonRect: DOMRect, options: ('rename' | 'color' | 'duplicate' | 'tags' | 'delete')[] = ['rename', 'color', 'duplicate', 'tags', 'delete']) =>
 	{
 		openContextMenu(
 		{
@@ -103,6 +105,17 @@ export default function KanbanTask(props: Props)
 					</Button>
 			}
 			{
+				(options.includes('tags') && options.length > 1) &&
+					<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
+			}
+			{
+				options.includes('tags') &&
+					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => onTaskTagsContextMenu(triggerButtonRect)}>
+						{translate("tags")}
+					</Button>
+			}
+			{
 				(options.includes('delete') && options.length > 1) &&
 					<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 			}
@@ -112,6 +125,25 @@ export default function KanbanTask(props: Props)
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
+			}
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
+		});
+	};
+
+	const onTaskTagsContextMenu = (triggerButtonRect: DOMRect) =>
+	{
+		// ADD COLORS OF TAGS
+		openContextMenu(
+		{
+			children: <>
+			{
+				Object.values(boardTags).map(tag =>
+					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => task.tagsIds.includes(tag.id) ? removeTagFromTask(boardId, task.id, tag.id) : createTagToTask(boardId, task.id, tag.id)}>
+						<SVG name={task.tagsIds.includes(tag.id) ? 'checkmark' : 'empty'}/>
+						{tag.title}
+					</Button>)
 			}
 			</>,
 			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }

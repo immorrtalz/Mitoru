@@ -31,6 +31,8 @@
 	transform: translate(-50%, -50%);
 	width: min(768px, 90%);
 	height: fit-content;
+	max-height: 80vh;
+	overflow: hidden auto;
 	padding: 16px;
 	border-radius: var(--larger-border-radius);
 	display: flex;
@@ -62,7 +64,6 @@
 			height: fit-content;
 			flex-grow: 1;
 			text-wrap: pretty;
-			overflow: hidden;
 			font-size: calc(var(--h4-font-size));
 			font-weight: 700;
 			margin-top: -8px;

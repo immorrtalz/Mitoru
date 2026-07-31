@@ -30,8 +30,5 @@
 		opacity: 0;
 	}
 
-	&:hover
-	{
-		& .deleteButton { opacity: 1; }
-	}
+	&:hover .deleteButton { opacity: 1; }
 }

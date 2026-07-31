@@ -19,7 +19,7 @@
 	pointer-events: all;
 	font-size: var(--main-font-size);
 	font-weight: 500;
-	overflow: hidden;
+	overflow: clip;
 	text-wrap: nowrap;
 	text-overflow: ellipsis;
 	white-space: nowrap;

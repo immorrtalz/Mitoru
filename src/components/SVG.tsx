@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export const names = ['logo', 'menuLines', 'menuDots', 'search', 'chevronLeft', 'chevronRight', 'chevronUp', 'chevronDown', 'reset',
+export const names = ['empty', 'logo', 'menuLines', 'menuDots', 'search', 'chevronLeft', 'chevronRight', 'chevronUp', 'chevronDown', 'reset',
 	'update', 'drag', 'settings', 'plus', 'cross', 'delete', 'edit', 'checkmark'] as const;
 
 interface Props
@@ -20,6 +20,7 @@ export function SVG(props: Props)
 {
 	const ParamsMap: Record<string, SvgParams> =
 	{
+		'empty': { width: '32', height: '32', viewBox: '0 0 32 32' },
 		'logo': { width: '32', height: '32', viewBox: '0 0 32 32' },
 		'menuLines': { width: '32', height: '32', viewBox: '0 0 32 32' },
 		'menuDots': { width: '32', height: '32', viewBox: '0 0 32 32' },
@@ -41,6 +42,7 @@ export function SVG(props: Props)
 
 	const PathsMap: Record<string, ReactElement> =
 	{
+		'empty': <></>,
 		'logo':
 			<>
 				<path d="M0 6.82667C0 3.0564 3.0564 0 6.82667 0H25.1733C28.9436 0 32 3.0564 32 6.82667V25.1733C32 28.9436 28.9436 32 25.1733 32H6.82667C3.0564 32 0 28.9436 0 25.1733V6.82667Z" fill="var(--accent)"/>
