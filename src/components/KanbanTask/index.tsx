@@ -138,12 +138,15 @@ export default function KanbanTask(props: Props)
 		{
 			children: <>
 			{
-				Object.values(boardTags).map(tag =>
+				Object.keys(boardTags).length > 0 ? Object.values(boardTags).map(tag =>
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 						onClick={() => task.tagsIds.includes(tag.id) ? removeTagFromTask(boardId, task.id, tag.id) : createTagToTask(boardId, task.id, tag.id)}>
 						<SVG name={task.tagsIds.includes(tag.id) ? 'checkmark' : 'empty'}/>
 						{tag.title}
 					</Button>)
+					: <Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG disabled>
+						{translate("no_tags_on_this_board")}
+					</Button>
 			}
 			</>,
 			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
