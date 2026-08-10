@@ -1,7 +1,7 @@
 {
 	"name": "mitoru",
 	"private": true,
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -10,6 +10,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@dnd-kit/helpers": "^0.5.0",
+		"@dnd-kit/react": "^0.5.0",
 		"@octokit/core": "^7.0.6",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",

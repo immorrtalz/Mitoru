@@ -107,3 +107,9 @@ export const getNextId = (existingIds: number[]): number =>
 
 	return newId;
 }
+
+export const DND_TRANSITION =
+{
+	duration: 200,
+	easing: 'cubic-bezier(0.66, 0, 0.34, 1)'
+};

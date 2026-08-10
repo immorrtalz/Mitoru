@@ -44,6 +44,7 @@
 		text-wrap: nowrap;
 		white-space: nowrap;
 		overflow: hidden;
+		user-select: none;
 	}
 
 	& > button
@@ -51,4 +52,6 @@
 		&:not(:hover):not(:active):not(:disabled) { fill: var(--white-50) !important; }
 		flex-shrink: 0;
 	}
+
+	&.dragging { backdrop-filter: var(--blur-bg); }
 }

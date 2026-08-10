@@ -125,7 +125,7 @@ const boardWithTask = (board: Board, taskId: Id, fn: (task: Task) => Task): Boar
 const taskWithChecklist = (task: Task, checklistId: Id, fn: (checklist: Checklist) => Checklist): Task =>
 {
 	const checklist = task.checklists[checklistId];
-	return checklist ? { ...task, checklists: { ...task.checklists, [checklistId]: fn(checklist) }, } : task;
+	return checklist ? { ...task, checklists: { ...task.checklists, [checklistId]: fn(checklist) }} : task;
 };
 
 const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [] };
@@ -140,7 +140,6 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 
 	// Boards
 	const createBoard = (title: string) =>
-	{
 		setState(prev =>
 		{
 			const board = makeBoard(title);
@@ -148,28 +147,23 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 
 			return { boards, boardsOrder: [board.id, ...prev.boardsOrder] };
 		});
-	};
 
 	const renameBoard = (boardId: Id, title: string) =>
 		setState(prev => stateWithBoard(prev, boardId, b => ({ ...b, title })));
 
 	const deleteBoard = (boardId: Id) =>
-	{
 		setState(prev =>
 		{
 			const boards = { ...prev.boards };
 			delete boards[boardId];
-
 			return { boards, boardsOrder: removeIdFromArray(prev.boardsOrder, boardId) };
 		});
-	};
 
 	const reorderBoards = (boardId: Id, toIndex: number) =>
 		setState(prev => ({ ...prev, boardsOrder: moveIdInArray(prev.boardsOrder, boardId, toIndex)}));
 
 	// Columns
 	const createColumn = (boardId: Id, title: string, color?: Color) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 			{
@@ -179,27 +173,21 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 					...board,
 					columns: { ...board.columns, [column.id]: column },
 					columnsOrder: [...board.columnsOrder, column.id],
-					tasksOrderInColumn: { ...board.tasksOrderInColumn, [column.id]: [] },
+					tasksOrderInColumn: { ...board.tasksOrderInColumn, [column.id]: [] }
 				};
 			}));
-	};
 
 	const renameColumn = (boardId: Id, columnId: Id, title: string) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				({ ...board, columns: { ...board.columns, [columnId]: { ...board.columns[columnId], title } } })));
-	};
 
 	const setColumnColor = (boardId: Id, columnId: Id, color: Color) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				({ ...board, columns: { ...board.columns, [columnId]: { ...board.columns[columnId], color } } })));
-	};
 
 	const deleteColumn = (boardId: Id, columnId: Id) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 			{
@@ -218,21 +206,17 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 					columns,
 					tasks,
 					tasksOrderInColumn,
-					columnsOrder: removeIdFromArray(board.columnsOrder, columnId),
+					columnsOrder: removeIdFromArray(board.columnsOrder, columnId)
 				};
 			}));
-	};
 
 	const reorderColumns = (boardId: Id, columnId: Id, toIndex: number) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				({ ...board, columnsOrder: moveIdInArray(board.columnsOrder, columnId, toIndex) })));
-	};
 
 	// Tasks
 	const createTask = (boardId: Id, columnId: Id, title: string, color?: Color) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 			{
@@ -242,51 +226,36 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 				return {
 					...board,
 					tasks: { ...board.tasks, [task.id]: task },
-					tasksOrderInColumn:
-					{
-						...board.tasksOrderInColumn,
-						[columnId]: [...columnTasksOrder, task.id],
-					},
+					tasksOrderInColumn: { ...board.tasksOrderInColumn, [columnId]: [...columnTasksOrder, task.id] }
 				};
 			}));
-	};
 
 	const renameTask = (boardId: Id, taskId: Id, title: string) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task => ({ ...task, title }))));
-	};
 
 	const setTaskColor = (boardId: Id, taskId: Id, color: Color) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task => ({ ...task, color }))));
-	};
 
 	const setTaskText = (boardId: Id, taskId: Id, text: string) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task => ({ ...task, text }))));
-	};
 
 	const toggleTaskCompleted = (boardId: Id, taskId: Id) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task => ({ ...task, isCompleted: !task.isCompleted }))));
-	};
 
 	const deleteTask = (boardId: Id, taskId: Id) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 			{
 				const tasks = { ...board.tasks };
 				delete tasks[taskId];
-
 				const columnId = board.columnsOrder.find(columnId => board.tasksOrderInColumn[columnId]?.includes(taskId));
 
 				const tasksOrderInColumn = columnId ?
@@ -298,90 +267,58 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 
 				return { ...board, tasks, tasksOrderInColumn };
 			}));
-	};
 
-	const moveTask = (boardId: Id, taskId: Id, toColumnId: Id, toIndex: number) =>
-	{
+	const setTasksOrderInColumn = (boardId: Id, updater: (prev: Record<Id, Id[]>) => Record<Id, Id[]>) =>
 		setState(prev =>
-			stateWithBoard(prev, boardId, board =>
-			{
-				const tasksOrderInColumn = { ...board.tasksOrderInColumn };
-
-				for (const columnId of Object.keys(tasksOrderInColumn))
-					if (tasksOrderInColumn[columnId].includes(taskId))
-						tasksOrderInColumn[columnId] = removeIdFromArray(tasksOrderInColumn[columnId], taskId);
-
-				const target = tasksOrderInColumn[toColumnId];
-				const index = Math.max(0, Math.min(toIndex, target.length));
-
-				tasksOrderInColumn[toColumnId] = [...target.slice(0, index), taskId, ...target.slice(index)];
-
-				return { ...board, tasksOrderInColumn };
-			}));
-	};
+			stateWithBoard(prev, boardId, board => ({ ...board, tasksOrderInColumn: updater(board.tasksOrderInColumn) })));
 
 	const setTaskTags = (boardId: Id, taskId: Id, tagsIds: Id[]) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task => ({ ...task, tagsIds }))));
-	};
 
 	const createTagToTask = (boardId: Id, taskId: Id, tagId: Id) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
-				{
-					if (task.tagsIds.includes(tagId)) return task;
-
-					const tagsOrder = Object.keys(board.tags);
-					const tagsIds = [...task.tagsIds, tagId].sort((a, b) => tagsOrder.indexOf(a) - tagsOrder.indexOf(b));
-
-					return { ...task, tagsIds };
-				})));
-	};
+					task.tagsIds.includes(tagId) ? task : { ...task, tagsIds: [...task.tagsIds, tagId] })));
 
 	const removeTagFromTask = (boardId: Id, taskId: Id, tagId: Id) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task => ({ ...task, tagsIds: removeIdFromArray(task.tagsIds, tagId) }))));
-	};
+
+	const reorderTaskTags = (boardId: Id, taskId: Id, tagId: Id, toIndex: number) =>
+		setState(prev =>
+			stateWithBoard(prev, boardId, board =>
+				boardWithTask(board, taskId, ({ tagsIds, ...task }) =>
+					({ ...task, tagsIds: moveIdInArray(tagsIds, tagId, toIndex) }))));
 
 	// Tags
 	const createTag = (boardId: Id, title: string, color?: Color) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 			{
 				const tag = makeTag(title, color);
-				return { ...board, tags: { ...board.tags, [tag.id]: tag } };
+				return { ...board, tags: { ...board.tags, [tag.id]: tag }};
 			}));
-	};
 
 	const renameTag = (boardId: Id, tagId: Id, title: string) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
-				({ ...board, tags: { ...board.tags, [tagId]: { ...board.tags[tagId], title } } })));
-	};
+				({ ...board, tags: { ...board.tags, [tagId]: { ...board.tags[tagId], title }}})));
 
 	const setTagColor = (boardId: Id, tagId: Id, color: Color) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
-				({ ...board, tags: { ...board.tags, [tagId]: { ...board.tags[tagId], color } } })));
-	};
+				({ ...board, tags: { ...board.tags, [tagId]: { ...board.tags[tagId], color }}})));
 
 	const deleteTag = (boardId: Id, tagId: Id) =>
-	{
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 			{
 				const tags = { ...board.tags };
 				delete tags[tagId];
-
 				const tasks = { ...board.tasks };
 
 				for (const taskId of Object.keys(tasks))
@@ -394,11 +331,14 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 
 				return { ...board, tags, tasks };
 			}));
-	};
+
+	const reorderTags = (boardId: Id, tagId: Id, toIndex: number) =>
+		setState(prev =>
+			stateWithBoard(prev, boardId, ({ tags, ...board }) =>
+				({ ...board, tags: Object.fromEntries(moveIdInArray(Object.keys(tags), tagId, toIndex).map(id => [id, tags[id]]))})));
 
 	// Checklists
-	function createChecklist(boardId: Id, taskId: Id, title: string)
-	{
+	const createChecklist = (boardId: Id, taskId: Id, title: string) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
@@ -411,32 +351,31 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 						checklistsOrder: [...task.checklistsOrder, checklist.id],
 					};
 				})));
-	}
 
-	function renameChecklist(boardId: Id, taskId: Id, checklistId: Id, title: string)
-	{
+	const renameChecklist = (boardId: Id, taskId: Id, checklistId: Id, title: string) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
 					taskWithChecklist(task, checklistId, c => ({ ...c, title })))));
-	}
 
-	function deleteChecklist(boardId: Id, taskId: Id, checklistId: Id)
-	{
+	const deleteChecklist = (boardId: Id, taskId: Id, checklistId: Id) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
 				{
 					const checklists = { ...task.checklists };
 					delete checklists[checklistId];
-
 					return { ...task, checklists, checklistsOrder: removeIdFromArray(task.checklistsOrder, checklistId) };
 				})));
-	}
+
+	const reorderChecklists = (boardId: Id, taskId: Id, checklistId: Id, toIndex: number) =>
+		setState(prev =>
+			stateWithBoard(prev, boardId, board =>
+				boardWithTask(board, taskId, task =>
+					({ ...task, checklistsOrder: moveIdInArray(task.checklistsOrder, checklistId, toIndex) }))));
 
 	// Checklist items
-	function createChecklistItem(boardId: Id, taskId: Id, checklistId: Id, title: string)
-	{
+	const createChecklistItem = (boardId: Id, taskId: Id, checklistId: Id, title: string) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
@@ -450,39 +389,29 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 							itemsOrder: [...checklist.itemsOrder, item.id],
 						};
 					}))));
-	}
 
-	function renameChecklistItem(boardId: Id, taskId: Id, checklistId: Id, itemId: Id, title: string)
-	{
+	const renameChecklistItem = (boardId: Id, taskId: Id, checklistId: Id, itemId: Id, title: string) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
 					taskWithChecklist(task, checklistId, checklist =>
-						({ ...checklist, items: { ...checklist.items, [itemId]: { ...checklist.items[itemId], title } } })))));
-	}
+						({ ...checklist, items: { ...checklist.items, [itemId]: { ...checklist.items[itemId], title }}})))));
 
-	function toggleChecklistItem(boardId: Id, taskId: Id, checklistId: Id, itemId: Id)
-	{
+	const toggleChecklistItem = (boardId: Id, taskId: Id, checklistId: Id, itemId: Id) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
-					taskWithChecklist(task, checklistId, checklist => (
-					{
-						...checklist,
-						items:
-						{
-							...checklist.items,
-							[itemId]:
+					taskWithChecklist(task, checklistId, checklist =>
+						({
+							...checklist,
+							items:
 							{
-								...checklist.items[itemId],
-								isCompleted: !checklist.items[itemId].isCompleted,
-							},
-						},
-					})))));
-	}
+								...checklist.items,
+								[itemId]: { ...checklist.items[itemId], isCompleted: !checklist.items[itemId].isCompleted }
+							}
+						})))));
 
-	function deleteChecklistItem(boardId: Id, taskId: Id, checklistId: Id, itemId: Id)
-	{
+	const deleteChecklistItem = (boardId: Id, taskId: Id, checklistId: Id, itemId: Id) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
@@ -490,22 +419,15 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 					{
 						const items = { ...checklist.items };
 						delete items[itemId];
-
 						return { ...checklist, items, itemsOrder: removeIdFromArray(checklist.itemsOrder, itemId) };
 					}))));
-	}
 
-	function reorderChecklistItems(boardId: Id, taskId: Id, checklistId: Id, itemId: Id, toIndex: number)
-	{
+	const reorderChecklistItems = (boardId: Id, taskId: Id, checklistId: Id, itemId: Id, toIndex: number) =>
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, task =>
-					taskWithChecklist(task, checklistId, checklist => (
-					{
-						...checklist,
-						itemsOrder: moveIdInArray(checklist.itemsOrder, itemId, toIndex),
-					})))));
-	}
+					taskWithChecklist(task, checklistId, checklist =>
+						({ ...checklist, itemsOrder: moveIdInArray(checklist.itemsOrder, itemId, toIndex) })))));
 
 	return {
 		state,
@@ -528,23 +450,26 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		setTaskText,
 		toggleTaskCompleted,
 		deleteTask,
-		moveTask,
+		setTasksOrderInColumn,
 		setTaskTags,
 		createTagToTask,
 		removeTagFromTask,
+		reorderTaskTags,
 		// Tags
 		createTag,
 		renameTag,
 		setTagColor,
 		deleteTag,
+		reorderTags,
 		// Checklists
 		createChecklist,
 		renameChecklist,
 		deleteChecklist,
+		reorderChecklists,
 		createChecklistItem,
 		renameChecklistItem,
 		toggleChecklistItem,
 		deleteChecklistItem,
-		reorderChecklistItems,
+		reorderChecklistItems
 	};
 }

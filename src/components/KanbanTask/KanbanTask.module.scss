@@ -85,4 +85,6 @@
 			text-align: right;
 		}
 	}
+
+	&.dragging { backdrop-filter: var(--blur-bg); }
 }

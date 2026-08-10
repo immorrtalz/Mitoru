@@ -1,4 +1,8 @@
+import { useRef } from 'react';
 import styles from './KanbanTask.module.scss';
+import { RestrictToElement, RestrictToWindow } from '@dnd-kit/dom/modifiers';
+import { DragDropProvider } from '@dnd-kit/react';
+import { useSortable, isSortable } from '@dnd-kit/react/sortable';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import Checkbox, { CheckboxType } from '../Checkbox';
@@ -15,12 +19,15 @@ import useTaskView from '../../hooks/useTaskView';
 import { useBoardsContext } from '../../context/BoardsContext';
 import { TaskViewHandle } from '../../context/TaskViewContext';
 
-import { HorizontalAlign, Orientation } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
 import { isNewTaskTitleValid, MAX_TASK_TITLE_LENGTH } from '../../misc/boards';
 
 interface Props
 {
+	container: React.RefObject<HTMLDivElement | null>;
+	sortableIndex: number;
 	boardId: Id;
+	columnId: Id;
 	task: Task;
 	tags: Record<Id, Tag>;
 	className?: string;
@@ -29,17 +36,33 @@ interface Props
 
 export default function KanbanTask(props: Props)
 {
-	const { translate } = useTranslations();
-	const { state, toggleTaskCompleted, renameTask, deleteTask, createTagToTask, removeTagFromTask } = useBoardsContext();
-	const { openDialog, openPromptDialog } = useDialog();
-	const { openContextMenu } = useContextMenu();
-	const { openTaskView } = useTaskView();
+	const { state, toggleTaskCompleted, renameTask, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags } = useBoardsContext();
 
 	const boardId = props.boardId;
 	const task = props.task;
 	const tags = props.tags;
 	const taskTags = task.tagsIds.map(id => props.tags[id]).filter(Boolean);
 	const boardTags = state.boards[boardId]?.tags ?? {};
+
+	const { translate } = useTranslations();
+	const { openDialog, openPromptDialog } = useDialog();
+	const { openContextMenu } = useContextMenu();
+	const { openTaskView } = useTaskView();
+	const { ref, isDragging } = useSortable(
+	{
+		id: task.id,
+		index: props.sortableIndex,
+		type: 'task',
+		accept: ['task'],
+		group: props.columnId,
+		modifiers: [
+			RestrictToWindow,
+			RestrictToElement.configure({ element: () => props.container.current })
+		],
+		transition: DND_TRANSITION
+	});
+
+	const tagsContainerRef = useRef<HTMLDivElement>(null);
 
 	let closeTaskViewWindowHandle: TaskViewHandle | null = null;
 
@@ -154,7 +177,7 @@ export default function KanbanTask(props: Props)
 	};
 
 	return (
-		<div className={`${styles.kanbanTask} ${props.className || ''}`} onClick={onClick}>
+		<div className={`${styles.kanbanTask} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} onClick={onClick} ref={ref}>
 			<div className={styles.taskHeader}>
 				<Checkbox type={CheckboxType.Simple} small checked={task.isCompleted}
 					onClick={e => e.stopPropagation()}
@@ -167,12 +190,23 @@ export default function KanbanTask(props: Props)
 				</Button>
 			</div>
 
-		{
-			task.tagsIds.length > 0 &&
-				<div className={styles.taskTagsContainer}>
-				{ taskTags.map(tag => <KanbanTag key={tag.id} title={tag.title}/>) }
-				</div>
-		}
+			<DragDropProvider onDragEnd={({ operation }) =>
+			{
+				const { source } = operation;
+				if (!isSortable(source)) return;
+
+				const { index, initialIndex } = source;
+				if (index === initialIndex) return;
+
+				reorderTaskTags(boardId, task.id, source.id as Id, index);
+			}}>
+			{
+				task.tagsIds.length > 0 &&
+					<div className={styles.taskTagsContainer} ref={tagsContainerRef}>
+					{ taskTags.map((tag, index) => <KanbanTag key={tag.id} container={tagsContainerRef} sortableIndex={index} tag={tag}/>) }
+					</div>
+			}
+			</DragDropProvider>
 		</div>
 	);
 }

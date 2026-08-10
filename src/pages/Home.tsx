@@ -1,7 +1,10 @@
+import { useRef } from "react";
 import { useNavigate } from "react-router";
 import styles from "./Home.module.scss";
+import { DragDropProvider } from '@dnd-kit/react';
+import { isSortable } from "@dnd-kit/react/sortable";
 
-import Button, { ButtonVariant, ButtonStyle } from "../components/Button";
+import Button, { ButtonStyle } from "../components/Button";
 import { TopBar } from "../components/TopBar";
 import BoardItem from "../components/BoardItem";
 
@@ -13,9 +16,11 @@ import { Id } from "../hooks/useKanban";
 function Home()
 {
 	const navigate = useNavigate();
-	const { state, createBoard } = useBoardsContext();
+	const { state, createBoard, reorderBoards } = useBoardsContext();
 	const { translate } = useTranslations();
-	
+
+	const boardsContainerRef = useRef<HTMLDivElement>(null);
+
 	const createNewBoard = () =>
 	{
 		const boardNumber = state.boardsOrder.length + 1;
@@ -34,17 +39,29 @@ function Home()
 			<div className={styles.boardsPageContainer}>
 				<h2 className={styles.boardsTitle}>{translate("boards")}</h2>
 
-				<div className={styles.boardsContainer}>
+				<DragDropProvider onDragEnd={({ operation }) =>
 				{
-					state.boardsOrder.map(boardId =>
-					{
-						const board = state.boards[boardId];
-						if (!board) return null;
+					const { source } = operation;
+					if (!isSortable(source)) return;
 
-						return <BoardItem key={`board-${board.id}`} board={board} onClick={() => onBoardOpen(board.id)}/>;
-					})
-				}
-				</div>
+					const { index, initialIndex } = source;
+					if (index === initialIndex) return;
+
+					reorderBoards(source.id as Id, index);
+				}}>
+					<div className={`${styles.boardsContainer} maskedVerticalScrollContainer`} ref={boardsContainerRef}>
+					{
+						state.boardsOrder.map((boardId, index) =>
+						{
+							const board = state.boards[boardId];
+							if (!board) return null;
+
+							return <BoardItem key={`board-${board.id}`} container={boardsContainerRef} sortableIndex={index}
+								board={board} onClick={() => onBoardOpen(board.id)}/>;
+						})
+					}
+					</div>
+				</DragDropProvider>
 
 				<Button buttonStyle={ButtonStyle.Primary} onClick={createNewBoard}>{translate("create_a_new_board")}</Button>
 			</div>

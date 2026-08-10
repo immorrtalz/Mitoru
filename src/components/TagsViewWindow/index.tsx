@@ -1,4 +1,7 @@
+import { useRef } from 'react';
 import styles from './TagsViewWindow.module.scss';
+import { DragDropProvider } from '@dnd-kit/react';
+import { isSortable } from '@dnd-kit/react/sortable';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import KanbanTag from '../KanbanTag';
@@ -26,9 +29,11 @@ interface Props
 export default function TagsViewWindow(props: Props)
 {
 	const { translate } = useTranslations();
-	const { state, createTag, renameTag, deleteTag } = useBoardsContext();
+	const { state, createTag, renameTag, deleteTag, reorderTags } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
+
+	const tagsContainerRef = useRef<HTMLDivElement>(null);
 
 	const boardId = props.boardId;
 	const boardTags = state.boards[boardId]?.tags ?? {};
@@ -127,25 +132,24 @@ export default function TagsViewWindow(props: Props)
 					<p className={styles.tagsCountText}>{Object.keys(boardTags).length} {translate(tagsCountTranslationKey)}</p>
 				</div>
 
-				<div className={styles.tagsContainer}>
+				<DragDropProvider onDragEnd={({ operation }) =>
 				{
-					Object.values(boardTags).map((tag, index) => (
-					<>
-						<div className={styles.tagContainer}>
-							<KanbanTag key={`tag-${tag.id}`} title={tag.title} large/>
+					const { source } = operation;
+					if (!isSortable(source)) return;
 
-							<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onTagContextMenu(tag, e.currentTarget.getBoundingClientRect())}>
-								<SVG name='menuDots'/>
-							</Button>
-						</div>
+					const { index, initialIndex } = source;
+					if (index === initialIndex) return;
 
+					reorderTags(boardId, source.id as Id, index);
+				}}>
+					<div className={`${styles.tagsContainer} maskedVerticalScrollContainer`} ref={tagsContainerRef}>
 					{
-						index !== Object.values(boardTags).length - 1 &&
-							<Separator orientation={Orientation.Horizontal}/>
+						Object.values(boardTags).map((tag, index) =>
+							<KanbanTag key={`tag-${tag.id}`} container={tagsContainerRef} sortableIndex={index}
+								tag={tag} large onContextMenu={e => onTagContextMenu(tag, e.currentTarget.getBoundingClientRect())}/>)
 					}
-					</>))
-				}
-				</div>
+					</div>
+				</DragDropProvider>
 
 				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={onTagCreateDialog}>
 					<SVG name="plus"/>

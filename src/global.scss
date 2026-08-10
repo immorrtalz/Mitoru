@@ -283,3 +283,14 @@ a
 	flex-wrap: nowrap;
 	align-items: center;
 }
+
+.maskedVerticalScrollContainer
+{
+	--smoothAreaHeight: 16px;
+
+	padding-top: var(--smoothAreaHeight);
+	padding-bottom: var(--smoothAreaHeight);
+	margin: calc(var(--smoothAreaHeight) * -1) 0 calc(var(--smoothAreaHeight) * -0.5);
+	overflow: hidden auto;
+	mask-image: linear-gradient(to bottom, transparent, white var(--smoothAreaHeight), white calc(100% - var(--smoothAreaHeight)), transparent);
+}
