@@ -86,6 +86,7 @@ export default function KanbanChecklist(props: Props)
 			{
 				options.includes('duplicate') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>
 			}
@@ -95,7 +96,7 @@ export default function KanbanChecklist(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onChecklistDeleteDialog}>
+					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onChecklistDeleteDialog}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>

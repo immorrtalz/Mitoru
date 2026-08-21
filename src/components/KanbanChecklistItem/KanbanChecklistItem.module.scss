@@ -61,4 +61,5 @@
 	}
 
 	&:hover .deleteButton, &:hover .dragHandle { opacity: 1; }
+	&.completed:not(:hover):not(:has(input[type="text"]:focus)):not(:has(textarea:focus)) { opacity: 0.5; }
 }

@@ -43,7 +43,7 @@ export default function KanbanColumn(props: Props)
 	const { renameColumn, deleteColumn, createTask } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
-	const { ref, isDragging } = useSortable(
+	const { ref, handleRef, isDragging } = useSortable(
 	{
 		id: column.id,
 		index: props.sortableIndex,
@@ -132,16 +132,18 @@ export default function KanbanColumn(props: Props)
 				</Button>
 
 				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<SVG name="color"/>
 					{translate("color")}
 				</Button>
 
 				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
+				<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -152,6 +154,10 @@ export default function KanbanColumn(props: Props)
 
 	return (
 		<div className={`${styles.kanbanColumn} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} ref={ref}>
+			<div className={styles.dragHandle} ref={handleRef}>
+				<SVG name="drag"/>
+			</div>
+
 			<div className={styles.columnHeader}>
 				<div className={styles.columnHeaderTexts}>
 					<h6 className={styles.columnTitleText}>{column.title}</h6>

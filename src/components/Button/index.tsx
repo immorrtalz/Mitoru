@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import styles from './Button.module.scss';
 import { HorizontalAlign } from '../../misc/utils';
 
@@ -22,6 +22,7 @@ interface Props
 	buttonStyle?: ButtonStyle;
 	variant?: ButtonVariant;
 	align?: HorizontalAlign;
+	bgColor?: string;
 	children?: ReactElement | ReactElement[] | (ReactElement | string)[] | string;
 	square?: boolean;
 	small?: boolean;
@@ -32,6 +33,7 @@ interface Props
 	onClick?: (...args: any[]) => any;
 	onHover?: (...args: any[]) => any;
 	className?: string;
+	style?: React.CSSProperties;
 }
 
 export default function Button(props: Props)
@@ -63,6 +65,8 @@ export default function Button(props: Props)
 
 	return (
 		<button className={`${styles.button} ${buttonStyle} ${variantStyle} ${alignStyle} ${props.square ? styles.square : ''} ${props.small ? styles.small : ''} ${props.dimmed ? styles.dimmed : ''} ${props.smallSVG ? styles.smallSVG : ''} ${props.dimmedSVG ? styles.dimmedSVG : ''} ${props.className || ''}`}
+			style={props.style}
+			{ ...(props.bgColor !== undefined && { "data-bg-color": props.bgColor }) }
 			onClick={onClick}
 			disabled={props.disabled}
 			onPointerEnter={onHover}

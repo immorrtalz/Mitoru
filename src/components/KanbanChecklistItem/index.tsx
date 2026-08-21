@@ -68,7 +68,7 @@ export default function KanbanChecklistItem(props: Props)
 	};
 
 	return (
-		<div className={`${styles.kanbanChecklistItem} ${props.className || ''}`} ref={ref}>
+		<div className={`${styles.kanbanChecklistItem} ${props.className || ''} ${checklistItem.isCompleted ? styles.completed : ''}`} ref={ref}>
 			<div className={styles.dragHandle} ref={handleRef}>
 				<SVG name="drag"/>
 			</div>

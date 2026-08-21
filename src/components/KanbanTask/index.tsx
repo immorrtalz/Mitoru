@@ -44,6 +44,11 @@ export default function KanbanTask(props: Props)
 	const taskTags = task.tagsIds.map(id => props.tags[id]).filter(Boolean);
 	const boardTags = state.boards[boardId]?.tags ?? {};
 
+	const checklistItems = Object.values(task.checklists).flatMap(checklist => Object.values(checklist.items));
+	const checklistItemsCount = checklistItems.length;
+	const completedChecklistItemsCount = checklistItems.filter(item => item.isCompleted).length;
+	const completedChecklistItemsPercentage = checklistItemsCount > 0 ? Math.round((completedChecklistItemsCount / checklistItemsCount) * 100) : 0;
+
 	const { translate } = useTranslations();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
@@ -118,12 +123,14 @@ export default function KanbanTask(props: Props)
 			{
 				options.includes('color') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						<SVG name="color"/>
 						{translate("color")}
 					</Button>
 			}
 			{
 				options.includes('duplicate') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>
 			}
@@ -135,6 +142,7 @@ export default function KanbanTask(props: Props)
 				options.includes('tags') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 						onClick={() => onTaskTagsContextMenu(triggerButtonRect)}>
+						<SVG name="tag"/>
 						{translate("tags")}
 					</Button>
 			}
@@ -144,7 +152,7 @@ export default function KanbanTask(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
+					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
@@ -156,13 +164,12 @@ export default function KanbanTask(props: Props)
 
 	const onTaskTagsContextMenu = (triggerButtonRect: DOMRect) =>
 	{
-		// ADD COLORS OF TAGS
 		openContextMenu(
 		{
 			children: <>
 			{
 				Object.keys(boardTags).length > 0 ? Object.values(boardTags).map(tag =>
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					<Button key={tag.id} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG bgColor={tag.color}
 						onClick={() => task.tagsIds.includes(tag.id) ? removeTagFromTask(boardId, task.id, tag.id) : createTagToTask(boardId, task.id, tag.id)}>
 						<SVG name={task.tagsIds.includes(tag.id) ? 'checkmark' : 'empty'}/>
 						{tag.title}
@@ -172,7 +179,8 @@ export default function KanbanTask(props: Props)
 					</Button>
 			}
 			</>,
-			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content"
 		});
 	};
 
@@ -207,6 +215,19 @@ export default function KanbanTask(props: Props)
 					</div>
 			}
 			</DragDropProvider>
+
+			{
+				checklistItemsCount > 0 && <div className={styles.checklistsProgressContainer}>
+					<div className={styles.checklistsProgressTextsContainer}>
+						<p>{completedChecklistItemsCount}/{checklistItemsCount}</p>
+						<p>{completedChecklistItemsPercentage}%</p>
+					</div>
+
+					<div className={styles.checklistsProgressBar}>
+						<div className={styles.checklistsProgressBarFill} style={{ width: `${completedChecklistItemsPercentage}%` }} />
+					</div>
+				</div>
+			}
 		</div>
 	);
 }

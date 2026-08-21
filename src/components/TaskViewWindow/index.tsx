@@ -102,7 +102,7 @@ export default function TaskViewWindow(props: Props)
 				<TextBox
 					key={`task-text-${textResetToken}`}
 					className={styles.descriptionText}
-					textBoxStyle={TextBoxStyle.Ghost}
+					textBoxStyle={TextBoxStyle.Default}
 					placeholder={`${translate("input_incentive")}...`}
 					variant="multiline"
 					value={task.text}

@@ -86,12 +86,13 @@ export default function BoardItem(props: Props)
 				</Button>
 
 				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onBoardDeleteDialog}>
+				<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onBoardDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>

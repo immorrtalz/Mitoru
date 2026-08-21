@@ -29,13 +29,18 @@
 		& svg
 		{
 			height: 32px;
-			fill: var(--third-fg-color);
+			fill: var(--second-fg-color);
 			flex-shrink: 0;
 			opacity: 0;
 		}
 	}
 
-	&:hover .dragHandle svg { opacity: 1; }
+	&:hover .dragHandle
+	{
+		background: var(--hover-main-bg-color);
+
+		& svg { opacity: 1; }
+	}
 
 	& .checklistHeader
 	{

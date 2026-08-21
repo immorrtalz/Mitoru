@@ -152,6 +152,12 @@
 
 	&.ghost, &.ghost.positive, &.ghost.negative { --bgColor: transparent; }
 
+	&[data-bg-color]
+	{
+		--bgColor: rgba(from attr(data-bg-color type(<color>)) r g b / 0.35);
+		--fgColor: color-mix(in srgb, var(--bgColor) 15%, white 75%);
+	}
+
 	&.small
 	{
 		height: 32px;

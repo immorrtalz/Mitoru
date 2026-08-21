@@ -112,7 +112,7 @@ export default function TagsViewWindow(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={() => onTagDeleteDialog(tag.id)}>
+					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={() => onTagDeleteDialog(tag.id)}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
@@ -128,7 +128,7 @@ export default function TagsViewWindow(props: Props)
 
 			<div className={`${styles.container} ${props.className || ''}`}>
 				<div className={styles.headerContainer}>
-					<h4>{translate("manage_board_tags")}</h4>
+					<h4>{translate("board_tags")}</h4>
 					<p className={styles.tagsCountText}>{Object.keys(boardTags).length} {translate(tagsCountTranslationKey)}</p>
 				</div>
 

@@ -69,10 +69,13 @@
 				height: 32px;
 				transform: rotateZ(90deg);
 				margin-top: calc((32px - var(--dragHandleWidth)) * -0.5);
-				fill: var(--third-fg-color);
+				fill: var(--second-fg-color);
 				flex-shrink: 0;
+				opacity: 0.5;
 			}
 		}
+
+		&:hover .dragHandle svg { opacity: 1; }
 	}
 
 	&.dragging { backdrop-filter: var(--blur-bg); }

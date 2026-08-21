@@ -1,6 +1,6 @@
 {
 	"settings": "Настройки",
-	"manage_board_tags": "Управление тегами доски",
+	"board_tags": "Теги доски",
 	"language": "Язык",
 	"source_code_title": "Исходный код",
 	"setting_locale_en": "Английский",
