@@ -49,8 +49,26 @@ function Kanban()
 				onDragStart={() => previousTasksOrder.current = board.tasksOrderInColumn}
 				onDragOver={event =>
 				{
-					const { source } = event.operation;
-					if (source?.type !== 'task') return;
+					const { source, target } = event.operation;
+					if (source?.type !== 'task' || !isSortable(source)) return;
+
+					if (target && !isSortable(target) && typeof target.id === 'string' && target.id.startsWith('column-drop-'))
+					{
+						const targetColumnId = target.id.slice('column-drop-'.length) as Id;
+						const sourceColumnId = source.group as Id;
+
+						if (sourceColumnId === targetColumnId) return;
+
+						setTasksOrderInColumn(boardId, prev =>
+						{
+							const next = { ...prev };
+							next[sourceColumnId] = (next[sourceColumnId] ?? []).filter(id => id !== source.id);
+							next[targetColumnId] = [...(next[targetColumnId] ?? []), source.id as Id];
+							return next;
+						});
+						return;
+					}
+
 					setTasksOrderInColumn(boardId, prev => move(prev, event));
 				}}
 				onDragEnd={({ operation, canceled }) =>

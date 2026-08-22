@@ -29,13 +29,15 @@
 		gap: 8px;
 		flex-shrink: 0;
 
+		& > * { flex-shrink: 0; }
+
 		& .taskHeaderText
 		{
+			min-width: 0;
 			height: 100%;
 			padding-top: 2px;
+			flex-shrink: 1;
 			flex-grow: 1;
-			text-wrap: wrap;
-			line-break: anywhere;
 			user-select: none;
 			-webkit-user-select: none;
 			-moz-user-select: none;

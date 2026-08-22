@@ -66,5 +66,6 @@
 	"tags_count_one": "tag",
 	"tags_count_two_three_four": "tags",
 	"tags_count_multiple": "tags",
-	"no_tags_on_this_board": "No tags on this board"
+	"no_tags_on_this_board": "No tags on this board",
+	"no_boards_yet": "You haven't created any boards yet"
 }

@@ -47,7 +47,6 @@
 	{
 		width: 100%;
 		text-align: left;
-		text-wrap: pretty;
 		white-space: pre-wrap;
 		flex-shrink: 0;
 	}
@@ -56,8 +55,6 @@
 	{
 		width: 100%;
 		text-align: left;
-		text-wrap: pretty;
-		white-space: pre-wrap;
 		flex-shrink: 0;
 		color: var(--second-fg-color);
 	}

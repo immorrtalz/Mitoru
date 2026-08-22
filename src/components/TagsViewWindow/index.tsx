@@ -6,6 +6,7 @@ import { isSortable } from '@dnd-kit/react/sortable';
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import KanbanTag from '../KanbanTag';
 import Separator from '../Separator';
+import BackgroundOverlay from '../BackgroundOverlay';
 import { SVG } from '../SVG';
 
 import useTranslations, { TranslationKey } from "../../hooks/useTranslations";
@@ -124,7 +125,7 @@ export default function TagsViewWindow(props: Props)
 
 	return (
 		<>
-			<span className={styles.overlay} onClick={props.canBackdropCancel !== false ? onCancel : undefined}/>
+			<BackgroundOverlay onClick={props.canBackdropCancel !== false ? onCancel : undefined}/>
 
 			<div className={`${styles.container} ${props.className || ''}`}>
 				<div className={styles.headerContainer}>

@@ -28,6 +28,13 @@
 			width: 100%;
 			flex-grow: 1;
 		}
+
+		& .noBoardsText
+		{
+			width: 100%;
+			text-align: center;
+			color: var(--third-fg-color);
+		}
 	}
 
 	& > button { width: 100%; }

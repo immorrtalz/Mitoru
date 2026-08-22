@@ -202,12 +202,13 @@
 
 *, *::before, *::after, *:not(path):not(g) { transition: all 0.2s; }
 
-h1, h2, h3, h4, h5, h6, p, a, li
+h1, h2, h3, h4, h5, h6, p, a, li, input[type="text"], textarea
 {
 	width: fit-content;
 	height: fit-content;
 	white-space: pre-wrap;
 	text-wrap: pretty;
+	overflow-wrap: break-word;
 	color: var(--main-fg-color);
 	user-select: text;
 	pointer-events: all;

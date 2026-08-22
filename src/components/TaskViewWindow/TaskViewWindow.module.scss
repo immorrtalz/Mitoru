@@ -1,28 +1,3 @@
-.overlay
-{
-	position: fixed;
-	inset: 0;
-	background: color-mix(in srgb, var(--dark) 0%, transparent);
-	backdrop-filter: blur(0px);
-	animation: openWindow 0.5s forwards;
-	pointer-events: all;
-	z-index: 1000;
-}
-
-@keyframes openWindow
-{
-	0%
-	{
-		background: color-mix(in srgb, var(--dark) 0%, transparent);
-		backdrop-filter: blur(0px);
-	}
-	100%
-	{
-		background: color-mix(in srgb, var(--dark) 75%, transparent);
-		backdrop-filter: blur(4px);
-	}
-}
-
 .container
 {
 	position: fixed;
@@ -57,7 +32,7 @@
 	{
 		width: 100%;
 		height: fit-content;
-		padding: 8px 8px 0 8px;
+		padding: 8px 8px 0;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
@@ -67,7 +42,6 @@
 		{
 			height: fit-content;
 			flex-grow: 1;
-			text-wrap: pretty;
 			font-size: calc(var(--h4-font-size));
 			font-weight: 700;
 			margin-top: -8px;
@@ -90,8 +64,6 @@
 		width: 100%;
 		padding: 0 8px;
 		text-align: left;
-		text-wrap: pretty;
-		white-space: pre-wrap;
 		color: var(--second-fg-color);
 		border-radius: var(--smaller-border-radius);
 	}
@@ -110,6 +82,6 @@
 	& .newChecklistButton
 	{
 		width: calc(100% - 16px);
-		margin: 0 8px 8px 8px;
+		margin: 0 8px 8px;
 	}
 }

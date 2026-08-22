@@ -42,7 +42,7 @@ export function TopBar(props: Props)
 					</div>
 				</div>
 
-			{ props.pageName && <h5>{props.pageName}</h5> }
+			{ props.pageName && <h5 className={styles.pageName}>{props.pageName}</h5> }
 
 			{
 				props.boardId !== undefined &&

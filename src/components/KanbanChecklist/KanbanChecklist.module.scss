@@ -15,7 +15,7 @@
 	& .dragHandle
 	{
 		position: absolute;
-		inset: 0 0 auto 0;
+		inset: 0 0 auto;
 		height: 16px;
 		border-radius: var(--main-border-radius) var(--main-border-radius) 0 0;
 		background: var(--main-bg-color);
@@ -55,6 +55,7 @@
 
 		& .checklistHeaderTexts
 		{
+			min-width: 0;
 			height: 100%;
 			display: flex;
 			flex-direction: column;
@@ -66,12 +67,12 @@
 			{
 				height: fit-content;
 				margin-left: -8px;
-				flex-grow: 1;
-				text-wrap: pretty;
 				font-size: calc(var(--h5-font-size));
 				font-weight: 700;
 				margin-top: -4px;
 				border-radius: var(--smaller-border-radius);
+				flex-shrink: 1;
+				flex-grow: 1;
 			}
 
 			& .checklistItemsCountText

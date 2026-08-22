@@ -8,6 +8,7 @@ import { TextBox, TextBoxStyle } from '../TextBox';
 import Checkbox, { CheckboxType } from '../Checkbox';
 import KanbanChecklist from '../KanbanChecklist';
 import KanbanTag from '../KanbanTag';
+import BackgroundOverlay from '../BackgroundOverlay';
 import { SVG } from '../SVG';
 
 import useTranslations from "../../hooks/useTranslations";
@@ -54,7 +55,7 @@ export default function TaskViewWindow(props: Props)
 
 	return (
 		<>
-			<span className={styles.overlay} onClick={props.canBackdropCancel !== false ? onCancel : undefined}/>
+			<BackgroundOverlay onClick={props.canBackdropCancel !== false ? onCancel : undefined}/>
 
 			<div className={`${styles.container} ${props.className || ''}`}>
 				<div className={styles.headerContainer}>

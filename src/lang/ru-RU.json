@@ -66,5 +66,6 @@
 	"tags_count_one": "тег",
 	"tags_count_two_three_four": "тега",
 	"tags_count_multiple": "тегов",
-	"no_tags_on_this_board": "На этой доске нет тегов"
+	"no_tags_on_this_board": "На этой доске нет тегов",
+	"no_boards_yet": "Вы ещё не создали ни одной доски"
 }

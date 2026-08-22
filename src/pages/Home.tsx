@@ -7,11 +7,14 @@ import { isSortable } from "@dnd-kit/react/sortable";
 import Button, { ButtonStyle } from "../components/Button";
 import { TopBar } from "../components/TopBar";
 import BoardItem from "../components/BoardItem";
+import Separator from "../components/Separator";
 
 import useTranslations from "../hooks/useTranslations";
+import { Id } from "../hooks/useKanban";
+
+import { Orientation } from "../misc/utils";
 
 import { useBoardsContext } from "../context/BoardsContext";
-import { Id } from "../hooks/useKanban";
 
 function Home()
 {
@@ -51,7 +54,7 @@ function Home()
 				}}>
 					<div className={`${styles.boardsContainer} maskedVerticalScrollContainer`} ref={boardsContainerRef}>
 					{
-						state.boardsOrder.map((boardId, index) =>
+						state.boardsOrder.length > 0 ? state.boardsOrder.map((boardId, index) =>
 						{
 							const board = state.boards[boardId];
 							if (!board) return null;
@@ -59,6 +62,11 @@ function Home()
 							return <BoardItem key={`board-${board.id}`} container={boardsContainerRef} sortableIndex={index}
 								board={board} onClick={() => onBoardOpen(board.id)}/>;
 						})
+						: <>
+							<Separator orientation={Orientation.Horizontal}/>
+							<p className={styles.noBoardsText}>{translate("no_boards_yet")}</p>
+							<Separator orientation={Orientation.Horizontal}/>
+						</>
 					}
 					</div>
 				</DragDropProvider>
