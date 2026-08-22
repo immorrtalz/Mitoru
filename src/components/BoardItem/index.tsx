@@ -1,4 +1,7 @@
 import styles from './BoardItem.module.scss';
+import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
+import { RestrictToElement } from '@dnd-kit/dom/modifiers';
+import { useSortable } from '@dnd-kit/react/sortable';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import Separator from '../Separator';
@@ -10,12 +13,14 @@ import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
 
 import { isNewBoardTitleValid, MAX_BOARD_TITLE_LENGTH } from '../../misc/boards';
-import { HorizontalAlign, Orientation } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
 
 import { useBoardsContext } from '../../context/BoardsContext';
 
 interface Props
 {
+	container: React.RefObject<HTMLDivElement | null>;
+	sortableIndex: number;
 	board: Board;
 	onClick?: (...args: any[]) => any;
 	className?: string;
@@ -30,6 +35,15 @@ export default function BoardItem(props: Props)
 	const { renameBoard, deleteBoard } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
+	const { ref, isDragging } = useSortable(
+	{
+		id: board.id,
+		index: props.sortableIndex,
+		modifiers: [
+			RestrictToVerticalAxis,
+			RestrictToElement.configure({ element: () => props.container.current })],
+		transition: DND_TRANSITION
+	});
 
 	const stopPropagation = (e: React.MouseEvent<HTMLElement>) => e.stopPropagation();
 	const onClick = (e: React.MouseEvent<HTMLElement>) => props.onClick?.(e);
@@ -72,12 +86,13 @@ export default function BoardItem(props: Props)
 				</Button>
 
 				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onBoardDeleteDialog}>
+				<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onBoardDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -87,7 +102,7 @@ export default function BoardItem(props: Props)
 	};
 
 	return (
-		<div className={`${styles.boardItem} ${props.className || ''}`} onClick={onClick}
+		<div className={`${styles.boardItem} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} onClick={onClick} ref={ref}
 			onPointerEnter={stopPropagation} onPointerDown={stopPropagation} onPointerUp={stopPropagation}>
 			<p className={styles.title}>{board.title}</p>
 			{props.children}

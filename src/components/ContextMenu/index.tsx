@@ -3,10 +3,13 @@ import { clamp, CSSPropertiesWithVars } from '../../misc/utils';
 import styles from './ContextMenu.module.scss';
 
 const VIEWPORT_MARGIN = 8;
+const DEFAULT_WIDTH = 210;
 
 interface Props
 {
 	position: { top: number; left: number; };
+	width?: number | "fit-content";
+	maxWidth?: string;
 	onCancel?: (...args: any[]) => any;
 	className?: string;
 	children?: React.ReactNode | React.ReactNode[];
@@ -21,13 +24,22 @@ export default function ContextMenu(props: Props)
 
 	useLayoutEffect(() =>
 	{
-		const contextMenuRect = contextMenuRef.current?.getBoundingClientRect();
+		const contextMenuElement = contextMenuRef.current;
+		if (!contextMenuElement) return;
 
-		const maxTop = window.innerHeight - (contextMenuRect?.height ?? 0) - VIEWPORT_MARGIN;
-		const maxLeft = window.innerWidth - (contextMenuRect?.width ?? 0) - VIEWPORT_MARGIN;
+		const width = (typeof props.width === "number") ? `${props.width}px` : props.width ?? `${DEFAULT_WIDTH}px`;
+		const maxWidth = props.maxWidth ?? "";
+		contextMenuElement.style.width = width;
+		contextMenuElement.style.maxWidth = maxWidth;
+
+		const contextMenuRect = contextMenuElement.getBoundingClientRect();
+		const maxTop = window.innerHeight - contextMenuRect.height - VIEWPORT_MARGIN;
+		const maxLeft = window.innerWidth - contextMenuRect.width - VIEWPORT_MARGIN;
 
 		setStyleObject(
 		{
+			width,
+			maxWidth,
 			top: `${clamp(props.position.top, VIEWPORT_MARGIN, maxTop)}px`,
 			left: `${clamp(props.position.left, VIEWPORT_MARGIN, maxLeft)}px`
 		} as CSSPropertiesWithVars);

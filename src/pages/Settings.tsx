@@ -63,6 +63,22 @@ function SettingsPage()
 					<h2>{translate("settings")}</h2>
 
 					<div className={styles.smallGapColumnContainer}>
+						<h4>{translate("language")}</h4>
+
+						<div className={styles.smallGapRowContainer}>
+							<Button style={{ width: "fit-content" }} buttonStyle={ButtonStyle.Outlined} small onClick={() => changeSetting("locale", "en")}>
+								{translate("setting_locale_en")}
+							</Button>
+
+							<Button style={{ width: "fit-content" }} buttonStyle={ButtonStyle.Outlined} small onClick={() => changeSetting("locale", "ru")}>
+								{translate("setting_locale_ru")}
+							</Button>
+						</div>
+					</div>
+
+					<div className={styles.smallGapColumnContainer}>
+						<h4>GitHub Gists integration</h4>
+
 						<p>This app uses localStorage to store your data.</p>
 						<p>You can provide a GitHub API key to use GitHub Gists as the “cloud” data storage.</p>
 						<p>You can use these types of tokens as an API key:</p>

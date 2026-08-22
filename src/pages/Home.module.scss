@@ -13,29 +13,29 @@
 
 	& .boardsContainer
 	{
-		--masked-offset: 16px;
 		width: 100%;
 		height: fit-content;
 		max-height: 512px;
 		display: flex;
-		padding: var(--masked-offset) 0;
 		flex-direction: column;
 		align-items: center;
 		flex-wrap: nowrap;
 		gap: 8px;
 		pointer-events: all;
-		overflow: hidden auto;
-		mask-image: linear-gradient(to bottom, transparent, white var(--masked-offset), white calc(100% - var(--masked-offset)), transparent);
 
 		& > *
 		{
 			width: 100%;
 			flex-grow: 1;
 		}
+
+		& .noBoardsText
+		{
+			width: 100%;
+			text-align: center;
+			color: var(--third-fg-color);
+		}
 	}
 
-	& > button
-	{
-		width: 100%;
-	}
+	& > button { width: 100%; }
 }

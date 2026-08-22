@@ -1,6 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import styles from "./Kanban.module.scss";
+import { DragDropProvider } from '@dnd-kit/react';
+import { isSortable } from "@dnd-kit/react/sortable";
+import { move } from '@dnd-kit/helpers';
 
 import { SVG } from "../components/SVG";
 import Button, { ButtonStyle } from "../components/Button";
@@ -9,16 +12,19 @@ import KanbanColumn from "../components/KanbanColumn";
 
 import useTranslations from "../hooks/useTranslations";
 import useBoardFromRoute from "../hooks/useBoardFromRoute";
+import { Id } from "../hooks/useKanban";
 
 import { useBoardsContext } from "../context/BoardsContext";
-import TagsViewWindow from "../components/TagsViewWindow";
 
 function Kanban()
 {
 	const navigate = useNavigate();
-	const { createColumn } = useBoardsContext();
+	const { createColumn, reorderColumns, setTasksOrderInColumn } = useBoardsContext();
 	const { translate } = useTranslations();
 	const { boardId, board } = useBoardFromRoute();
+
+	const columnsContainerRef = useRef<HTMLDivElement>(null);
+	const previousTasksOrder = useRef<Record<Id, Id[]> | null>(null);
 
 	useEffect(() =>
 	{
@@ -39,25 +45,71 @@ function Kanban()
 		<div className='mainContainer'>
 			<TopBar pageName={boardName} boardId={boardId}/>
 
-			<div className={styles.kanbanPageContainer}>
-			{
-				board.columnsOrder.map(columnId =>
+			<DragDropProvider
+				onDragStart={() => previousTasksOrder.current = board.tasksOrderInColumn}
+				onDragOver={event =>
 				{
-					const column = board.columns[columnId];
-					if (!column) return null;
+					const { source, target } = event.operation;
+					if (source?.type !== 'task' || !isSortable(source)) return;
 
-					const taskIds = board.tasksOrderInColumn[columnId] ?? [];
-					const tasks = taskIds.map(id => board.tasks[id]).filter(Boolean);
+					if (target && !isSortable(target) && typeof target.id === 'string' && target.id.startsWith('column-drop-'))
+					{
+						const targetColumnId = target.id.slice('column-drop-'.length) as Id;
+						const sourceColumnId = source.group as Id;
 
-					return <KanbanColumn key={`column-${column.id}`} boardId={board.id} column={column} tasks={tasks} tags={board.tags}/>;
-				})
-			}
+						if (sourceColumnId === targetColumnId) return;
 
-				<Button buttonStyle={ButtonStyle.Outlined} dimmed onClick={createNewColumn}>
-					<SVG name='plus'/>
-					{translate('create_a_new_column')}
-				</Button>
-			</div>
+						setTasksOrderInColumn(boardId, prev =>
+						{
+							const next = { ...prev };
+							next[sourceColumnId] = (next[sourceColumnId] ?? []).filter(id => id !== source.id);
+							next[targetColumnId] = [...(next[targetColumnId] ?? []), source.id as Id];
+							return next;
+						});
+						return;
+					}
+
+					setTasksOrderInColumn(boardId, prev => move(prev, event));
+				}}
+				onDragEnd={({ operation, canceled }) =>
+				{
+					const { source } = operation;
+
+					if (canceled)
+					{
+						if (source?.type === 'task' && previousTasksOrder.current)
+							setTasksOrderInColumn(boardId, () => previousTasksOrder.current!);
+						return;
+					}
+
+					if (!isSortable(source) || source.type !== 'column') return;
+
+					const { index, initialIndex } = source;
+					if (index === initialIndex) return;
+
+					reorderColumns(boardId, source.id as Id, index);
+				}}>
+				<div className={styles.kanbanPageContainer} ref={columnsContainerRef}>
+				{
+					board.columnsOrder.map((columnId, index) =>
+					{
+						const column = board.columns[columnId];
+						if (!column) return null;
+
+						const taskIds = board.tasksOrderInColumn[columnId] ?? [];
+						const tasks = taskIds.map(id => board.tasks[id]).filter(Boolean);
+
+						return <KanbanColumn key={`column-${column.id}`} container={columnsContainerRef} sortableIndex={index}
+							boardId={board.id} column={column} tasks={tasks} tags={board.tags}/>;
+					})
+				}
+
+					<Button buttonStyle={ButtonStyle.Outlined} dimmed onClick={createNewColumn}>
+						<SVG name='plus'/>
+						{translate('create_a_new_column')}
+					</Button>
+				</div>
+			</DragDropProvider>
 		</div>
 	);
 }

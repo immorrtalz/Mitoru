@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styles from './TaskViewWindow.module.scss';
+import { DragDropProvider } from '@dnd-kit/react';
+import { isSortable } from "@dnd-kit/react/sortable";
 
 import Button, { ButtonStyle } from '../Button';
 import { TextBox, TextBoxStyle } from '../TextBox';
 import Checkbox, { CheckboxType } from '../Checkbox';
 import KanbanChecklist from '../KanbanChecklist';
 import KanbanTag from '../KanbanTag';
+import BackgroundOverlay from '../BackgroundOverlay';
 import { SVG } from '../SVG';
 
 import useTranslations from "../../hooks/useTranslations";
@@ -30,7 +33,10 @@ interface Props
 export default function TaskViewWindow(props: Props)
 {
 	const { translate } = useTranslations();
-	const { state, toggleTaskCompleted, renameTask, setTaskText, createChecklist } = useBoardsContext();
+	const { state, toggleTaskCompleted, renameTask, setTaskText, createChecklist, reorderChecklists, reorderTaskTags } = useBoardsContext();
+
+	const tagsContainerRef = useRef<HTMLDivElement>(null);
+	const checklistsContainerRef = useRef<HTMLDivElement>(null);
 
 	const boardId = props.boardId;
 	const task = state.boards[boardId]?.tasks[props.taskId];
@@ -49,7 +55,7 @@ export default function TaskViewWindow(props: Props)
 
 	return (
 		<>
-			<span className={styles.overlay} onClick={props.canBackdropCancel !== false ? onCancel : undefined}/>
+			<BackgroundOverlay onClick={props.canBackdropCancel !== false ? onCancel : undefined}/>
 
 			<div className={`${styles.container} ${props.className || ''}`}>
 				<div className={styles.headerContainer}>
@@ -76,17 +82,28 @@ export default function TaskViewWindow(props: Props)
 					</Button>
 				</div>
 
-			{
-				task.tagsIds.length > 0 &&
-					<div className={styles.taskTagsContainer}>
-					{ taskTags.map(tag => <KanbanTag key={tag.id} title={tag.title}/>) }
-					</div>
-			}
+				<DragDropProvider onDragEnd={({ operation }) =>
+				{
+					const { source } = operation;
+					if (!isSortable(source)) return;
+
+					const { index, initialIndex } = source;
+					if (index === initialIndex) return;
+
+					reorderTaskTags(boardId, task.id, source.id as Id, index);
+				}}>
+				{
+					task.tagsIds.length > 0 &&
+						<div className={styles.taskTagsContainer} ref={tagsContainerRef}>
+						{ taskTags.map((tag, index) => <KanbanTag key={tag.id} container={tagsContainerRef} sortableIndex={index} tag={tag}/>) }
+						</div>
+				}
+				</DragDropProvider>
 
 				<TextBox
 					key={`task-text-${textResetToken}`}
 					className={styles.descriptionText}
-					textBoxStyle={TextBoxStyle.Ghost}
+					textBoxStyle={TextBoxStyle.Default}
 					placeholder={`${translate("input_incentive")}...`}
 					variant="multiline"
 					value={task.text}
@@ -99,12 +116,29 @@ export default function TaskViewWindow(props: Props)
 						else setTextResetToken(t => t + 1);
 					}}/>
 
-			{
-				task.checklistsOrder.map(checklistId =>
-					<KanbanChecklist key={`checklist-${checklistId}`} boardId={boardId} taskId={task.id} checklistId={checklistId}/>)
-			}
+				<DragDropProvider onDragEnd={({ operation }) =>
+				{
+					const { source } = operation;
+					if (!isSortable(source)) return;
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={createNewChecklist}>
+					const { index, initialIndex } = source;
+					if (index === initialIndex) return;
+
+					reorderChecklists(boardId, task.id, source.id as Id, index);
+				}}>
+				{
+					task.checklistsOrder.length > 0 &&
+						<div className={`${styles.checklistsContainer} maskedVerticalScrollContainer`} ref={checklistsContainerRef}>
+						{
+							task.checklistsOrder.map((checklistId, index) =>
+								<KanbanChecklist key={`checklist-${checklistId}`} container={checklistsContainerRef} sortableIndex={index}
+									boardId={boardId} taskId={task.id} checklistId={checklistId}/>)
+						}
+						</div>
+				}
+				</DragDropProvider>
+
+				<Button className={styles.newChecklistButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={createNewChecklist}>
 					<SVG name="plus"/>
 					{translate("create_a_new_checklist")}
 				</Button>

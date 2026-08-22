@@ -1,4 +1,8 @@
+import { useRef } from 'react';
 import styles from './KanbanTask.module.scss';
+import { RestrictToElement, RestrictToWindow } from '@dnd-kit/dom/modifiers';
+import { DragDropProvider } from '@dnd-kit/react';
+import { useSortable, isSortable } from '@dnd-kit/react/sortable';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import Checkbox, { CheckboxType } from '../Checkbox';
@@ -15,12 +19,15 @@ import useTaskView from '../../hooks/useTaskView';
 import { useBoardsContext } from '../../context/BoardsContext';
 import { TaskViewHandle } from '../../context/TaskViewContext';
 
-import { HorizontalAlign, Orientation } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
 import { isNewTaskTitleValid, MAX_TASK_TITLE_LENGTH } from '../../misc/boards';
 
 interface Props
 {
+	container: React.RefObject<HTMLDivElement | null>;
+	sortableIndex: number;
 	boardId: Id;
+	columnId: Id;
 	task: Task;
 	tags: Record<Id, Tag>;
 	className?: string;
@@ -29,17 +36,38 @@ interface Props
 
 export default function KanbanTask(props: Props)
 {
-	const { translate } = useTranslations();
-	const { state, toggleTaskCompleted, renameTask, deleteTask, createTagToTask, removeTagFromTask } = useBoardsContext();
-	const { openDialog, openPromptDialog } = useDialog();
-	const { openContextMenu } = useContextMenu();
-	const { openTaskView } = useTaskView();
+	const { state, toggleTaskCompleted, renameTask, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags } = useBoardsContext();
 
 	const boardId = props.boardId;
 	const task = props.task;
 	const tags = props.tags;
 	const taskTags = task.tagsIds.map(id => props.tags[id]).filter(Boolean);
 	const boardTags = state.boards[boardId]?.tags ?? {};
+
+	const checklistItems = Object.values(task.checklists).flatMap(checklist => Object.values(checklist.items));
+	const checklistItemsCount = checklistItems.length;
+	const completedChecklistItemsCount = checklistItems.filter(item => item.isCompleted).length;
+	const completedChecklistItemsPercentage = checklistItemsCount > 0 ? Math.round((completedChecklistItemsCount / checklistItemsCount) * 100) : 0;
+
+	const { translate } = useTranslations();
+	const { openDialog, openPromptDialog } = useDialog();
+	const { openContextMenu } = useContextMenu();
+	const { openTaskView } = useTaskView();
+	const { ref, isDragging } = useSortable(
+	{
+		id: task.id,
+		index: props.sortableIndex,
+		type: 'task',
+		accept: ['task'],
+		group: props.columnId,
+		modifiers: [
+			RestrictToWindow,
+			RestrictToElement.configure({ element: () => props.container.current })
+		],
+		transition: DND_TRANSITION
+	});
+
+	const tagsContainerRef = useRef<HTMLDivElement>(null);
 
 	let closeTaskViewWindowHandle: TaskViewHandle | null = null;
 
@@ -95,12 +123,14 @@ export default function KanbanTask(props: Props)
 			{
 				options.includes('color') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						<SVG name="color"/>
 						{translate("color")}
 					</Button>
 			}
 			{
 				options.includes('duplicate') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>
 			}
@@ -112,6 +142,7 @@ export default function KanbanTask(props: Props)
 				options.includes('tags') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 						onClick={() => onTaskTagsContextMenu(triggerButtonRect)}>
+						<SVG name="tag"/>
 						{translate("tags")}
 					</Button>
 			}
@@ -121,7 +152,7 @@ export default function KanbanTask(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
+					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
@@ -133,13 +164,12 @@ export default function KanbanTask(props: Props)
 
 	const onTaskTagsContextMenu = (triggerButtonRect: DOMRect) =>
 	{
-		// ADD COLORS OF TAGS
 		openContextMenu(
 		{
 			children: <>
 			{
 				Object.keys(boardTags).length > 0 ? Object.values(boardTags).map(tag =>
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					<Button key={tag.id} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG bgColor={tag.color}
 						onClick={() => task.tagsIds.includes(tag.id) ? removeTagFromTask(boardId, task.id, tag.id) : createTagToTask(boardId, task.id, tag.id)}>
 						<SVG name={task.tagsIds.includes(tag.id) ? 'checkmark' : 'empty'}/>
 						{tag.title}
@@ -149,12 +179,13 @@ export default function KanbanTask(props: Props)
 					</Button>
 			}
 			</>,
-			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content"
 		});
 	};
 
 	return (
-		<div className={`${styles.kanbanTask} ${props.className || ''}`} onClick={onClick}>
+		<div className={`${styles.kanbanTask} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} onClick={onClick} ref={ref}>
 			<div className={styles.taskHeader}>
 				<Checkbox type={CheckboxType.Simple} small checked={task.isCompleted}
 					onClick={e => e.stopPropagation()}
@@ -167,12 +198,36 @@ export default function KanbanTask(props: Props)
 				</Button>
 			</div>
 
-		{
-			task.tagsIds.length > 0 &&
-				<div className={styles.taskTagsContainer}>
-				{ taskTags.map(tag => <KanbanTag key={tag.id} title={tag.title}/>) }
+			<DragDropProvider onDragEnd={({ operation }) =>
+			{
+				const { source } = operation;
+				if (!isSortable(source)) return;
+
+				const { index, initialIndex } = source;
+				if (index === initialIndex) return;
+
+				reorderTaskTags(boardId, task.id, source.id as Id, index);
+			}}>
+			{
+				task.tagsIds.length > 0 &&
+					<div className={styles.taskTagsContainer} ref={tagsContainerRef}>
+					{ taskTags.map((tag, index) => <KanbanTag key={tag.id} container={tagsContainerRef} sortableIndex={index} tag={tag}/>) }
+					</div>
+			}
+			</DragDropProvider>
+
+			{
+				checklistItemsCount > 0 && <div className={styles.checklistsProgressContainer}>
+					<div className={styles.checklistsProgressTextsContainer}>
+						<p>{completedChecklistItemsCount}/{checklistItemsCount}</p>
+						<p>{completedChecklistItemsPercentage}%</p>
+					</div>
+
+					<div className={styles.checklistsProgressBar}>
+						<div className={styles.checklistsProgressBarFill} style={{ width: `${completedChecklistItemsPercentage}%` }} />
+					</div>
 				</div>
-		}
+			}
 		</div>
 	);
 }

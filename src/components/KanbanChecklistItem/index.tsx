@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import styles from './KanbanChecklistItem.module.scss';
+import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
+import { RestrictToElement } from '@dnd-kit/dom/modifiers';
+import { useSortable } from '@dnd-kit/react/sortable';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import { TextBox, TextBoxStyle } from '../TextBox';
@@ -13,9 +16,12 @@ import useDialog from '../../hooks/useDialog';
 import { useBoardsContext } from '../../context/BoardsContext';
 
 import { isNewChecklistTitleValid } from '../../misc/boards';
+import { DND_TRANSITION } from '../../misc/utils';
 
 interface Props
 {
+	container: React.RefObject<HTMLDivElement | null>;
+	sortableIndex: number;
 	boardId: Id;
 	taskId: Id;
 	checklistId: Id;
@@ -39,6 +45,16 @@ export default function KanbanChecklistItem(props: Props)
 
 	const [titleResetToken, setTitleResetToken] = useState(0);
 
+	const { ref, handleRef } = useSortable(
+	{
+		id: checklistItem.id,
+		index: props.sortableIndex,
+		modifiers: [
+			RestrictToVerticalAxis,
+			RestrictToElement.configure({ element: () => props.container.current })],
+		transition: DND_TRANSITION
+	});
+
 	const onChecklistItemDeleteDialog = () =>
 	{
 		openDialog(
@@ -52,7 +68,11 @@ export default function KanbanChecklistItem(props: Props)
 	};
 
 	return (
-		<div className={`${styles.kanbanChecklistItem} ${props.className || ''}`}>
+		<div className={`${styles.kanbanChecklistItem} ${props.className || ''} ${checklistItem.isCompleted ? styles.completed : ''}`} ref={ref}>
+			<div className={styles.dragHandle} ref={handleRef}>
+				<SVG name="drag"/>
+			</div>
+
 			<Checkbox type={CheckboxType.Simple} small checked={checklistItem.isCompleted}
 				onClick={e => e.stopPropagation()}
 				onChange={() => toggleChecklistItem(boardId, task.id, checklist.id, checklistItem.id)}/>

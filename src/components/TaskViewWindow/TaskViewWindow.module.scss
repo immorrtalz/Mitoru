@@ -1,28 +1,3 @@
-.overlay
-{
-	position: fixed;
-	inset: 0;
-	background: color-mix(in srgb, var(--dark) 0%, transparent);
-	backdrop-filter: blur(0px);
-	animation: openWindow 0.5s forwards;
-	pointer-events: all;
-	z-index: 1000;
-}
-
-@keyframes openWindow
-{
-	0%
-	{
-		background: color-mix(in srgb, var(--dark) 0%, transparent);
-		backdrop-filter: blur(0px);
-	}
-	100%
-	{
-		background: color-mix(in srgb, var(--dark) 75%, transparent);
-		backdrop-filter: blur(4px);
-	}
-}
-
 .container
 {
 	position: fixed;
@@ -32,14 +7,14 @@
 	width: min(768px, 90%);
 	height: fit-content;
 	max-height: 80vh;
-	overflow: hidden auto;
-	padding: 16px;
+	overflow: hidden;
+	padding: 8px;
 	border-radius: var(--larger-border-radius);
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	align-items: center;
-	gap: 24px;
+	gap: 16px;
 	background: var(--main-bg-color);
 	backdrop-filter: var(--blur-bg);
 	border: 1px solid var(--main-border-color);
@@ -47,23 +22,26 @@
 	pointer-events: all;
 	z-index: 1000;
 
-	& > * { width: 100%; }
+	& > *
+	{
+		width: 100%;
+		flex-shrink: 0;
+	}
 
 	& .headerContainer
 	{
 		width: 100%;
 		height: fit-content;
+		padding: 8px 8px 0;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
-		gap: 16px;
-		flex-shrink: 0;
+		gap: 8px;
 
 		& .taskHeaderText
 		{
 			height: fit-content;
 			flex-grow: 1;
-			text-wrap: pretty;
 			font-size: calc(var(--h4-font-size));
 			font-weight: 700;
 			margin-top: -8px;
@@ -74,21 +52,36 @@
 	{
 		width: 100%;
 		height: fit-content;
+		padding: 0 8px;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
 		gap: 4px;
-		flex-shrink: 0;
 	}
 
 	& .descriptionText
 	{
 		width: 100%;
+		padding: 0 8px;
 		text-align: left;
-		text-wrap: pretty;
-		white-space: pre-wrap;
-		flex-shrink: 0;
 		color: var(--second-fg-color);
 		border-radius: var(--smaller-border-radius);
+	}
+
+	& .checklistsContainer
+	{
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		gap: 4px;
+		flex-shrink: 1;
+		flex-grow: 1;
+	}
+
+	& .newChecklistButton
+	{
+		width: calc(100% - 16px);
+		margin: 0 8px 8px;
 	}
 }

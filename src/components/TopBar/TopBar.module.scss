@@ -1,13 +1,14 @@
 .topBar
 {
 	width: 100%;
-	height: 72px;
-	padding: 0 16px 0 32px;
+	height: 48px;
+	padding: 0 8px 0 16px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 	flex-wrap: nowrap;
+	gap: 16px;
 	flex-shrink: 0;
 	background: var(--main-bg-color);
 	border-bottom: 1px solid var(--main-border-color);
@@ -33,16 +34,18 @@
 
 			& .logoTextsContainer
 			{
+				margin-top: -4px;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				flex-wrap: nowrap;
+				gap: 2px;
 
 				& .appName
 				{
-					height: 32px;
+					height: var(--h5-font-size);
 					color: var(--colored-fg-color-75);
-					font-size: 28px;
+					font-size: var(--h5-font-size);
 					text-wrap: nowrap;
 					user-select: none;
 					-webkit-user-select: none;
@@ -52,7 +55,8 @@
 
 				& .subText
 				{
-					height: 16px;
+					height: 14px;
+					line-height: 14px;
 					background: var(--accent);
 					padding: 0 6px;
 					border-radius: var(--smaller-border-radius);
@@ -68,5 +72,17 @@
 				}
 			}
 		}
+
+		& .pageName
+		{
+			max-width: max(256px, 30vw);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			text-wrap: nowrap;
+			flex-shrink: 1;
+			flex-grow: 1;
+		}
 	}
 }
+
+.fitContentButton { width: fit-content; }

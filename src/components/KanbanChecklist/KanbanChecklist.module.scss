@@ -2,20 +2,44 @@
 {
 	width: 100%;
 	height: fit-content;
-	padding-left: 8px;
+	padding: 24px 8px 8px 16px;
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	gap: 8px;
 	flex-shrink: 0;
+	background: var(--main-bg-color);
+	border-radius: var(--main-border-radius);
+	pointer-events: all;
 
-	&::before
+	& .dragHandle
 	{
-		content: '';
 		position: absolute;
-		inset: -12px -8px -8px -8px;
+		inset: 0 0 auto;
+		height: 16px;
+		border-radius: var(--main-border-radius) var(--main-border-radius) 0 0;
 		background: var(--main-bg-color);
-		border-radius: var(--main-border-radius);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		cursor: grab;
+		pointer-events: all;
+
+		& svg
+		{
+			height: 32px;
+			fill: var(--second-fg-color);
+			flex-shrink: 0;
+			opacity: 0;
+		}
+	}
+
+	&:hover .dragHandle
+	{
+		background: var(--hover-main-bg-color);
+
+		& svg { opacity: 1; }
 	}
 
 	& .checklistHeader
@@ -31,6 +55,7 @@
 
 		& .checklistHeaderTexts
 		{
+			min-width: 0;
 			height: 100%;
 			display: flex;
 			flex-direction: column;
@@ -42,12 +67,12 @@
 			{
 				height: fit-content;
 				margin-left: -8px;
-				flex-grow: 1;
-				text-wrap: pretty;
 				font-size: calc(var(--h5-font-size));
 				font-weight: 700;
 				margin-top: -4px;
 				border-radius: var(--smaller-border-radius);
+				flex-shrink: 1;
+				flex-grow: 1;
 			}
 
 			& .checklistItemsCountText
@@ -72,4 +97,5 @@
 	}
 
 	& > button { width: 100%; }
+	&.dragging { backdrop-filter: var(--blur-bg); }
 }

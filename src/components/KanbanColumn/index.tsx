@@ -1,4 +1,10 @@
+import { useRef } from 'react';
 import styles from './KanbanColumn.module.scss';
+import { useDroppable } from '@dnd-kit/react';
+import { CollisionPriority } from '@dnd-kit/abstract';
+import { RestrictToHorizontalAxis } from '@dnd-kit/abstract/modifiers';
+import { RestrictToElement } from '@dnd-kit/dom/modifiers';
+import { useSortable } from '@dnd-kit/react/sortable';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import KanbanTask from '../KanbanTask';
@@ -13,10 +19,12 @@ import useContextMenu from '../../hooks/useContextMenu';
 import { useBoardsContext } from '../../context/BoardsContext';
 
 import { isNewColumnTitleValid, MAX_COLUMN_TITLE_LENGTH } from '../../misc/boards';
-import { HorizontalAlign, Orientation } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
 
 interface Props
 {
+	container: React.RefObject<HTMLDivElement | null>;
+	sortableIndex: number;
 	boardId: Id;
 	column: Column;
 	tasks: Task[];
@@ -35,6 +43,34 @@ export default function KanbanColumn(props: Props)
 	const { renameColumn, deleteColumn, createTask } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
+	const { ref, handleRef, isDragging } = useSortable(
+	{
+		id: column.id,
+		index: props.sortableIndex,
+		type: 'column',
+		accept: ['column'],
+		collisionPriority: CollisionPriority.Low,
+		modifiers: [
+			RestrictToHorizontalAxis,
+			RestrictToElement.configure({ element: () => props.container.current })],
+		transition: DND_TRANSITION
+	});
+
+	const { ref: taskDropRef } = useDroppable(
+	{
+		id: `column-drop-${column.id}`,
+		type: 'column',
+		accept: ['task'],
+		collisionPriority: CollisionPriority.Low
+	});
+
+	const tasksContainerRef = useRef<HTMLDivElement>(null);
+
+	const setTasksContainerRef = (node: HTMLDivElement | null) =>
+	{
+		tasksContainerRef.current = node;
+		taskDropRef(node);
+	};
 
 	const tasksCountLastDigit = parseInt(tasks.length.toString().slice(-1));
 	const tasksCountLast2Digits = parseInt(tasks.length.toString().slice(-2));
@@ -96,16 +132,18 @@ export default function KanbanColumn(props: Props)
 				</Button>
 
 				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<SVG name="color"/>
 					{translate("color")}
 				</Button>
 
 				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
+				<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -115,7 +153,11 @@ export default function KanbanColumn(props: Props)
 	};
 
 	return (
-		<div className={`${styles.kanbanColumn} ${props.className || ''}`}>
+		<div className={`${styles.kanbanColumn} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} ref={ref}>
+			<div className={styles.dragHandle} ref={handleRef}>
+				<SVG name="drag"/>
+			</div>
+
 			<div className={styles.columnHeader}>
 				<div className={styles.columnHeaderTexts}>
 					<h6 className={styles.columnTitleText}>{column.title}</h6>
@@ -125,7 +167,13 @@ export default function KanbanColumn(props: Props)
 				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
 			</div>
 
-			{ tasks.map(task => <KanbanTask key={`task-${task.id}`} boardId={boardId} task={task} tags={tags}/>) }
+			<div className={`${styles.tasksContainer} maskedVerticalScrollContainer`} ref={setTasksContainerRef}>
+			{
+				tasks.map((task, index) =>
+					<KanbanTask key={`task-${column.id}-${task.id}`} container={props.container} sortableIndex={index}
+						boardId={boardId} columnId={column.id} task={task} tags={tags}/>)
+			}
+			</div>
 
 			<Button className={styles.addTaskButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} dimmed
 				onClick={createNewTask}>

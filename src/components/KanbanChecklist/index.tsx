@@ -1,5 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './KanbanChecklist.module.scss';
+import { DragDropProvider } from '@dnd-kit/react';
+import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
+import { RestrictToElement } from '@dnd-kit/dom/modifiers';
+import { useSortable, isSortable } from '@dnd-kit/react/sortable';
 
 import Button, { ButtonStyle, ButtonVariant } from '../Button';
 import { TextBox, TextBoxStyle } from '../TextBox';
@@ -14,11 +18,13 @@ import useContextMenu from '../../hooks/useContextMenu';
 
 import { useBoardsContext } from '../../context/BoardsContext';
 
-import { HorizontalAlign, Orientation } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
 import { isNewChecklistTitleValid } from '../../misc/boards';
 
 interface Props
 {
+	container: React.RefObject<HTMLDivElement | null>;
+	sortableIndex: number;
 	boardId: Id;
 	taskId: Id;
 	checklistId: Id;
@@ -28,7 +34,7 @@ interface Props
 export default function KanbanChecklist(props: Props)
 {
 	const { translate } = useTranslations();
-	const { state, renameChecklist, deleteChecklist, createChecklistItem } = useBoardsContext();
+	const { state, renameChecklist, deleteChecklist, createChecklistItem, reorderChecklistItems } = useBoardsContext();
 	const { openDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 
@@ -47,6 +53,18 @@ export default function KanbanChecklist(props: Props)
 		checklistItemsCountLastDigit === 1 && checklistItemsCountLast2Digits !== 11 ? "checklist_items_count_one"
 		: (checklistItemsCountLastDigit > 0 && checklistItemsCountLastDigit < 5) && (checklistItemsCountLast2Digits < 11 || checklistItemsCountLast2Digits > 14) ? "checklist_items_count_two_three_four"
 		: "checklist_items_count_multiple";
+
+	const checklistItemsContainerRef = useRef<HTMLDivElement>(null);
+
+	const { ref, handleRef, isDragging } = useSortable(
+	{
+		id: checklist.id,
+		index: props.sortableIndex,
+		modifiers: [
+			RestrictToVerticalAxis,
+			RestrictToElement.configure({ element: () => props.container.current })],
+		transition: DND_TRANSITION
+	});
 
 	const onChecklistDeleteDialog = () =>
 	{
@@ -68,6 +86,7 @@ export default function KanbanChecklist(props: Props)
 			{
 				options.includes('duplicate') &&
 					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>
 			}
@@ -77,7 +96,7 @@ export default function KanbanChecklist(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Secondary} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onChecklistDeleteDialog}>
+					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onChecklistDeleteDialog}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
@@ -94,7 +113,11 @@ export default function KanbanChecklist(props: Props)
 	};
 
 	return (
-		<div className={`${styles.kanbanChecklist} ${props.className || ''}`}>
+		<div className={`${styles.kanbanChecklist} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} ref={ref}>
+			<div className={styles.dragHandle} ref={handleRef}>
+				<SVG name="drag"/>
+			</div>
+
 			<div className={styles.checklistHeader}>
 				<div className={styles.checklistHeaderTexts}>
 					<TextBox
@@ -121,21 +144,34 @@ export default function KanbanChecklist(props: Props)
 				</Button>
 			</div>
 
-			<div className={styles.checklistItemsContainer}>
+			<DragDropProvider onDragEnd={({ operation }) =>
 			{
-				checklist.itemsOrder.map(checklistItemId =>
-				{
-					const checklistItem = checklist.items[checklistItemId];
+				const { source } = operation;
+				if (!isSortable(source)) return;
 
-					return <KanbanChecklistItem
+				const { index, initialIndex } = source;
+				if (index === initialIndex) return;
+
+				reorderChecklistItems(boardId, task.id, checklist.id, source.id as Id, index);
+			}}>
+				<div className={styles.checklistItemsContainer} ref={checklistItemsContainerRef}>
+				{
+					checklist.itemsOrder.map((checklistItemId, index) =>
+					{
+						const checklistItem = checklist.items[checklistItemId];
+
+						return <KanbanChecklistItem
 							key={checklistItem.id}
+							container={checklistItemsContainerRef}
+							sortableIndex={index}
 							boardId={boardId}
 							taskId={task.id}
 							checklistId={checklist.id}
 							checklistItemId={checklistItem.id}/>;
-				})
-			}
-			</div>
+					})
+				}
+				</div>
+			</DragDropProvider>
 
 			<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed
 				onClick={createNewChecklistItem}>
