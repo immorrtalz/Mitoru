@@ -8,6 +8,21 @@ export type CSSPropertiesWithVars = React.CSSProperties &
 	[key: `--${string}`]: string | number;
 };
 
+export enum InteractableStyle
+{
+	Primary,
+	Secondary,
+	Outlined,
+	Ghost
+}
+
+export enum StyleVariant
+{
+	Neutral,
+	Positive,
+	Negative
+}
+
 export enum Orientation
 {
 	Horizontal,

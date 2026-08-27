@@ -6,7 +6,7 @@ import { RestrictToHorizontalAxis } from '@dnd-kit/abstract/modifiers';
 import { RestrictToElement } from '@dnd-kit/dom/modifiers';
 import { useSortable } from '@dnd-kit/react/sortable';
 
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
+import Button from '../Button';
 import KanbanTask from '../KanbanTask';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
@@ -19,7 +19,7 @@ import useContextMenu from '../../hooks/useContextMenu';
 import { useBoardsContext } from '../../context/BoardsContext';
 
 import { isNewColumnTitleValid, MAX_COLUMN_TITLE_LENGTH } from '../../misc/boards';
-import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant } from '../../misc/utils';
 
 interface Props
 {
@@ -101,7 +101,7 @@ export default function KanbanColumn(props: Props)
 			title: translate("delete_the_column"),
 			description: `${translate("are_you_sure_delete_the_column")} "${column.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmButtonVariant: ButtonVariant.Negative,
+			confirmButtonVariant: StyleVariant.Negative,
 			onConfirm: () => deleteColumn(boardId, column.id)
 		});
 	};
@@ -117,7 +117,7 @@ export default function KanbanColumn(props: Props)
 		openContextMenu(
 		{
 			children: <>
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 					onClick={createNewTask}>
 					<SVG name="plus"/>
 					{translate("create_a_new_task")}
@@ -125,25 +125,25 @@ export default function KanbanColumn(props: Props)
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 					onClick={() => onColumnRenameDialog(column.title)}>
 					<SVG name="edit"/>
 					{translate("rename")}
 				</Button>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					<SVG name="color"/>
 					{translate("color")}
 				</Button>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
+				<Button buttonStyle={InteractableStyle.Ghost} variant={StyleVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -164,7 +164,7 @@ export default function KanbanColumn(props: Props)
 					<p className={styles.columnTasksCountText}>{tasks.length} {translate(tasksCountTranslationKey)}</p>
 				</div>
 
-				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
+				<Button buttonStyle={InteractableStyle.Ghost} small square dimmed onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
 			</div>
 
 			<div className={`${styles.tasksContainer} maskedVerticalScrollContainer`} ref={setTasksContainerRef}>
@@ -175,7 +175,7 @@ export default function KanbanColumn(props: Props)
 			}
 			</div>
 
-			<Button className={styles.addTaskButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} dimmed
+			<Button className={styles.addTaskButton} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} dimmed
 				onClick={createNewTask}>
 				<SVG name="plus"/>
 				{translate("create_a_new_task")}

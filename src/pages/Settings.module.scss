@@ -9,7 +9,7 @@ body
 	width: min(400px, 90%);
 	flex-grow: 1;
 	display: flex;
-	padding: 128px 0;
+	padding: 64px 0 128px;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
@@ -57,6 +57,12 @@ body
 			flex-wrap: nowrap;
 			gap: 8px;
 		}
+
+		& .flexGrowChildren > * { flex-grow: 1; }
+		& .flexShrinkChildren > * { flex-shrink: 1; }
+		& .alignItemsCenter { align-items: center; }
+		& .justifyContentCenter { justify-content: center; }
+		& .justifyContentSpaceBetween { justify-content: space-between; }
 
 		& .backButton { width: fit-content; }
 	}

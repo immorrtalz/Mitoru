@@ -295,3 +295,6 @@ a
 	overflow: hidden auto;
 	mask-image: linear-gradient(to bottom, transparent, white var(--smoothAreaHeight), white calc(100% - var(--smoothAreaHeight)), transparent);
 }
+
+.fitContentWidth { width: fit-content; }
+.fitContentHeight { height: fit-content; }

@@ -1,34 +1,14 @@
-import { TranslationKey } from "../hooks/useTranslations";
-
-export type Locale = "en" | "ru";
+export const LOCALES = ["en-US", "ru-RU"] as const;
+export type Locale = (typeof LOCALES)[number];
 
 export interface Settings
 {
 	locale: Locale
 }
 
-export interface DisplayOption
-{
-	displayValue: string;
-	value: string;
-}
-
-export const settingOptions: Record<keyof Settings, string[]> =
-{
-	locale: ["en", "ru"]
-} as const;
-
-export const settingTranslationKeys: Record<keyof Settings, TranslationKey[]> =
-{
-	locale: settingOptions.locale.map(value => `setting_locale_${value}`) as TranslationKey[]
-} as const;
-
-export const getSettingTranslationKey = (settingKey: keyof Settings, settingUnit: keyof typeof settingOptions): TranslationKey =>
-	settingTranslationKeys[settingKey][settingOptions[settingKey].indexOf(settingUnit)];
-
 export const initialSettings: Settings =
 {
-	locale: "en"
+	locale: LOCALES[0]
 };
 
 export interface SettingsContextValue

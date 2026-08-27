@@ -3,8 +3,8 @@
 	"board_tags": "Теги доски",
 	"language": "Язык",
 	"source_code_title": "Исходный код",
-	"setting_locale_en": "Английский",
-	"setting_locale_ru": "Русский",
+	"setting_locale_en_us": "English",
+	"setting_locale_ru_ru": "Русский",
 	"input_incentive": "Введите",
 	"back": "Назад",
 	"cancel": "Отмена",
@@ -67,5 +67,15 @@
 	"tags_count_two_three_four": "тега",
 	"tags_count_multiple": "тегов",
 	"no_tags_on_this_board": "На этой доске нет тегов",
-	"no_boards_yet": "Вы ещё не создали ни одной доски"
+	"no_boards_yet": "Вы ещё не создали ни одной доски",
+	"import": "Импорт",
+	"export": "Экспорт",
+	"json_data": "JSON данных",
+	"github_gists_integration": "Интеграция с GitHub Gists",
+	"this_app_uses_localstorage": "Это приложение использует localStorage для хранения ваших данных.",
+	"you_can_provide_a_github_api_key": "Вы можете предоставить API ключ GitHub, чтобы использовать GitHub Gists как \"облачное\" хранилище данных.",
+	"you_can_use_these_types_of_tokens": "Вы можете использовать эти типы токенов как API ключ:",
+	"a_github_app_user_access_token": "токен доступа пользователя для приложения GitHub",
+	"a_fine_grained_personal_access_token_with_the_gists_read_and_write_permission": "персональный токен доступа с детализированными правами (fine-grained) и разрешением `Gists` на чтение и запись",
+	"you_can_provide_a_gist_url_or_id": "Вы можете предоставить URL или id gist-а, если вы хотите использовать уже существующий gist, но вы должны быть владельцем gist-а и предоставить API ключ, чтобы вносить в него изменения"
 }

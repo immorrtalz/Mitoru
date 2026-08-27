@@ -1,6 +1,7 @@
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
+import Button from '../Button';
 import styles from './DialogWindow.module.scss';
 import useTranslations from "../../hooks/useTranslations";
+import { InteractableStyle, StyleVariant } from '../../misc/utils';
 
 interface Props
 {
@@ -8,12 +9,12 @@ interface Props
 	description: string;
 	cancelTitle?: string;
 	cancelDisabled?: boolean;
-	cancelButtonStyle?: ButtonStyle;
-	cancelButtonVariant?: ButtonVariant;
+	cancelButtonStyle?: InteractableStyle;
+	cancelButtonVariant?: StyleVariant;
 	confirmTitle?: string;
 	confirmDisabled?: boolean;
-	confirmButtonStyle?: ButtonStyle;
-	confirmButtonVariant?: ButtonVariant;
+	confirmButtonStyle?: InteractableStyle;
+	confirmButtonVariant?: StyleVariant;
 	onCancel?: (...args: any[]) => any;
 	onConfirm?: (...args: any[]) => any;
 	className?: string;
@@ -39,10 +40,10 @@ export default function DialogWindow(props: Props)
 				{props.children}
 
 				<div className={styles.buttonsContainer}>
-					{ props.onCancel && <Button buttonStyle={props.cancelButtonStyle ?? ButtonStyle.Outlined} variant={props.cancelButtonVariant ?? ButtonVariant.Neutral} onClick={onCancel}>{props.cancelTitle ?? translate('cancel')}</Button> }
+					{ props.onCancel && <Button buttonStyle={props.cancelButtonStyle ?? InteractableStyle.Outlined} variant={props.cancelButtonVariant ?? StyleVariant.Neutral} onClick={onCancel}>{props.cancelTitle ?? translate('cancel')}</Button> }
 					{
 						props.onConfirm &&
-						<Button buttonStyle={props.confirmButtonStyle ?? ButtonStyle.Primary} variant={props.confirmButtonVariant ?? ButtonVariant.Neutral} onClick={onConfirm} disabled={props.confirmDisabled}>
+						<Button buttonStyle={props.confirmButtonStyle ?? InteractableStyle.Primary} variant={props.confirmButtonVariant ?? StyleVariant.Neutral} onClick={onConfirm} disabled={props.confirmDisabled}>
 							{props.confirmTitle ?? translate('confirm')}
 						</Button>
 					}

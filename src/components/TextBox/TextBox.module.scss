@@ -4,7 +4,14 @@
 	width: 100%;
 	height: 40px;
 	border-radius: var(--main-border-radius);
-	color: var(--main-fg-color);
+
+	--fgColor: var(--main-fg-color);
+	--fgColorHover: var(--hover-main-fg-color);
+	--fgColorActive: var(--active-main-fg-color);
+
+	--bgColor: var(--main-bg-color);
+	--bgColorHover: var(--hover-main-bg-color);
+	--bgColorActive: var(--active-main-bg-color);
 
 	& .icon
 	{
@@ -24,20 +31,31 @@
 		height: 100%;
 		padding: 8px;
 		border-radius: inherit;
-		background: var(--main-bg-color);
-		border: 1px solid var(--main-border-color);
+		border: none;
 		outline: 0px solid transparent;
 		resize: none;
 		pointer-events: all;
 		font-size: inherit;
 		font-weight: inherit;
-		color: inherit;
 		overflow: clip;
+
+		background: var(--bgColor);
+		color: var(--fgColor);
+		fill: var(--fgColor);
+
+		&:hover
+		{
+			background: var(--bgColorHover);
+			color: var(--fgColorHover);
+			fill: var(--fgColorHover);
+		}
+
+		&:active { background: var(--bgColorActive) }
 
 		&:focus
 		{
 			background: var(--hover-main-bg-color);
-			border: 1px solid transparent;
+			border-color: transparent;
 		}
 
 		&::placeholder { color: var(--third-fg-color); }
@@ -57,7 +75,7 @@
 		{
 			outline: 4px solid color-mix(in srgb, var(--negative) 75%, transparent);
 			background: color-mix(in srgb, var(--negative) 15%, var(--main-bg-color));
-			border: 1px solid transparent;
+			border-color: transparent;
 
 			&:focus { background: color-mix(in srgb, var(--negative) 15%, var(--hover-main-bg-color)); }
 		}
@@ -78,9 +96,32 @@
 
 	&.resizable .textBox { resize: vertical; }
 
-	&.ghost .textBox:not(:focus):not(:hover):not(:active)
+	&.secondary, &.outlined, &.ghost
 	{
-		background: transparent;
+		--fgColor: var(--main-fg-color);
+		--fgColorHover: var(--hover-main-fg-color);
+		--fgColorActive: var(--active-main-fg-color);
+
+		--bgColor: var(--main-bg-color);
+		--bgColorHover: var(--hover-main-bg-color);
+		--bgColorActive: var(--active-main-bg-color);
+	}
+
+	&.outlined
+	{
+		--borderBaseColor: var(--main-border-color);
+
+		& .textBox
+		{
+			border: 1px solid var(--borderBaseColor);
+
+			&:hover, &:active, &:focus { border-color: transparent; }
+		}
+	}
+
+	&.ghost
+	{
+		--bgColor: transparent;
 		border-color: transparent;
 	}
 }

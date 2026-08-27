@@ -3,8 +3,8 @@
 	"board_tags": "Board tags",
 	"language": "Language",
 	"source_code_title": "Source",
-	"setting_locale_en": "English",
-	"setting_locale_ru": "Russian",
+	"setting_locale_en_us": "English",
+	"setting_locale_ru_ru": "Русский",
 	"input_incentive": "Input",
 	"back": "Back",
 	"cancel": "Cancel",
@@ -67,5 +67,15 @@
 	"tags_count_two_three_four": "tags",
 	"tags_count_multiple": "tags",
 	"no_tags_on_this_board": "No tags on this board",
-	"no_boards_yet": "You haven't created any boards yet"
+	"no_boards_yet": "You haven't created any boards yet",
+	"import": "Import",
+	"export": "Export",
+	"json_data": "JSON data",
+	"github_gists_integration": "GitHub Gists integration",
+	"this_app_uses_localstorage": "This app uses localStorage to store your data.",
+	"you_can_provide_a_github_api_key": "You can provide a GitHub API key to use GitHub Gists as the \"cloud\" data storage.",
+	"you_can_use_these_types_of_tokens": "You can use these types of tokens as an API key:",
+	"a_github_app_user_access_token": "a GitHub App user access token",
+	"a_fine_grained_personal_access_token_with_the_gists_read_and_write_permission": "a fine-grained personal access token with the `Gists` read and write permission",
+	"you_can_provide_a_gist_url_or_id": "You can provide a gist URL or id, if you'd like to use an existing one, but you need to own the gist and provide an API key to make changes to it."
 }

@@ -4,8 +4,8 @@ import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
 import { RestrictToElement } from '@dnd-kit/dom/modifiers';
 import { useSortable } from '@dnd-kit/react/sortable';
 
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
-import { TextBox, TextBoxStyle } from '../TextBox';
+import Button from '../Button';
+import { TextBox } from '../TextBox';
 import Checkbox, { CheckboxType } from '../Checkbox';
 import { SVG } from '../SVG';
 
@@ -16,7 +16,7 @@ import useDialog from '../../hooks/useDialog';
 import { useBoardsContext } from '../../context/BoardsContext';
 
 import { isNewChecklistTitleValid } from '../../misc/boards';
-import { DND_TRANSITION } from '../../misc/utils';
+import { DND_TRANSITION, InteractableStyle, StyleVariant } from '../../misc/utils';
 
 interface Props
 {
@@ -62,7 +62,7 @@ export default function KanbanChecklistItem(props: Props)
 			title: translate("delete_the_checklist_item"),
 			description: `${translate("are_you_sure_delete_the_checklist_item")} "${checklistItem.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmButtonVariant: ButtonVariant.Negative,
+			confirmButtonVariant: StyleVariant.Negative,
 			onConfirm: () => deleteChecklistItem(boardId, task.id, checklist.id, checklistItem.id)
 		});
 	};
@@ -80,7 +80,7 @@ export default function KanbanChecklistItem(props: Props)
 			<TextBox
 				key={`checklist-item-title-${titleResetToken}`}
 				className={styles.checklistItemHeaderText}
-				textBoxStyle={TextBoxStyle.Ghost}
+				textBoxStyle={InteractableStyle.Ghost}
 				placeholder={`${translate("input_incentive")}...`}
 				variant="wrap"
 				value={checklistItem.title}
@@ -93,7 +93,7 @@ export default function KanbanChecklistItem(props: Props)
 					else setTitleResetToken(t => t + 1);
 				}}/>
 
-			<Button className={styles.deleteButton} buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} small square dimmed
+			<Button className={styles.deleteButton} buttonStyle={InteractableStyle.Ghost} variant={StyleVariant.Negative} small square dimmed
 				onClick={onChecklistItemDeleteDialog}>
 				<SVG name='delete'/>
 			</Button>

@@ -6,8 +6,8 @@ import { RestrictToElement } from '@dnd-kit/dom/modifiers';
 import { useSortable } from '@dnd-kit/react/sortable';
 
 import { Tag } from '../../hooks/useKanban';
-import Button, { ButtonStyle } from '../Button';
-import { DND_TRANSITION } from '../../misc/utils';
+import Button from '../Button';
+import { DND_TRANSITION, InteractableStyle } from '../../misc/utils';
 
 interface Props
 {
@@ -45,7 +45,7 @@ export default function KanbanTag(props: Props)
 			<p className={styles.tagText}>{tag.title}</p>
 		{
 			(props.large === true) &&
-				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => props.onContextMenu?.(e)}>
+				<Button buttonStyle={InteractableStyle.Ghost} small square dimmed onClick={e => props.onContextMenu?.(e)}>
 					<SVG name='menuDots'/>
 				</Button>
 		}

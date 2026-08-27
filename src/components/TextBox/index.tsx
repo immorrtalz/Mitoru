@@ -1,16 +1,11 @@
 import { useEffect, useState } from 'react';
 import { names, SVG } from '../SVG';
 import styles from './TextBox.module.scss';
-
-export enum TextBoxStyle
-{
-	Default,
-	Ghost
-}
+import { InteractableStyle } from '../../misc/utils';
 
 interface Props
 {
-	textBoxStyle?: TextBoxStyle;
+	textBoxStyle: Exclude<InteractableStyle, InteractableStyle.Primary>;
 	svgIconName?: typeof names[number];
 	placeholder?: string;
 	minLength?: number;
@@ -64,8 +59,8 @@ export function TextBox(props: Props)
 		setValue(props.value || "");
 	}, [props.value]);
 
-	const textBoxStyles = ['', styles.ghost];
-	const textBoxStyle = textBoxStyles[props.textBoxStyle ?? TextBoxStyle.Default];
+	const textBoxStyles = [styles.secondary, styles.outlined, styles.ghost];
+	const textBoxStyle = textBoxStyles[props.textBoxStyle - 1] ?? styles.outlined;
 
 	return (
 		<div className={`textBox ${styles.container} ${textBoxStyle} ${props.className || ''} ${props.variant === 'wrap' || props.variant === 'multiline' ? styles.multiline : ""} ${props.resizable === true ? styles.resizable : ""}`}>

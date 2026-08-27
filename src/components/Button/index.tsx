@@ -1,26 +1,11 @@
-import { ReactElement, useEffect } from 'react';
+import { ReactElement } from 'react';
 import styles from './Button.module.scss';
-import { HorizontalAlign } from '../../misc/utils';
-
-export enum ButtonStyle
-{
-	Primary,
-	Secondary,
-	Outlined,
-	Ghost
-}
-
-export enum ButtonVariant
-{
-	Neutral,
-	Positive,
-	Negative
-}
+import { HorizontalAlign, InteractableStyle, StyleVariant } from '../../misc/utils';
 
 interface Props
 {
-	buttonStyle?: ButtonStyle;
-	variant?: ButtonVariant;
+	buttonStyle?: InteractableStyle;
+	variant?: StyleVariant;
 	align?: HorizontalAlign;
 	bgColor?: string;
 	children?: ReactElement | ReactElement[] | (ReactElement | string)[] | string;
@@ -55,10 +40,10 @@ export default function Button(props: Props)
 	};
 
 	const buttonStyles = [styles.primary, styles.secondary, styles.outlined, styles.ghost];
-	const buttonStyle = buttonStyles[props.buttonStyle ?? ButtonStyle.Primary];
+	const buttonStyle = buttonStyles[props.buttonStyle ?? InteractableStyle.Primary];
 
 	const variantStyles = ['', styles.positive, styles.negative];
-	const variantStyle = variantStyles[props.variant ?? ButtonVariant.Neutral];
+	const variantStyle = variantStyles[props.variant ?? StyleVariant.Neutral];
 
 	const alignStyles = [styles.leftAligned, styles.centerAligned, styles.rightAligned];
 	const alignStyle = alignStyles[props.align ?? HorizontalAlign.Center];
