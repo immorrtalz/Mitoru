@@ -171,7 +171,8 @@ export default function KanbanColumn(props: Props)
 			}
 			</>,
 			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
-			width: "fit-content"
+			width: "fit-content",
+			maxHeight: "max(200px, 50vh)"
 		});
 	};
 

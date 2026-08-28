@@ -11,6 +11,7 @@ interface Props
 	position: { top: number; left: number; };
 	width?: number | "fit-content";
 	maxWidth?: string;
+	maxHeight?: string;
 	showBackgroundOverlay?: boolean;
 	onCancel?: (...args: any[]) => any;
 	className?: string;
@@ -31,8 +32,10 @@ export default function ContextMenu(props: Props)
 
 		const width = (typeof props.width === "number") ? `${props.width}px` : props.width ?? `${DEFAULT_WIDTH}px`;
 		const maxWidth = props.maxWidth ?? "";
+		const maxHeight = props.maxHeight ?? "";
 		contextMenuElement.style.width = width;
 		contextMenuElement.style.maxWidth = maxWidth;
+		contextMenuElement.style.maxHeight = maxHeight;
 
 		const contextMenuRect = contextMenuElement.getBoundingClientRect();
 		const maxTop = window.innerHeight - contextMenuRect.height - VIEWPORT_MARGIN;
@@ -42,6 +45,7 @@ export default function ContextMenu(props: Props)
 		{
 			width,
 			maxWidth,
+			maxHeight,
 			top: `${clamp(props.position.top, VIEWPORT_MARGIN, maxTop)}px`,
 			left: `${clamp(props.position.left, VIEWPORT_MARGIN, maxLeft)}px`
 		} as CSSPropertiesWithVars);
