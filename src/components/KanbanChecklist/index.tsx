@@ -5,8 +5,8 @@ import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
 import { RestrictToElement } from '@dnd-kit/dom/modifiers';
 import { useSortable, isSortable } from '@dnd-kit/react/sortable';
 
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
-import { TextBox, TextBoxStyle } from '../TextBox';
+import Button from '../Button';
+import { TextBox } from '../TextBox';
 import KanbanChecklistItem from '../KanbanChecklistItem';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
@@ -18,7 +18,7 @@ import useContextMenu from '../../hooks/useContextMenu';
 
 import { useBoardsContext } from '../../context/BoardsContext';
 
-import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant } from '../../misc/utils';
 import { isNewChecklistTitleValid } from '../../misc/boards';
 
 interface Props
@@ -73,7 +73,7 @@ export default function KanbanChecklist(props: Props)
 			title: translate("delete_the_checklist"),
 			description: `${translate("are_you_sure_delete_the_checklist")} "${checklist.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmButtonVariant: ButtonVariant.Negative,
+			confirmButtonVariant: StyleVariant.Negative,
 			onConfirm: () => deleteChecklist(boardId, task.id, checklist.id)
 		});
 	};
@@ -85,7 +85,7 @@ export default function KanbanChecklist(props: Props)
 			children: <>
 			{
 				options.includes('duplicate') &&
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>
@@ -96,7 +96,7 @@ export default function KanbanChecklist(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onChecklistDeleteDialog}>
+					<Button buttonStyle={InteractableStyle.Ghost} variant={StyleVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onChecklistDeleteDialog}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
@@ -123,7 +123,7 @@ export default function KanbanChecklist(props: Props)
 					<TextBox
 						key={`checklist-title-${titleResetToken}`}
 						className={styles.checklistHeaderText}
-						textBoxStyle={TextBoxStyle.Ghost}
+						textBoxStyle={InteractableStyle.Ghost}
 						placeholder={`${translate("input_incentive")}...`}
 						variant="wrap"
 						value={checklist.title}
@@ -139,7 +139,7 @@ export default function KanbanChecklist(props: Props)
 					<p className={styles.checklistItemsCountText}>{checklist.itemsOrder.length} {translate(checklistItemsCountTranslationKey)}</p>
 				</div>
 
-				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onChecklistContextMenu(e.currentTarget.getBoundingClientRect())}>
+				<Button buttonStyle={InteractableStyle.Ghost} small square dimmed onClick={e => onChecklistContextMenu(e.currentTarget.getBoundingClientRect())}>
 					<SVG name='menuDots'/>
 				</Button>
 			</div>
@@ -173,7 +173,7 @@ export default function KanbanChecklist(props: Props)
 				</div>
 			</DragDropProvider>
 
-			<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed
+			<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small dimmed
 				onClick={createNewChecklistItem}>
 				<SVG name="plus"/>
 				{translate("create_a_new_checklist_item")}

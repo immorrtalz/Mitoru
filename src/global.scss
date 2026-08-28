@@ -142,6 +142,7 @@
 	--active-main-bg-color: var(--white-5);
 
 	--second-bg-color: var(--white-2);
+	--checkbox-bg-color: var(--white-10);
 
 	--blur-bg: blur(50px);
 
@@ -295,3 +296,6 @@ a
 	overflow: hidden auto;
 	mask-image: linear-gradient(to bottom, transparent, white var(--smoothAreaHeight), white calc(100% - var(--smoothAreaHeight)), transparent);
 }
+
+.fitContentWidth { width: fit-content; }
+.fitContentHeight { height: fit-content; }

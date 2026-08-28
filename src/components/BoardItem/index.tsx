@@ -3,7 +3,7 @@ import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
 import { RestrictToElement } from '@dnd-kit/dom/modifiers';
 import { useSortable } from '@dnd-kit/react/sortable';
 
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
+import Button from '../Button';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
 
@@ -13,7 +13,7 @@ import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
 
 import { isNewBoardTitleValid, MAX_BOARD_TITLE_LENGTH } from '../../misc/boards';
-import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant } from '../../misc/utils';
 
 import { useBoardsContext } from '../../context/BoardsContext';
 
@@ -69,7 +69,7 @@ export default function BoardItem(props: Props)
 			title: translate("delete_the_board"),
 			description: `${translate("are_you_sure_delete_the_board")} "${board.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmButtonVariant: ButtonVariant.Negative,
+			confirmButtonVariant: StyleVariant.Negative,
 			onConfirm: () => deleteBoard(board.id)
 		});
 	};
@@ -79,20 +79,20 @@ export default function BoardItem(props: Props)
 		openContextMenu(
 		{
 			children: <>
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 					onClick={() => onBoardRenameDialog(board.title)}>
 					<SVG name="edit"/>
 					{translate("rename")}
 				</Button>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onBoardDeleteDialog}>
+				<Button buttonStyle={InteractableStyle.Ghost} variant={StyleVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onBoardDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -107,7 +107,7 @@ export default function BoardItem(props: Props)
 			<p className={styles.title}>{board.title}</p>
 			{props.children}
 
-			<Button buttonStyle={ButtonStyle.Ghost} small square onClick={e => onBoardContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
+			<Button buttonStyle={InteractableStyle.Ghost} small square onClick={e => onBoardContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
 		</div>
 	);
 }

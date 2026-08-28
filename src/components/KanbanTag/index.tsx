@@ -5,9 +5,9 @@ import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
 import { RestrictToElement } from '@dnd-kit/dom/modifiers';
 import { useSortable } from '@dnd-kit/react/sortable';
 
-import { Tag } from '../../hooks/useKanban';
-import Button, { ButtonStyle } from '../Button';
-import { DND_TRANSITION } from '../../misc/utils';
+import { COLOR_VALUES, Tag } from '../../hooks/useKanban';
+import Button from '../Button';
+import { CSSPropertiesWithVars, DND_TRANSITION, InteractableStyle } from '../../misc/utils';
 
 interface Props
 {
@@ -34,8 +34,10 @@ export default function KanbanTag(props: Props)
 		transition: DND_TRANSITION
 	});
 
+	const styleObject: CSSPropertiesWithVars = { "--kanbanObjectColor": `${COLOR_VALUES[tag.color]}` };
+
 	return (
-		<div className={`${styles.kanbanTag} ${props.className || ''} ${props.large === true ? styles.large : ''} ${isDragging ? styles.dragging : ''}`} ref={ref}>
+		<div className={`${styles.kanbanTag} ${props.className || ''} ${props.large === true ? styles.large : ''} ${isDragging ? styles.dragging : ''}`} style={styleObject} ref={ref}>
 		{
 			(props.large === true) &&
 				<div className={styles.dragHandle} ref={handleRef}>
@@ -45,7 +47,7 @@ export default function KanbanTag(props: Props)
 			<p className={styles.tagText}>{tag.title}</p>
 		{
 			(props.large === true) &&
-				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => props.onContextMenu?.(e)}>
+				<Button buttonStyle={InteractableStyle.Ghost} small square dimmed onClick={e => props.onContextMenu?.(e)}>
 					<SVG name='menuDots'/>
 				</Button>
 		}

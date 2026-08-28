@@ -3,6 +3,7 @@
 import { createContext, useCallback, useState } from "react";
 import DialogWindow from "../components/DialogWindow";
 import { TextBox } from "../components/TextBox";
+import { InteractableStyle } from "../misc/utils";
 
 type DialogWindowProps = React.ComponentProps<typeof DialogWindow>;
 
@@ -71,6 +72,7 @@ const PromptDialogContent = ({ initialValue, minLength, maxLength, validate, han
 	return (
 		<TextBox
 			value={value}
+			textBoxStyle={InteractableStyle.Outlined}
 			minLength={minLength}
 			maxLength={maxLength}
 			onInput={onInput}

@@ -3,19 +3,20 @@ import styles from './TagsViewWindow.module.scss';
 import { DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
 
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
+import Button from '../Button';
 import KanbanTag from '../KanbanTag';
 import Separator from '../Separator';
 import BackgroundOverlay from '../BackgroundOverlay';
 import { SVG } from '../SVG';
+import ColorBlock from '../ColorBlock';
 
 import useTranslations, { TranslationKey } from "../../hooks/useTranslations";
-import { Id, Tag } from '../../hooks/useKanban';
+import { COLORS, Id, Tag } from '../../hooks/useKanban';
 
 import { isNewTagTitleValid, MAX_TAG_TITLE_LENGTH } from '../../misc/boards';
 
 import { useBoardsContext } from '../../context/BoardsContext';
-import { HorizontalAlign, Orientation } from '../../misc/utils';
+import { HorizontalAlign, InteractableStyle, Orientation, StyleVariant } from '../../misc/utils';
 import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
 
@@ -30,7 +31,7 @@ interface Props
 export default function TagsViewWindow(props: Props)
 {
 	const { translate } = useTranslations();
-	const { state, createTag, renameTag, deleteTag, reorderTags } = useBoardsContext();
+	const { state, createTag, renameTag, setTagColor, deleteTag, reorderTags } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 
@@ -83,7 +84,7 @@ export default function TagsViewWindow(props: Props)
 			title: translate("delete_the_tag"),
 			description: `${translate("are_you_sure_delete_the_tag")} "${boardTags[tagId]?.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmButtonVariant: ButtonVariant.Negative,
+			confirmButtonVariant: StyleVariant.Negative,
 			onConfirm: () => deleteTag(boardId, tagId)
 		});
 	};
@@ -95,7 +96,7 @@ export default function TagsViewWindow(props: Props)
 			children: <>
 			{
 				options.includes('rename') &&
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 						onClick={() => onTagRenameDialog(tag.title, tag.id)}>
 						<SVG name="edit"/>
 						{translate("rename")}
@@ -103,7 +104,9 @@ export default function TagsViewWindow(props: Props)
 			}
 			{
 				options.includes('color') &&
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => onTagColorContextMenu(tag, triggerButtonRect)}>
+						<SVG name="color"/>
 						{translate("color")}
 					</Button>
 			}
@@ -113,13 +116,33 @@ export default function TagsViewWindow(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={() => onTagDeleteDialog(tag.id)}>
+					<Button buttonStyle={InteractableStyle.Ghost} variant={StyleVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={() => onTagDeleteDialog(tag.id)}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
 			}
 			</>,
 			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
+		});
+	};
+
+	const onTagColorContextMenu = (tag: Tag, triggerButtonRect: DOMRect) =>
+	{
+		openContextMenu(
+		{
+			children: <>
+			{
+				COLORS.map(color =>
+					<Button key={`color-${color}`} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => setTagColor(boardId, tag.id, color)}>
+						<SVG name={tag.color === color ? 'checkmark' : 'empty'}/>
+						<ColorBlock color={color}/>
+					</Button>)
+			}
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content",
+			maxHeight: "max(200px, 50vh)"
 		});
 	};
 
@@ -152,7 +175,7 @@ export default function TagsViewWindow(props: Props)
 					</div>
 				</DragDropProvider>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={onTagCreateDialog}>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={onTagCreateDialog}>
 					<SVG name="plus"/>
 					{translate("create_a_new_tag")}
 				</Button>

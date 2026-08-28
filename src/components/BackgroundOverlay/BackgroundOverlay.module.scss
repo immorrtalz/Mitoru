@@ -4,9 +4,10 @@
 	inset: 0;
 	background: color-mix(in srgb, var(--dark) 0%, transparent);
 	backdrop-filter: blur(0px);
-	animation: showOverlay 0.5s forwards;
 	pointer-events: all;
 	z-index: 1000;
+
+	&:not(.transparent) { animation: showOverlay 0.5s forwards; }
 }
 
 @keyframes showOverlay

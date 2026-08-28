@@ -3,8 +3,8 @@ import styles from './TaskViewWindow.module.scss';
 import { DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from "@dnd-kit/react/sortable";
 
-import Button, { ButtonStyle } from '../Button';
-import { TextBox, TextBoxStyle } from '../TextBox';
+import Button from '../Button';
+import { TextBox } from '../TextBox';
 import Checkbox, { CheckboxType } from '../Checkbox';
 import KanbanChecklist from '../KanbanChecklist';
 import KanbanTag from '../KanbanTag';
@@ -15,9 +15,9 @@ import useTranslations from "../../hooks/useTranslations";
 import { Id, Tag } from '../../hooks/useKanban';
 
 import { isNewTaskTextValid, isNewTaskTitleValid } from '../../misc/boards';
+import { HorizontalAlign, InteractableStyle } from '../../misc/utils';
 
 import { useBoardsContext } from '../../context/BoardsContext';
-import { HorizontalAlign } from '../../misc/utils';
 
 interface Props
 {
@@ -64,7 +64,7 @@ export default function TaskViewWindow(props: Props)
 					<TextBox
 						key={`task-title-${titleResetToken}`}
 						className={styles.taskHeaderText}
-						textBoxStyle={TextBoxStyle.Ghost}
+						textBoxStyle={InteractableStyle.Ghost}
 						placeholder={`${translate("input_incentive")}...`}
 						variant="wrap"
 						value={task.title}
@@ -77,7 +77,7 @@ export default function TaskViewWindow(props: Props)
 							else setTitleResetToken(t => t + 1);
 						}}/>
 
-					<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => props.onTaskContextMenu(e.currentTarget.getBoundingClientRect(), ['color', 'duplicate', 'tags', 'delete'])}>
+					<Button buttonStyle={InteractableStyle.Ghost} small square dimmed onClick={e => props.onTaskContextMenu(e.currentTarget.getBoundingClientRect(), ['color', 'duplicate', 'tags', 'delete'])}>
 						<SVG name='menuDots'/>
 					</Button>
 				</div>
@@ -103,7 +103,7 @@ export default function TaskViewWindow(props: Props)
 				<TextBox
 					key={`task-text-${textResetToken}`}
 					className={styles.descriptionText}
-					textBoxStyle={TextBoxStyle.Default}
+					textBoxStyle={InteractableStyle.Secondary}
 					placeholder={`${translate("input_incentive")}...`}
 					variant="multiline"
 					value={task.text}
@@ -138,7 +138,7 @@ export default function TaskViewWindow(props: Props)
 				}
 				</DragDropProvider>
 
-				<Button className={styles.newChecklistButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={createNewChecklist}>
+				<Button className={styles.newChecklistButton} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small dimmed onClick={createNewChecklist}>
 					<SVG name="plus"/>
 					{translate("create_a_new_checklist")}
 				</Button>

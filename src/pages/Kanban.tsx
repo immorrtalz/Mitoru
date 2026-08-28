@@ -6,7 +6,7 @@ import { isSortable } from "@dnd-kit/react/sortable";
 import { move } from '@dnd-kit/helpers';
 
 import { SVG } from "../components/SVG";
-import Button, { ButtonStyle } from "../components/Button";
+import Button from "../components/Button";
 import { TopBar } from "../components/TopBar";
 import KanbanColumn from "../components/KanbanColumn";
 
@@ -15,6 +15,7 @@ import useBoardFromRoute from "../hooks/useBoardFromRoute";
 import { Id } from "../hooks/useKanban";
 
 import { useBoardsContext } from "../context/BoardsContext";
+import { InteractableStyle } from "../misc/utils";
 
 function Kanban()
 {
@@ -104,7 +105,7 @@ function Kanban()
 					})
 				}
 
-					<Button buttonStyle={ButtonStyle.Outlined} dimmed onClick={createNewColumn}>
+					<Button buttonStyle={InteractableStyle.Outlined} dimmed onClick={createNewColumn}>
 						<SVG name='plus'/>
 						{translate('create_a_new_column')}
 					</Button>

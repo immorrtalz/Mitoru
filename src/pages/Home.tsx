@@ -4,7 +4,7 @@ import styles from "./Home.module.scss";
 import { DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from "@dnd-kit/react/sortable";
 
-import Button, { ButtonStyle } from "../components/Button";
+import Button from "../components/Button";
 import { TopBar } from "../components/TopBar";
 import BoardItem from "../components/BoardItem";
 import Separator from "../components/Separator";
@@ -12,7 +12,7 @@ import Separator from "../components/Separator";
 import useTranslations from "../hooks/useTranslations";
 import { Id } from "../hooks/useKanban";
 
-import { Orientation } from "../misc/utils";
+import { InteractableStyle, Orientation } from "../misc/utils";
 
 import { useBoardsContext } from "../context/BoardsContext";
 
@@ -71,7 +71,7 @@ function Home()
 					</div>
 				</DragDropProvider>
 
-				<Button buttonStyle={ButtonStyle.Primary} onClick={createNewBoard}>{translate("create_a_new_board")}</Button>
+				<Button buttonStyle={InteractableStyle.Primary} onClick={createNewBoard}>{translate("create_a_new_board")}</Button>
 			</div>
 
 		</div>

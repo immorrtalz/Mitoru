@@ -1,7 +1,4 @@
-import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
-
-import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
 
 import Home from "./pages/Home";
 import Kanban from "./pages/Kanban";
@@ -10,13 +7,6 @@ import NotFound from "./pages/NotFound";
 
 function App()
 {
-	const { loadSettingsFromFile } = useSettingsLoader();
-
-	useEffect(() =>
-	{
-		loadSettingsFromFile();
-	}, []);
-
 	const router = createBrowserRouter([
 		{
 			index: true,

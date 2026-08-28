@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { clamp, CSSPropertiesWithVars } from '../../misc/utils';
 import styles from './ContextMenu.module.scss';
+import BackgroundOverlay from '../BackgroundOverlay';
 
 const VIEWPORT_MARGIN = 8;
 const DEFAULT_WIDTH = 210;
@@ -10,6 +11,8 @@ interface Props
 	position: { top: number; left: number; };
 	width?: number | "fit-content";
 	maxWidth?: string;
+	maxHeight?: string;
+	showBackgroundOverlay?: boolean;
 	onCancel?: (...args: any[]) => any;
 	className?: string;
 	children?: React.ReactNode | React.ReactNode[];
@@ -29,8 +32,10 @@ export default function ContextMenu(props: Props)
 
 		const width = (typeof props.width === "number") ? `${props.width}px` : props.width ?? `${DEFAULT_WIDTH}px`;
 		const maxWidth = props.maxWidth ?? "";
+		const maxHeight = props.maxHeight ?? "";
 		contextMenuElement.style.width = width;
 		contextMenuElement.style.maxWidth = maxWidth;
+		contextMenuElement.style.maxHeight = maxHeight;
 
 		const contextMenuRect = contextMenuElement.getBoundingClientRect();
 		const maxTop = window.innerHeight - contextMenuRect.height - VIEWPORT_MARGIN;
@@ -40,6 +45,7 @@ export default function ContextMenu(props: Props)
 		{
 			width,
 			maxWidth,
+			maxHeight,
 			top: `${clamp(props.position.top, VIEWPORT_MARGIN, maxTop)}px`,
 			left: `${clamp(props.position.left, VIEWPORT_MARGIN, maxLeft)}px`
 		} as CSSPropertiesWithVars);
@@ -47,7 +53,7 @@ export default function ContextMenu(props: Props)
 
 	return (
 		<>
-			<span className={styles.overlay} onClick={onCancel}/>
+			<BackgroundOverlay {...props.showBackgroundOverlay !== true ? { transparent: true } : {}} onClick={onCancel}/>
 
 			<div className={`${styles.container} ${props.className || ''}`} style={styleObject ?? {}} ref={contextMenuRef}>
 				{props.children}

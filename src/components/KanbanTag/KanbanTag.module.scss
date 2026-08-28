@@ -1,6 +1,5 @@
 .kanbanTag
 {
-	--primaryColor: var(--accent);
 	--dragHandleWidth: 32px;
 
 	width: fit-content;
@@ -9,7 +8,7 @@
 	padding: 0 6px;
 	border-radius: var(--smaller-border-radius);
 	flex-shrink: 0;
-	background: hsl(from var(--primaryColor) h s l / 0.35);
+	background: color-mix(in srgb, black 10%, var(--kanbanObjectColor) 35%);
 	pointer-events: all;
 
 	&:not(.large) { cursor: grab; }
@@ -30,7 +29,7 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		color: color-mix(in srgb, var(--primaryColor) 15%, white 75%);
+		color: color-mix(in srgb, var(--main-fg-color), var(--kanbanObjectColor) 15%);
 	}
 
 	&.large
@@ -42,7 +41,7 @@
 		flex-direction: row;
 		flex-wrap: nowrap;
 		align-items: center;
-		background: linear-gradient(to right, hsl(from var(--primaryColor) h s l / 0.35), hsl(from var(--primaryColor) h s l / 0));
+		background: linear-gradient(to right, rgb(from var(--kanbanObjectColor) r g b / 0.35), rgb(from var(--kanbanObjectColor) r g b / 0));
 		border-radius: var(--smaller-border-radius);
 
 		& .tagText

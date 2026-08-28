@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import './global.scss';
 import App from "./App";
 
-import useSettingsLoader from "./hooks/Loaders/useSettingsLoader";
+import useSettingsLoader from "./hooks/useSettingsLoader";
 import useBoardsPersistence from "./hooks/useBoardsPersistence";
 import useKanban, { KanbanState } from "./hooks/useKanban";
 import useGistAPI from "./hooks/useGistAPI";
@@ -21,8 +21,8 @@ import { TagsViewProvider } from "./context/TagsViewContext";
 
 export function AppRoot()
 {
-	const [settings, internal_setSettings] = useState<Settings>(initialSettings);
-	const { saveSettingsToFile } = useSettingsLoader();
+	const [settings, setSettings] = useState<Settings>(initialSettings);
+	const { loadSettings } = useSettingsLoader(setSettings);
 
 	const [initialBoardsState] = useState<KanbanState>(loadBoardsFromLocalStorage);
 	const kanban = useKanban(initialBoardsState);
@@ -30,11 +30,7 @@ export function AppRoot()
 
 	useBoardsPersistence(kanban.state);
 
-	const setSettings = (newSettings: Settings) =>
-	{
-		internal_setSettings(newSettings);
-		saveSettingsToFile(newSettings);
-	};
+	useEffect(() => { loadSettings() }, []);
 
 	return (
 		<React.StrictMode>

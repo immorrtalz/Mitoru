@@ -6,20 +6,21 @@ import { RestrictToHorizontalAxis } from '@dnd-kit/abstract/modifiers';
 import { RestrictToElement } from '@dnd-kit/dom/modifiers';
 import { useSortable } from '@dnd-kit/react/sortable';
 
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
+import Button from '../Button';
 import KanbanTask from '../KanbanTask';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
+import ColorBlock from '../ColorBlock';
 
 import useTranslations, { TranslationKey } from '../../hooks/useTranslations';
-import { Column, Id, Tag, Task } from '../../hooks/useKanban';
+import { COLOR_VALUES, COLORS, Column, Id, Tag, Task } from '../../hooks/useKanban';
 import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
 
 import { useBoardsContext } from '../../context/BoardsContext';
 
 import { isNewColumnTitleValid, MAX_COLUMN_TITLE_LENGTH } from '../../misc/boards';
-import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant, CSSPropertiesWithVars } from '../../misc/utils';
 
 interface Props
 {
@@ -40,7 +41,7 @@ export default function KanbanColumn(props: Props)
 	const tags = props.tags;
 
 	const { translate } = useTranslations();
-	const { renameColumn, deleteColumn, createTask } = useBoardsContext();
+	const { renameColumn, setColumnColor, deleteColumn, createTask } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 	const { ref, handleRef, isDragging } = useSortable(
@@ -80,6 +81,8 @@ export default function KanbanColumn(props: Props)
 		: (tasksCountLastDigit > 0 && tasksCountLastDigit < 5) && (tasksCountLast2Digits < 11 || tasksCountLast2Digits > 14) ? "tasks_count_two_three_four"
 		: "tasks_count_multiple";
 
+	const styleObject: CSSPropertiesWithVars = { "--kanbanObjectColor": `${COLOR_VALUES[column.color]}` };
+
 	const onColumnRenameDialog = (currentTitle: string) =>
 	{
 		openPromptDialog(
@@ -101,7 +104,7 @@ export default function KanbanColumn(props: Props)
 			title: translate("delete_the_column"),
 			description: `${translate("are_you_sure_delete_the_column")} "${column.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmButtonVariant: ButtonVariant.Negative,
+			confirmButtonVariant: StyleVariant.Negative,
 			onConfirm: () => deleteColumn(boardId, column.id)
 		});
 	};
@@ -117,7 +120,7 @@ export default function KanbanColumn(props: Props)
 		openContextMenu(
 		{
 			children: <>
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 					onClick={createNewTask}>
 					<SVG name="plus"/>
 					{translate("create_a_new_task")}
@@ -125,25 +128,26 @@ export default function KanbanColumn(props: Props)
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 					onClick={() => onColumnRenameDialog(column.title)}>
 					<SVG name="edit"/>
 					{translate("rename")}
 				</Button>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					onClick={() => onColumnColorContextMenu(triggerButtonRect)}>
 					<SVG name="color"/>
 					{translate("color")}
 				</Button>
 
-				<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
 
 				<Separator orientation={Orientation.Horizontal} paddingRightOrTop={4} paddingLeftOrBottom={4}/>
 
-				<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
+				<Button buttonStyle={InteractableStyle.Ghost} variant={StyleVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onColumnDeleteDialog}>
 					<SVG name="delete"/>
 					{translate("delete")}
 				</Button>
@@ -152,8 +156,28 @@ export default function KanbanColumn(props: Props)
 		});
 	};
 
+	const onColumnColorContextMenu = (triggerButtonRect: DOMRect) =>
+	{
+		openContextMenu(
+		{
+			children: <>
+			{
+				COLORS.map(color =>
+					<Button key={`color-${color}`} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => setColumnColor(boardId, column.id, color)}>
+						<SVG name={column.color === color ? 'checkmark' : 'empty'}/>
+						<ColorBlock color={color}/>
+					</Button>)
+			}
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content",
+			maxHeight: "max(200px, 50vh)"
+		});
+	};
+
 	return (
-		<div className={`${styles.kanbanColumn} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} ref={ref}>
+		<div className={`${styles.kanbanColumn} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} style={styleObject} ref={ref}>
 			<div className={styles.dragHandle} ref={handleRef}>
 				<SVG name="drag"/>
 			</div>
@@ -164,7 +188,7 @@ export default function KanbanColumn(props: Props)
 					<p className={styles.columnTasksCountText}>{tasks.length} {translate(tasksCountTranslationKey)}</p>
 				</div>
 
-				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
+				<Button buttonStyle={InteractableStyle.Ghost} small square dimmed onClick={e => onColumnContextMenu(e.currentTarget.getBoundingClientRect())}><SVG name='menuDots'/></Button>
 			</div>
 
 			<div className={`${styles.tasksContainer} maskedVerticalScrollContainer`} ref={setTasksContainerRef}>
@@ -175,7 +199,7 @@ export default function KanbanColumn(props: Props)
 			}
 			</div>
 
-			<Button className={styles.addTaskButton} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} dimmed
+			<Button className={styles.addTaskButton} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} dimmed
 				onClick={createNewTask}>
 				<SVG name="plus"/>
 				{translate("create_a_new_task")}

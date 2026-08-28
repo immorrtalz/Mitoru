@@ -4,14 +4,15 @@ import { RestrictToElement, RestrictToWindow } from '@dnd-kit/dom/modifiers';
 import { DragDropProvider } from '@dnd-kit/react';
 import { useSortable, isSortable } from '@dnd-kit/react/sortable';
 
-import Button, { ButtonStyle, ButtonVariant } from '../Button';
+import Button from '../Button';
 import Checkbox, { CheckboxType } from '../Checkbox';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
 import KanbanTag from '../KanbanTag';
+import ColorBlock from '../ColorBlock';
 
 import useTranslations from '../../hooks/useTranslations';
-import { Id, Tag, Task } from '../../hooks/useKanban';
+import { COLOR_VALUES, COLORS, Id, Tag, Task } from '../../hooks/useKanban';
 import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
 import useTaskView from '../../hooks/useTaskView';
@@ -19,7 +20,7 @@ import useTaskView from '../../hooks/useTaskView';
 import { useBoardsContext } from '../../context/BoardsContext';
 import { TaskViewHandle } from '../../context/TaskViewContext';
 
-import { HorizontalAlign, Orientation, DND_TRANSITION } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant, CSSPropertiesWithVars } from '../../misc/utils';
 import { isNewTaskTitleValid, MAX_TASK_TITLE_LENGTH } from '../../misc/boards';
 
 interface Props
@@ -36,7 +37,7 @@ interface Props
 
 export default function KanbanTask(props: Props)
 {
-	const { state, toggleTaskCompleted, renameTask, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags } = useBoardsContext();
+	const { state, toggleTaskCompleted, renameTask, setTaskColor, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags } = useBoardsContext();
 
 	const boardId = props.boardId;
 	const task = props.task;
@@ -71,6 +72,8 @@ export default function KanbanTask(props: Props)
 
 	let closeTaskViewWindowHandle: TaskViewHandle | null = null;
 
+	const styleObject: CSSPropertiesWithVars = { "--kanbanObjectColor": `${COLOR_VALUES[task.color]}` };
+
 	const onClick = (e: React.MouseEvent<HTMLElement>) =>
 	{
 		closeTaskViewWindowHandle = openTaskView({ boardId, taskId: task.id, tags, onTaskContextMenu });
@@ -98,7 +101,7 @@ export default function KanbanTask(props: Props)
 			title: translate("delete_the_task"),
 			description: `${translate("are_you_sure_delete_the_task")} "${task.title}"?\n${translate("this_action_cannot_be_undone")}.`,
 			confirmTitle: translate('delete'),
-			confirmButtonVariant: ButtonVariant.Negative,
+			confirmButtonVariant: StyleVariant.Negative,
 			onConfirm: () =>
 			{
 				closeTaskViewWindowHandle?.close();
@@ -114,7 +117,7 @@ export default function KanbanTask(props: Props)
 			children: <>
 			{
 				options.includes('rename') &&
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 						onClick={() => onTaskRenameDialog(task.title)}>
 						<SVG name="edit"/>
 						{translate("rename")}
@@ -122,14 +125,15 @@ export default function KanbanTask(props: Props)
 			}
 			{
 				options.includes('color') &&
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => onTaskColorContextMenu(triggerButtonRect)}>
 						<SVG name="color"/>
 						{translate("color")}
 					</Button>
 			}
 			{
 				options.includes('duplicate') &&
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
 						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>
@@ -140,7 +144,7 @@ export default function KanbanTask(props: Props)
 			}
 			{
 				options.includes('tags') &&
-					<Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
 						onClick={() => onTaskTagsContextMenu(triggerButtonRect)}>
 						<SVG name="tag"/>
 						{translate("tags")}
@@ -152,7 +156,7 @@ export default function KanbanTask(props: Props)
 			}
 			{
 				options.includes('delete') &&
-					<Button buttonStyle={ButtonStyle.Ghost} variant={ButtonVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
+					<Button buttonStyle={InteractableStyle.Ghost} variant={StyleVariant.Negative} align={HorizontalAlign.Left} small smallSVG onClick={onTaskDeleteDialog}>
 						<SVG name="delete"/>
 						{translate("delete")}
 					</Button>
@@ -169,12 +173,12 @@ export default function KanbanTask(props: Props)
 			children: <>
 			{
 				Object.keys(boardTags).length > 0 ? Object.values(boardTags).map(tag =>
-					<Button key={tag.id} buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG bgColor={tag.color}
+					<Button key={tag.id} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG bgColor={tag.color}
 						onClick={() => task.tagsIds.includes(tag.id) ? removeTagFromTask(boardId, task.id, tag.id) : createTagToTask(boardId, task.id, tag.id)}>
 						<SVG name={task.tagsIds.includes(tag.id) ? 'checkmark' : 'empty'}/>
 						{tag.title}
 					</Button>)
-					: <Button buttonStyle={ButtonStyle.Ghost} align={HorizontalAlign.Left} small smallSVG disabled>
+					: <Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG disabled>
 						{translate("no_tags_on_this_board")}
 					</Button>
 			}
@@ -184,8 +188,28 @@ export default function KanbanTask(props: Props)
 		});
 	};
 
+	const onTaskColorContextMenu = (triggerButtonRect: DOMRect) =>
+	{
+		openContextMenu(
+		{
+			children: <>
+			{
+				COLORS.map(color =>
+					<Button key={`color-${color}`} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => setTaskColor(boardId, task.id, color)}>
+						<SVG name={task.color === color ? 'checkmark' : 'empty'}/>
+						<ColorBlock color={color}/>
+					</Button>)
+			}
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content",
+			maxHeight: "max(200px, 50vh)"
+		});
+	};
+
 	return (
-		<div className={`${styles.kanbanTask} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} onClick={onClick} ref={ref}>
+		<div className={`${styles.kanbanTask} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} style={styleObject} onClick={onClick} ref={ref}>
 			<div className={styles.taskHeader}>
 				<Checkbox type={CheckboxType.Simple} small checked={task.isCompleted}
 					onClick={e => e.stopPropagation()}
@@ -193,7 +217,7 @@ export default function KanbanTask(props: Props)
 
 				<p className={styles.taskHeaderText}>{task.title}</p>
 
-				<Button buttonStyle={ButtonStyle.Ghost} small square dimmed onClick={e => onTaskContextMenu(e.currentTarget.getBoundingClientRect())}>
+				<Button buttonStyle={InteractableStyle.Ghost} small square dimmed onClick={e => onTaskContextMenu(e.currentTarget.getBoundingClientRect())}>
 					<SVG name='menuDots'/>
 				</Button>
 			</div>
