@@ -1,7 +1,43 @@
 import { useState } from "react";
 
 export type Id = string;
-export type Color = string;
+const IdType = 'string';
+
+export type Color = (typeof COLORS)[number];
+
+export const COLORS = ["red", "orangered", "orange", "yellow", "olive",
+	"lime", "green", "springgreen", "seagreen", "aquamarine",
+	"cyan", "lightblue", "blue", "ultramarine", "blueviolet",
+	"violet", "purple", "magenta", "pink", "orchid",
+	"gray"] as const;
+
+export const COLOR_VALUES: Record<(typeof COLORS)[number], string> =
+{
+	red: "#FF5959",
+	orangered: "#FF8040",
+	orange: "#FFBF40",
+	yellow: "#FFEF40",
+	olive: "#CFFF40",
+	lime: "#9FFF40",
+	green: "#60FF40",
+	springgreen: "#40FF60",
+	seagreen: "#40FF8F",
+	aquamarine: "#40FFBF",
+	cyan: "#40EFFF",
+	lightblue: "#40C9FF",
+	blue: "#66A6FF",
+	ultramarine: "#738AFF",
+	blueviolet: "#8A73FF",
+	violet: "#B266FF",
+	purple: "#E359FF",
+	magenta: "#FF59E3",
+	pink: "#FF59AC",
+	orchid: "#FF5983",
+	gray: "#808080"
+};
+
+const DEFAULT_COLOR = 'gray';
+export const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [] };
 
 export interface KanbanState
 {
@@ -62,7 +98,88 @@ export interface ChecklistItem
 	isCompleted: boolean;
 }
 
-const DEFAULT_COLOR = "#BFBFBF";
+export const isValidKanbanState = (data: KanbanState) =>
+{
+	return data
+		&& typeof data.boards === 'object'
+		&& Array.isArray(data.boardsOrder)
+		&& data.boardsOrder.every((id: unknown) => typeof id === IdType)
+		&& data.boardsOrder.every((id: Id) => id in data.boards)
+		&& Object.values(data.boards).every(isValidBoard);
+}
+
+const isValidBoard = (data: Board) =>
+{
+	return data
+		&& typeof data.id === IdType
+		&& typeof data.title === 'string'
+		&& typeof data.tags === 'object'
+		&& typeof data.columns === 'object'
+		&& typeof data.tasks === 'object'
+		&& typeof data.tasksOrderInColumn === 'object'
+		&& Array.isArray(data.columnsOrder)
+		&& data.columnsOrder.every((id: unknown) => typeof id === IdType)
+		&& data.columnsOrder.every((id: Id) => id in data.columns)
+		&& Object.keys(data.tasksOrderInColumn).every((id: Id) => id in data.columns)
+		&& Object.values(data.tasksOrderInColumn).every((ids: unknown) =>
+			Array.isArray(ids) && ids.every((id: unknown) => typeof id === IdType && (id as Id) in data.tasks))
+		&& Object.values(data.tags).every(isValidTag)
+		&& Object.values(data.columns).every(isValidColumn)
+		&& Object.values(data.tasks).every(isValidTask);
+}
+
+const isValidTag = (data: Tag) =>
+{
+	return data
+		&& typeof data.id === IdType
+		&& typeof data.title === 'string'
+		&& typeof data.color === typeof COLORS[0];
+}
+
+const isValidColumn = (data: Column) =>
+{
+	return data
+		&& typeof data.id === IdType
+		&& typeof data.title === 'string'
+		&& typeof data.color === typeof COLORS[0];
+}
+
+const isValidTask = (data: Task) =>
+{
+	return data
+		&& typeof data.id === IdType
+		&& typeof data.title === 'string'
+		&& typeof data.color === typeof COLORS[0]
+		&& typeof data.isCompleted === 'boolean'
+		&& typeof data.text === 'string'
+		&& Array.isArray(data.tagsIds)
+		&& data.tagsIds.every((id: unknown) => typeof id === IdType)
+		&& typeof data.checklists === 'object'
+		&& Array.isArray(data.checklistsOrder)
+		&& data.checklistsOrder.every((id: unknown) => typeof id === IdType)
+		&& data.checklistsOrder.every((id: Id) => id in data.checklists)
+		&& Object.values(data.checklists).every(isValidChecklist);
+}
+
+const isValidChecklist = (data: Checklist) =>
+{
+	return data
+		&& typeof data.id === IdType
+		&& typeof data.title === 'string'
+		&& typeof data.items === 'object'
+		&& Array.isArray(data.itemsOrder)
+		&& data.itemsOrder.every((id: unknown) => typeof id === IdType)
+		&& data.itemsOrder.every((id: Id) => id in data.items)
+		&& Object.values(data.items).every(isValidChecklistItem);
+}
+
+const isValidChecklistItem = (data: ChecklistItem) =>
+{
+	return data
+		&& typeof data.id === IdType
+		&& typeof data.title === 'string'
+		&& typeof data.isCompleted === 'boolean';
+}
 
 const genId = (): Id => crypto.randomUUID();
 
@@ -127,8 +244,6 @@ const taskWithChecklist = (task: Task, checklistId: Id, fn: (checklist: Checklis
 	const checklist = task.checklists[checklistId];
 	return checklist ? { ...task, checklists: { ...task.checklists, [checklistId]: fn(checklist) }} : task;
 };
-
-const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [] };
 
 export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 {

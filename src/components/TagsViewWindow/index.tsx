@@ -8,9 +8,10 @@ import KanbanTag from '../KanbanTag';
 import Separator from '../Separator';
 import BackgroundOverlay from '../BackgroundOverlay';
 import { SVG } from '../SVG';
+import ColorBlock from '../ColorBlock';
 
 import useTranslations, { TranslationKey } from "../../hooks/useTranslations";
-import { Id, Tag } from '../../hooks/useKanban';
+import { COLORS, Id, Tag } from '../../hooks/useKanban';
 
 import { isNewTagTitleValid, MAX_TAG_TITLE_LENGTH } from '../../misc/boards';
 
@@ -30,7 +31,7 @@ interface Props
 export default function TagsViewWindow(props: Props)
 {
 	const { translate } = useTranslations();
-	const { state, createTag, renameTag, deleteTag, reorderTags } = useBoardsContext();
+	const { state, createTag, renameTag, setTagColor, deleteTag, reorderTags } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 
@@ -103,7 +104,9 @@ export default function TagsViewWindow(props: Props)
 			}
 			{
 				options.includes('color') &&
-					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => onTagColorContextMenu(tag, triggerButtonRect)}>
+						<SVG name="color"/>
 						{translate("color")}
 					</Button>
 			}
@@ -120,6 +123,25 @@ export default function TagsViewWindow(props: Props)
 			}
 			</>,
 			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left }
+		});
+	};
+
+	const onTagColorContextMenu = (tag: Tag, triggerButtonRect: DOMRect) =>
+	{
+		openContextMenu(
+		{
+			children: <>
+			{
+				COLORS.map(color =>
+					<Button key={`color-${color}`} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => setTagColor(boardId, tag.id, color)}>
+						<SVG name={tag.color === color ? 'checkmark' : 'empty'}/>
+						<ColorBlock color={color}/>
+					</Button>)
+			}
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content"
 		});
 	};
 

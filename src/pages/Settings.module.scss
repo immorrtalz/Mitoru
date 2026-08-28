@@ -64,6 +64,8 @@ body
 		& .justifyContentCenter { justify-content: center; }
 		& .justifyContentSpaceBetween { justify-content: space-between; }
 
+		& .marginBottomForHeader { margin-bottom: 8px; }
+
 		& .backButton { width: fit-content; }
 	}
 }

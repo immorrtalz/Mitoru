@@ -22,7 +22,7 @@ import { TagsViewProvider } from "./context/TagsViewContext";
 export function AppRoot()
 {
 	const [settings, setSettings] = useState<Settings>(initialSettings);
-	const { loadSettings } = useSettingsLoader();
+	const { loadSettings } = useSettingsLoader(setSettings);
 
 	const [initialBoardsState] = useState<KanbanState>(loadBoardsFromLocalStorage);
 	const kanban = useKanban(initialBoardsState);

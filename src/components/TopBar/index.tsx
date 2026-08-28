@@ -10,7 +10,6 @@ import useTranslations from '../../hooks/useTranslations';
 import { Id } from '../../hooks/useKanban';
 import useTagsView from '../../hooks/useTagsView';
 
-import { useGistAPIContext } from '../../context/GistAPIContext';
 import { InteractableStyle } from '../../misc/utils';
 
 interface Props
@@ -25,7 +24,6 @@ export function TopBar(props: Props)
 {
 	const navigate = useNavigate();
 	const { translate } = useTranslations();
-	const { isOctokitInitialized, initOctokit, getGistContent, updateGist } = useGistAPIContext();
 	const { openTagsView } = useTagsView();
 
 	const onReturnToHome = () => navigate("/");
@@ -53,10 +51,6 @@ export function TopBar(props: Props)
 						{translate("board_tags")}
 					</Button>
 			}
-
-				{/* <Button buttonStyle={InteractableStyle.Outlined} square onClick={initOctokit} disabled={isOctokitInitialized()}>initOctokit</Button>
-				<Button buttonStyle={InteractableStyle.Outlined} square onClick={updateGist} disabled={!isOctokitInitialized()}>Push</Button>
-				<Button buttonStyle={InteractableStyle.Outlined} square onClick={getGistContent} disabled={!isOctokitInitialized()}>Pull</Button> */}
 			</div>
 
 		{

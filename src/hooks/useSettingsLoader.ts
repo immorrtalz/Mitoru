@@ -1,16 +1,12 @@
-import { useContext } from "react";
 import { initialSettings, Locale, LOCALES, Settings } from "../misc/settings";
-import SettingsContext from "../context/SettingsContext";
 
-const SETTINGS_STORAGE_KEY = 'settings';
+const SETTINGS_LOCAL_STORAGE_KEY = 'settings';
 
-export default function useSettingsLoader()
+export default function useSettingsLoader(setSettings: (settings: Settings) => void)
 {
-	const { setSettings } = useContext(SettingsContext);
-
 	const loadSettings = async () =>
 	{
-		const settingsFromLocalStorage = localStorage.getItem(SETTINGS_STORAGE_KEY);
+		const settingsFromLocalStorage = localStorage.getItem(SETTINGS_LOCAL_STORAGE_KEY);
 		const settingsExistInLocalStorage = settingsFromLocalStorage !== null;
 
 		const loadSettingsFromLocalStorage = async (): Promise<Settings> =>
@@ -39,8 +35,8 @@ export default function useSettingsLoader()
 			try
 			{
 				const osLocale = navigator.language || (navigator.languages && navigator.languages[0]) || initialSettings.locale;
-				if (osLocale == null) return initialSettings.locale;
-				const osLocaleSliced = osLocale.slice(0, 2).toLowerCase();
+				if (osLocale == null || osLocale.length !== 5) return initialSettings.locale;
+				const osLocaleSliced = `${osLocale.slice(0, 2).toLowerCase()}-${osLocale.slice(3, 5).toUpperCase()}`;
 
 				return (LOCALES as readonly string[]).includes(osLocaleSliced) ? osLocaleSliced as Locale : initialSettings.locale;
 			}
@@ -55,7 +51,7 @@ export default function useSettingsLoader()
 	};
 
 	const saveSettings = async (newSettings: Settings) =>
-		localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings));
+		localStorage.setItem(SETTINGS_LOCAL_STORAGE_KEY, JSON.stringify(newSettings));
 
 	return { loadSettings, saveSettings };
 }

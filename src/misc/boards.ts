@@ -1,5 +1,4 @@
-import { KanbanState } from "../hooks/useKanban";
-import { isRecord } from "./utils";
+import { EMPTY_STATE, isValidKanbanState, KanbanState } from "../hooks/useKanban";
 
 export const MAX_BOARD_TITLE_LENGTH = 64;
 export const MAX_TAG_TITLE_LENGTH = 32;
@@ -9,7 +8,6 @@ export const MAX_TASK_TEXT_LENGTH = 16384;
 export const MAX_CHECKLIST_TITLE_LENGTH = 512;
 
 const BOARDS_LOCAL_STORAGE_KEY = 'boards';
-const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [] };
 
 export const isNewTitleValid = (newTitle: string, currentTitle?: string, maxLength?: number, noEmpty?: boolean, trim: boolean = true) =>
 {
@@ -35,11 +33,6 @@ export const isNewChecklistTitleValid = (newTitle: string, currentTitle?: string
 export const isNewTagTitleValid = (newTitle: string, currentTitle?: string) =>
 	isNewTitleValid(newTitle, currentTitle, MAX_TAG_TITLE_LENGTH, true);
 
-// Light structural check - good enough to catch "this isn't even the right shape"
-// (e.g. leftover data from before useKanban, or hand-edited localStorage), not a full validator.
-const isPlausibleKanbanState = (value: unknown): value is KanbanState =>
-	isRecord(value) && isRecord(value.boards) && Array.isArray(value.boardsOrder);
-
 export const loadBoardsFromLocalStorage = (): KanbanState =>
 {
 	const raw = localStorage.getItem(BOARDS_LOCAL_STORAGE_KEY);
@@ -48,7 +41,9 @@ export const loadBoardsFromLocalStorage = (): KanbanState =>
 	try
 	{
 		const parsed = JSON.parse(raw) as unknown;
-		return isPlausibleKanbanState(parsed) ? parsed : EMPTY_STATE;
+
+		return (typeof parsed === 'object' && parsed !== null && isValidKanbanState(parsed as KanbanState))
+			? parsed as KanbanState : EMPTY_STATE;
 	}
 	catch (e)
 	{

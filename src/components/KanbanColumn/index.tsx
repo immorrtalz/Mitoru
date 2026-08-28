@@ -10,16 +10,17 @@ import Button from '../Button';
 import KanbanTask from '../KanbanTask';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
+import ColorBlock from '../ColorBlock';
 
 import useTranslations, { TranslationKey } from '../../hooks/useTranslations';
-import { Column, Id, Tag, Task } from '../../hooks/useKanban';
+import { COLOR_VALUES, COLORS, Column, Id, Tag, Task } from '../../hooks/useKanban';
 import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
 
 import { useBoardsContext } from '../../context/BoardsContext';
 
 import { isNewColumnTitleValid, MAX_COLUMN_TITLE_LENGTH } from '../../misc/boards';
-import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant, CSSPropertiesWithVars } from '../../misc/utils';
 
 interface Props
 {
@@ -40,7 +41,7 @@ export default function KanbanColumn(props: Props)
 	const tags = props.tags;
 
 	const { translate } = useTranslations();
-	const { renameColumn, deleteColumn, createTask } = useBoardsContext();
+	const { renameColumn, setColumnColor, deleteColumn, createTask } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 	const { ref, handleRef, isDragging } = useSortable(
@@ -79,6 +80,8 @@ export default function KanbanColumn(props: Props)
 		tasksCountLastDigit === 1 && tasksCountLast2Digits !== 11 ? "tasks_count_one"
 		: (tasksCountLastDigit > 0 && tasksCountLastDigit < 5) && (tasksCountLast2Digits < 11 || tasksCountLast2Digits > 14) ? "tasks_count_two_three_four"
 		: "tasks_count_multiple";
+
+	const styleObject: CSSPropertiesWithVars = { "--kanbanObjectColor": `${COLOR_VALUES[column.color]}` };
 
 	const onColumnRenameDialog = (currentTitle: string) =>
 	{
@@ -131,7 +134,8 @@ export default function KanbanColumn(props: Props)
 					{translate("rename")}
 				</Button>
 
-				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					onClick={() => onColumnColorContextMenu(triggerButtonRect)}>
 					<SVG name="color"/>
 					{translate("color")}
 				</Button>
@@ -152,8 +156,27 @@ export default function KanbanColumn(props: Props)
 		});
 	};
 
+	const onColumnColorContextMenu = (triggerButtonRect: DOMRect) =>
+	{
+		openContextMenu(
+		{
+			children: <>
+			{
+				COLORS.map(color =>
+					<Button key={`color-${color}`} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => setColumnColor(boardId, column.id, color)}>
+						<SVG name={column.color === color ? 'checkmark' : 'empty'}/>
+						<ColorBlock color={color}/>
+					</Button>)
+			}
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content"
+		});
+	};
+
 	return (
-		<div className={`${styles.kanbanColumn} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} ref={ref}>
+		<div className={`${styles.kanbanColumn} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} style={styleObject} ref={ref}>
 			<div className={styles.dragHandle} ref={handleRef}>
 				<SVG name="drag"/>
 			</div>

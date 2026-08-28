@@ -12,9 +12,9 @@
 	flex-wrap: nowrap;
 	gap: 8px;
 	flex-shrink: 0;
-	background: var(--second-bg-color);
+	background: color-mix(in srgb, var(--second-bg-color), var(--kanbanObjectColor) 5%);
 	border: 1px solid var(--main-border-color);
-	box-shadow: 0 var(--boxShadowHeight) 0 rgba(190, 190, 190, var(--boxShadowOpacity)) inset;
+	box-shadow: 0 var(--boxShadowHeight) 0 rgb(from var(--kanbanObjectColor) r g b / var(--boxShadowOpacity)) inset;
 	overflow: hidden;
 	pointer-events: all;
 
@@ -77,11 +77,12 @@
 				height: fit-content;
 				font-weight: 600;
 				text-wrap: wrap;
+				color: color-mix(in srgb, var(--main-fg-color), var(--kanbanObjectColor) 15%);
 			}
 
 			& .columnTasksCountText
 			{
-				color: var(--third-fg-color);
+				color: color-mix(in srgb, var(--third-fg-color), var(--kanbanObjectColor) 20%);
 				font-size: var(--smaller-font-size);
 			}
 		}

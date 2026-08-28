@@ -10,7 +10,7 @@ import useSettingsLoader from "../hooks/useSettingsLoader";
 import useTranslations, { TranslationKey } from "../hooks/useTranslations";
 import useDialog from "../hooks/useDialog";
 import useContextMenu from "../hooks/useContextMenu";
-import { KanbanState } from "../hooks/useKanban";
+import { isValidKanbanState, KanbanState } from "../hooks/useKanban";
 
 import { Locale, LOCALES, Settings } from "../misc/settings";
 import { HorizontalAlign, InteractableStyle, StyleVariant } from "../misc/utils";
@@ -26,7 +26,7 @@ function SettingsPage()
 {
 	const navigate = useNavigate();
 	const { settings, setSettings } = useContext(SettingsContext);
-	const { saveSettings } = useSettingsLoader();
+	const { saveSettings } = useSettingsLoader(setSettings);
 	const { translate } = useTranslations();
 	const { state, loadState } = useBoardsContext();
 	const { openContextMenu } = useContextMenu();
@@ -57,7 +57,7 @@ function SettingsPage()
 	const changeSetting = <K extends keyof Settings>(key: K, value: Settings[K]) =>
 	{
 		setSettings({...settings, [key]: value});
-		saveSettings(settings);
+		saveSettings({...settings, [key]: value});
 	};
 
 	const onImportJSONData = async () => JSONFileInputRef.current?.click();
@@ -65,7 +65,7 @@ function SettingsPage()
 	const onImportFileSelected = (e: React.ChangeEvent<HTMLInputElement>, onStateParsed: (state: KanbanState) => void) =>
 	{
 		const file = e.target.files?.[0];
-		if (!file) return;
+		if (file === undefined) return;
 
 		const reader = new FileReader();
 
@@ -73,28 +73,16 @@ function SettingsPage()
 		{
 			try
 			{
-				const parsed = JSON.parse(reader.result as string);
-				if (!isValidKanbanState(parsed)) throw new Error('Invalid kanban export file');
-				onStateParsed(parsed);
+				const parsedObject = JSON.parse(reader.result as string);
+
+				if (isValidKanbanState(parsedObject)) onStateParsed(parsedObject);
+				else console.error('Invalid file');
 			}
-			catch (err)
-			{
-				// TODO: surface via your dialog/toast system instead of console
-				console.error('Failed to import state:', err);
-			}
+			catch (e) { console.error('Failed to import file:', e); }
 		};
+
 		reader.readAsText(file);
-
-		e.target.value = ''; // allow re-selecting the same file later
-	}
-
-	const isValidKanbanState = (data: KanbanState) =>
-	{
-		return data
-			&& typeof data.boards === 'object'
-			&& Array.isArray(data.boardsOrder)
-			&& data.boardsOrder.every((id: unknown) => typeof id === 'string')
-			&& data.boardsOrder.every((id: string) => id in data.boards);
+		e.target.value = ''; // Allow selecting the same file again later
 	}
 
 	const onExportJSONData = async () =>
@@ -166,7 +154,7 @@ function SettingsPage()
 					</div>
 
 					<div className={styles.smallGapColumnContainer}>
-						<h4>{translate("github_gists_integration")}</h4>
+						<h4 className={styles.marginBottomForHeader}>{translate("github_gists_integration")}</h4>
 
 						<p>{translate("this_app_uses_localstorage")}</p>
 						<p>{translate("you_can_provide_a_github_api_key")}</p>

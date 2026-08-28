@@ -9,9 +9,10 @@ import Checkbox, { CheckboxType } from '../Checkbox';
 import Separator from '../Separator';
 import { SVG } from '../SVG';
 import KanbanTag from '../KanbanTag';
+import ColorBlock from '../ColorBlock';
 
 import useTranslations from '../../hooks/useTranslations';
-import { Id, Tag, Task } from '../../hooks/useKanban';
+import { COLOR_VALUES, COLORS, Id, Tag, Task } from '../../hooks/useKanban';
 import useDialog from '../../hooks/useDialog';
 import useContextMenu from '../../hooks/useContextMenu';
 import useTaskView from '../../hooks/useTaskView';
@@ -19,7 +20,7 @@ import useTaskView from '../../hooks/useTaskView';
 import { useBoardsContext } from '../../context/BoardsContext';
 import { TaskViewHandle } from '../../context/TaskViewContext';
 
-import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant } from '../../misc/utils';
+import { HorizontalAlign, Orientation, DND_TRANSITION, InteractableStyle, StyleVariant, CSSPropertiesWithVars } from '../../misc/utils';
 import { isNewTaskTitleValid, MAX_TASK_TITLE_LENGTH } from '../../misc/boards';
 
 interface Props
@@ -36,7 +37,7 @@ interface Props
 
 export default function KanbanTask(props: Props)
 {
-	const { state, toggleTaskCompleted, renameTask, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags } = useBoardsContext();
+	const { state, toggleTaskCompleted, renameTask, setTaskColor, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags } = useBoardsContext();
 
 	const boardId = props.boardId;
 	const task = props.task;
@@ -70,6 +71,8 @@ export default function KanbanTask(props: Props)
 	const tagsContainerRef = useRef<HTMLDivElement>(null);
 
 	let closeTaskViewWindowHandle: TaskViewHandle | null = null;
+
+	const styleObject: CSSPropertiesWithVars = { "--kanbanObjectColor": `${COLOR_VALUES[task.color]}` };
 
 	const onClick = (e: React.MouseEvent<HTMLElement>) =>
 	{
@@ -122,7 +125,8 @@ export default function KanbanTask(props: Props)
 			}
 			{
 				options.includes('color') &&
-					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => onTaskColorContextMenu(triggerButtonRect)}>
 						<SVG name="color"/>
 						{translate("color")}
 					</Button>
@@ -184,8 +188,27 @@ export default function KanbanTask(props: Props)
 		});
 	};
 
+	const onTaskColorContextMenu = (triggerButtonRect: DOMRect) =>
+	{
+		openContextMenu(
+		{
+			children: <>
+			{
+				COLORS.map(color =>
+					<Button key={`color-${color}`} buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => setTaskColor(boardId, task.id, color)}>
+						<SVG name={task.color === color ? 'checkmark' : 'empty'}/>
+						<ColorBlock color={color}/>
+					</Button>)
+			}
+			</>,
+			position: { top: triggerButtonRect.bottom, left: triggerButtonRect.left },
+			width: "fit-content"
+		});
+	};
+
 	return (
-		<div className={`${styles.kanbanTask} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} onClick={onClick} ref={ref}>
+		<div className={`${styles.kanbanTask} ${props.className || ''} ${isDragging ? styles.dragging : ''}`} style={styleObject} onClick={onClick} ref={ref}>
 			<div className={styles.taskHeader}>
 				<Checkbox type={CheckboxType.Simple} small checked={task.isCompleted}
 					onClick={e => e.stopPropagation()}
