@@ -32,7 +32,7 @@ export default function BoardItem(props: Props)
 	const board = props.board;
 
 	const { translate } = useTranslations();
-	const { renameBoard, deleteBoard } = useBoardsContext();
+	const { renameBoard, deleteBoard, duplicateBoard } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 	const { ref, isDragging } = useSortable(
@@ -85,7 +85,8 @@ export default function BoardItem(props: Props)
 					{translate("rename")}
 				</Button>
 
-				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					onClick={() => duplicateBoard(board.id)}>
 					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>
