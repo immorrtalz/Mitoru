@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 import styles from './Button.module.scss';
 import { HorizontalAlign, InteractableStyle, StyleVariant } from '../../misc/utils';
 

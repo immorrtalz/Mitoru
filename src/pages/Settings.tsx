@@ -18,6 +18,8 @@ import { useBoardsContext } from "../context/BoardsContext";
 
 const JSON_DATA_FILE_NAME = "mitoru_data";
 
+const JSON_DATA_FILE_NAME = "mitoru_data";
+
 function SettingsPage()
 {
 	const navigate = useNavigate();
