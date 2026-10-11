@@ -1,21 +1,19 @@
 import { ReactElement } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import styles from './TopBar.module.scss';
 import { version as appVersion } from '../../../package.json';
 
 import { SVG } from '../SVG';
 import Button from '../Button';
 
-import useTranslations from '../../hooks/useTranslations';
-import { Id } from '../../hooks/useKanban';
+import useTranslations, { TranslationKey } from '../../hooks/useTranslations';
 import useTagsView from '../../hooks/useTagsView';
+import useBoardFromRoute from '../../hooks/useBoardFromRoute';
 
 import { InteractableStyle } from '../../misc/utils';
 
 interface Props
 {
-	pageName?: string;
-	boardId?: Id;
 	children?: ReactElement | ReactElement[];
 	className?: string;
 }
@@ -25,6 +23,10 @@ export function TopBar(props: Props)
 	const navigate = useNavigate();
 	const { translate } = useTranslations();
 	const { openTagsView } = useTagsView();
+	const { boardId, board } = useBoardFromRoute();
+	const location = useLocation();
+
+	const pageName = board?.title ?? translate(location.pathname.split('/').pop() as TranslationKey);
 
 	const onReturnToHome = () => navigate("/");
 
@@ -41,27 +43,29 @@ export function TopBar(props: Props)
 					</div>
 				</div>
 
-			{ props.pageName && <h5 className={styles.pageName}>{props.pageName}</h5> }
+			{ pageName.trim() !== "" && <h5 className={styles.pageName}>{pageName}</h5> }
 
 			{
-				props.boardId !== undefined &&
+				boardId !== undefined &&
 					<Button className={styles.fitContentButton} buttonStyle={InteractableStyle.Outlined} small smallSVG
-						onClick={() => props.boardId !== undefined ? openTagsView({ boardId: props.boardId }) : {}}>
+						onClick={() => boardId !== undefined ? openTagsView({ boardId: boardId }) : {}}>
 						<SVG name="tag"/>
 						{translate("board_tags")}
 					</Button>
 			}
 			</div>
 
-		{
-			location.pathname !== "/settings" &&
-				<Button className={styles.fitContentButton} buttonStyle={InteractableStyle.Outlined} small square
-					onClick={() => navigate("/settings")}>
-					<SVG name="settings"/>
-				</Button>
-		}
-
 			{props.children}
+
+			<div className={styles.rightContainer}>
+			{
+				location.pathname !== "/settings" &&
+					<Button className={styles.fitContentButton} buttonStyle={InteractableStyle.Outlined} small square
+						onClick={() => navigate("/settings")}>
+						<SVG name="settings"/>
+					</Button>
+			}
+			</div>
 		</div>
 	);
 }

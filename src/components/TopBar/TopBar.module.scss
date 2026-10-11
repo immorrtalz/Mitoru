@@ -83,6 +83,15 @@
 			flex-grow: 1;
 		}
 	}
+
+	& .rightContainer
+	{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex-wrap: nowrap;
+		gap: 16px;
+	}
 }
 
 .fitContentButton { width: fit-content; }

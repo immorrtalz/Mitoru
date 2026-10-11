@@ -1,6 +1,9 @@
 /* This file contains AI-generated content */
 
 import { useState } from "react";
+import { getCurrentTimestamp } from "../misc/utils";
+
+const CURRENT_FORMAT_VERSION = 1;
 
 export type Id = string;
 const IdType = 'string';
@@ -39,13 +42,14 @@ export const COLOR_VALUES: Record<(typeof COLORS)[number], string> =
 };
 
 const DEFAULT_COLOR = 'gray';
-export const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [] };
+export const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [], savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
 
 export interface KanbanState
 {
 	boards: Record<Id, Board>;
 	boardsOrder: Id[];
-	gistId?: string;
+	savedAt: string;
+	formatVersion: number;
 }
 
 export interface Board
@@ -103,11 +107,20 @@ export interface ChecklistItem
 export const isValidKanbanState = (data: KanbanState) =>
 {
 	return data
+		&& (data.formatVersion === undefined
+			|| (typeof data.formatVersion === 'number'
+			&& !isNaN(data.formatVersion)
+			&& data.formatVersion > 0))
 		&& typeof data.boards === 'object'
 		&& Array.isArray(data.boardsOrder)
 		&& data.boardsOrder.every((id: unknown) => typeof id === IdType)
 		&& data.boardsOrder.every((id: Id) => id in data.boards)
-		&& Object.values(data.boards).every(isValidBoard);
+		&& Object.values(data.boards).every(isValidBoard)
+		// savedAt was added in the formatVersion 1
+		&& (data.formatVersion === undefined || data.formatVersion < 1
+			|| (typeof data.savedAt === 'string'
+			&& !isNaN(Date.parse(data.savedAt))
+			&& Date.parse(data.savedAt) > 0));
 }
 
 const isValidBoard = (data: Board) =>
@@ -251,7 +264,7 @@ const duplicateTaskData = (task: Task): Task =>
 const stateWithBoard = (state: KanbanState, boardId: Id, fn: (board: Board) => Board): KanbanState =>
 {
 	const board = state.boards[boardId];
-	return board ? { ...state, boards: { ...state.boards, [boardId]: fn(board) } } : state;
+	return board ? { ...state, boards: { ...state.boards, [boardId]: fn(board) }, savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION } : state;
 };
 
 const boardWithTask = (board: Board, taskId: Id, fn: (task: Task) => Task): Board =>
@@ -272,7 +285,13 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 
 	// Escape hatch for hydrating the whole state at once (e.g. after loading from localStorage/a file).
 	// Not meant for incremental updates — use the actions above for those.
-	const loadState = (newState: KanbanState) => setState(newState);
+	const loadState = (newState: KanbanState) =>
+	{
+		if (newState.formatVersion === undefined || newState.formatVersion < 1 || newState.savedAt === undefined)
+			newState = { ...newState, savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
+
+		setState(newState);
+	};
 
 	// Boards
 	const createBoard = (title: string) =>
@@ -281,7 +300,7 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 			const board = makeBoard(title);
 			const boards = { ...prev.boards, [board.id]: board };
 
-			return { boards, boardsOrder: [board.id, ...prev.boardsOrder] };
+			return { boards, boardsOrder: [board.id, ...prev.boardsOrder], savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
 		});
 
 	const renameBoard = (boardId: Id, title: string) =>
@@ -292,11 +311,11 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		{
 			const boards = { ...prev.boards };
 			delete boards[boardId];
-			return { boards, boardsOrder: removeIdFromArray(prev.boardsOrder, boardId) };
+			return { boards, boardsOrder: removeIdFromArray(prev.boardsOrder, boardId), savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
 		});
 
 	const reorderBoards = (boardId: Id, toIndex: number) =>
-		setState(prev => ({ ...prev, boardsOrder: moveIdInArray(prev.boardsOrder, boardId, toIndex)}));
+		setState(prev => ({ ...prev, boardsOrder: moveIdInArray(prev.boardsOrder, boardId, toIndex), savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION}));
 
 	const duplicateBoard = (boardId: Id) =>
 		setState(prev =>
@@ -334,7 +353,7 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 				tasksOrderInColumn
 			};
 
-			return { boards: { ...prev.boards, [board.id]: board }, boardsOrder: insertIdAfter(prev.boardsOrder, boardId, board.id) };
+			return { boards: { ...prev.boards, [board.id]: board }, boardsOrder: insertIdAfter(prev.boardsOrder, boardId, board.id), savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
 		});
 
 	// Columns

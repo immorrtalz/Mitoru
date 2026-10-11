@@ -6,14 +6,12 @@ import App from "./App";
 import useSettingsLoader from "./hooks/useSettingsLoader";
 import useBoardsPersistence from "./hooks/useBoardsPersistence";
 import useKanban, { KanbanState } from "./hooks/useKanban";
-import useGistAPI from "./hooks/useGistAPI";
 
 import { initialSettings, Settings } from "./misc/settings";
 import { loadBoardsFromLocalStorage } from "./misc/boards";
 
 import SettingsContext from "./context/SettingsContext";
 import BoardsContext from "./context/BoardsContext";
-import GistAPIContext from "./context/GistAPIContext";
 import { DialogProvider } from "./context/DialogContext";
 import { ContextMenuProvider } from "./context/ContextMenuContext";
 import { TaskViewProvider } from "./context/TaskViewContext";
@@ -26,7 +24,6 @@ export function AppRoot()
 
 	const [initialBoardsState] = useState<KanbanState>(loadBoardsFromLocalStorage);
 	const kanban = useKanban(initialBoardsState);
-	const gistAPI = useGistAPI(kanban.state, kanban.loadState);
 
 	useBoardsPersistence(kanban.state);
 
@@ -40,9 +37,7 @@ export function AppRoot()
 						<BoardsContext.Provider value={kanban}>
 							<TagsViewProvider>
 								<TaskViewProvider>
-									<GistAPIContext.Provider value={gistAPI}>
-										<App/>
-									</GistAPIContext.Provider>
+									<App/>
 								</TaskViewProvider>
 							</TagsViewProvider>
 						</BoardsContext.Provider>

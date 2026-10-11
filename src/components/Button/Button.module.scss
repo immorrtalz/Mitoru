@@ -13,12 +13,12 @@
 	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: 4px;
 	flex-shrink: 0;
 	pointer-events: all;
 	font-size: var(--main-font-size);
 	font-weight: 500;
-	overflow: clip;
+	/* overflow: hidden; */
 	text-wrap: nowrap;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -63,7 +63,7 @@
 		text-wrap: inherit;
 		text-overflow: inherit;
 		white-space: inherit;
-		overflow: inherit;
+		overflow: hidden;
 	}
 
 	& > svg
@@ -71,6 +71,7 @@
 		width: 32px;
 		height: 32px;
 		fill: inherit;
+		flex-shrink: 0;
 	}
 
 	&.primary
@@ -164,7 +165,6 @@
 		padding: 8px;
 		font-size: 14px;
 		border-radius: var(--smaller-border-radius);
-		gap: 4px;
 	}
 
 	&.square
@@ -176,8 +176,6 @@
 
 	&.smallSVG
 	{
-		gap: 4px;
-
 		& > svg
 		{
 			width: 24px;

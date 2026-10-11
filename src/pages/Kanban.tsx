@@ -7,7 +7,6 @@ import { move } from '@dnd-kit/helpers';
 
 import { SVG } from "../components/SVG";
 import Button from "../components/Button";
-import { TopBar } from "../components/TopBar";
 import KanbanColumn from "../components/KanbanColumn";
 
 import useTranslations from "../hooks/useTranslations";
@@ -34,8 +33,6 @@ function Kanban()
 
 	if (board === undefined || boardId === undefined) return null;
 
-	const boardName = board.title;
-
 	const createNewColumn = () =>
 	{
 		const columnNumber = board.columnsOrder.length + 1;
@@ -44,8 +41,6 @@ function Kanban()
 
 	return (
 		<div className='mainContainer'>
-			<TopBar pageName={boardName} boardId={boardId}/>
-
 			<DragDropProvider
 				onDragStart={() => previousTasksOrder.current = board.tasksOrderInColumn}
 				onDragOver={event =>
