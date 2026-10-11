@@ -279,7 +279,7 @@ a
 .mainContainer
 {
 	width: 100%;
-	height: 100%;
+	height: calc(100% - 48px); // also change value in TopBar.module.scss .topBar
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
