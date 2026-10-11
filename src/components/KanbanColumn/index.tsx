@@ -41,7 +41,7 @@ export default function KanbanColumn(props: Props)
 	const tags = props.tags;
 
 	const { translate } = useTranslations();
-	const { renameColumn, setColumnColor, deleteColumn, createTask } = useBoardsContext();
+	const { renameColumn, setColumnColor, deleteColumn, duplicateColumn, createTask } = useBoardsContext();
 	const { openDialog, openPromptDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 	const { ref, handleRef, isDragging } = useSortable(
@@ -140,7 +140,8 @@ export default function KanbanColumn(props: Props)
 					{translate("color")}
 				</Button>
 
-				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+				<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+					onClick={() => duplicateColumn(boardId, column.id)}>
 					<SVG name="copy"/>
 					{translate("duplicate")}
 				</Button>

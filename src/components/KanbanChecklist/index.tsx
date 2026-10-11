@@ -34,7 +34,7 @@ interface Props
 export default function KanbanChecklist(props: Props)
 {
 	const { translate } = useTranslations();
-	const { state, renameChecklist, deleteChecklist, createChecklistItem, reorderChecklistItems } = useBoardsContext();
+	const { state, renameChecklist, deleteChecklist, duplicateChecklist, createChecklistItem, reorderChecklistItems } = useBoardsContext();
 	const { openDialog } = useDialog();
 	const { openContextMenu } = useContextMenu();
 
@@ -85,7 +85,8 @@ export default function KanbanChecklist(props: Props)
 			children: <>
 			{
 				options.includes('duplicate') &&
-					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => duplicateChecklist(boardId, task.id, checklist.id)}>
 						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>

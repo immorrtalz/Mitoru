@@ -37,7 +37,7 @@ interface Props
 
 export default function KanbanTask(props: Props)
 {
-	const { state, toggleTaskCompleted, renameTask, setTaskColor, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags } = useBoardsContext();
+	const { state, toggleTaskCompleted, renameTask, setTaskColor, deleteTask, createTagToTask, removeTagFromTask, reorderTaskTags, duplicateTask } = useBoardsContext();
 
 	const boardId = props.boardId;
 	const task = props.task;
@@ -133,7 +133,8 @@ export default function KanbanTask(props: Props)
 			}
 			{
 				options.includes('duplicate') &&
-					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG disabled>
+					<Button buttonStyle={InteractableStyle.Ghost} align={HorizontalAlign.Left} small smallSVG dimmedSVG
+						onClick={() => duplicateTask(boardId, props.columnId, task.id)}>
 						<SVG name="copy"/>
 						{translate("duplicate")}
 					</Button>

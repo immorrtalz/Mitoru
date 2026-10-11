@@ -1,4 +1,9 @@
+/* This file contains AI-generated content */
+
 import { useState } from "react";
+import { getCurrentTimestamp } from "../misc/utils";
+
+const CURRENT_FORMAT_VERSION = 1;
 
 export type Id = string;
 const IdType = 'string';
@@ -37,13 +42,14 @@ export const COLOR_VALUES: Record<(typeof COLORS)[number], string> =
 };
 
 const DEFAULT_COLOR = 'gray';
-export const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [] };
+export const EMPTY_STATE: KanbanState = { boards: {}, boardsOrder: [], savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
 
 export interface KanbanState
 {
 	boards: Record<Id, Board>;
 	boardsOrder: Id[];
-	gistId?: string;
+	savedAt: string;
+	formatVersion: number;
 }
 
 export interface Board
@@ -101,11 +107,20 @@ export interface ChecklistItem
 export const isValidKanbanState = (data: KanbanState) =>
 {
 	return data
+		&& (data.formatVersion === undefined
+			|| (typeof data.formatVersion === 'number'
+			&& !isNaN(data.formatVersion)
+			&& data.formatVersion > 0))
 		&& typeof data.boards === 'object'
 		&& Array.isArray(data.boardsOrder)
 		&& data.boardsOrder.every((id: unknown) => typeof id === IdType)
 		&& data.boardsOrder.every((id: Id) => id in data.boards)
-		&& Object.values(data.boards).every(isValidBoard);
+		&& Object.values(data.boards).every(isValidBoard)
+		// savedAt was added in the formatVersion 1
+		&& (data.formatVersion === undefined || data.formatVersion < 1
+			|| (typeof data.savedAt === 'string'
+			&& !isNaN(Date.parse(data.savedAt))
+			&& Date.parse(data.savedAt) > 0));
 }
 
 const isValidBoard = (data: Board) =>
@@ -226,11 +241,30 @@ const moveIdInArray = (arr: Id[], id: Id, toIndex: number): Id[] =>
 	return [...without.slice(0, index), id, ...without.slice(index)];
 };
 
+const insertIdAfter = (arr: Id[], afterId: Id, newId: Id): Id[] =>
+{
+	const index = arr.indexOf(afterId);
+	return index === -1 ? [...arr, newId] : [...arr.slice(0, index + 1), newId, ...arr.slice(index + 1)];
+};
+
+// Deep-copy helpers: regenerate ids at every nested level so duplicates are fully independent
+const duplicateChecklistData = (checklist: Checklist): Checklist =>
+{
+	const items = checklist.itemsOrder.map(itemId => ({ ...checklist.items[itemId], id: genId() }));
+	return { ...checklist, id: genId(), items: Object.fromEntries(items.map(i => [i.id, i])), itemsOrder: items.map(i => i.id) };
+};
+
+const duplicateTaskData = (task: Task): Task =>
+{
+	const checklists = task.checklistsOrder.map(id => duplicateChecklistData(task.checklists[id]));
+	return { ...task, id: genId(), checklists: Object.fromEntries(checklists.map(c => [c.id, c])), checklistsOrder: checklists.map(c => c.id) };
+};
+
 // Each helper updates one nested level without touching the rest.
 const stateWithBoard = (state: KanbanState, boardId: Id, fn: (board: Board) => Board): KanbanState =>
 {
 	const board = state.boards[boardId];
-	return board ? { ...state, boards: { ...state.boards, [boardId]: fn(board) } } : state;
+	return board ? { ...state, boards: { ...state.boards, [boardId]: fn(board) }, savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION } : state;
 };
 
 const boardWithTask = (board: Board, taskId: Id, fn: (task: Task) => Task): Board =>
@@ -251,7 +285,13 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 
 	// Escape hatch for hydrating the whole state at once (e.g. after loading from localStorage/a file).
 	// Not meant for incremental updates — use the actions above for those.
-	const loadState = (newState: KanbanState) => setState(newState);
+	const loadState = (newState: KanbanState) =>
+	{
+		if (newState.formatVersion === undefined || newState.formatVersion < 1 || newState.savedAt === undefined)
+			newState = { ...newState, savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
+
+		setState(newState);
+	};
 
 	// Boards
 	const createBoard = (title: string) =>
@@ -260,7 +300,7 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 			const board = makeBoard(title);
 			const boards = { ...prev.boards, [board.id]: board };
 
-			return { boards, boardsOrder: [board.id, ...prev.boardsOrder] };
+			return { boards, boardsOrder: [board.id, ...prev.boardsOrder], savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
 		});
 
 	const renameBoard = (boardId: Id, title: string) =>
@@ -271,11 +311,50 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		{
 			const boards = { ...prev.boards };
 			delete boards[boardId];
-			return { boards, boardsOrder: removeIdFromArray(prev.boardsOrder, boardId) };
+			return { boards, boardsOrder: removeIdFromArray(prev.boardsOrder, boardId), savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
 		});
 
 	const reorderBoards = (boardId: Id, toIndex: number) =>
-		setState(prev => ({ ...prev, boardsOrder: moveIdInArray(prev.boardsOrder, boardId, toIndex)}));
+		setState(prev => ({ ...prev, boardsOrder: moveIdInArray(prev.boardsOrder, boardId, toIndex), savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION}));
+
+	const duplicateBoard = (boardId: Id) =>
+		setState(prev =>
+		{
+			const original = prev.boards[boardId];
+			if (!original) return prev;
+
+			const columnIdMap = new Map<Id, Id>();
+			const columns = Object.fromEntries(Object.values(original.columns).map(column =>
+			{
+				const copy: Column = { ...column, id: genId() };
+				columnIdMap.set(column.id, copy.id);
+				return [copy.id, copy];
+			}));
+
+			const tasks: Record<Id, Task> = {};
+			const tasksOrderInColumn: Record<Id, Id[]> = {};
+
+			for (const [oldColumnId, taskIds] of Object.entries(original.tasksOrderInColumn))
+			{
+				const newColumnId = columnIdMap.get(oldColumnId);
+				if (!newColumnId) continue;
+
+				const copiedTasks = taskIds.map(taskId => duplicateTaskData(original.tasks[taskId]));
+				copiedTasks.forEach(t => tasks[t.id] = t);
+				tasksOrderInColumn[newColumnId] = copiedTasks.map(t => t.id);
+			}
+
+			const board: Board = {
+				...original,
+				id: genId(),
+				columns,
+				columnsOrder: original.columnsOrder.map(id => columnIdMap.get(id)!),
+				tasks,
+				tasksOrderInColumn
+			};
+
+			return { boards: { ...prev.boards, [board.id]: board }, boardsOrder: insertIdAfter(prev.boardsOrder, boardId, board.id), savedAt: getCurrentTimestamp(), formatVersion: CURRENT_FORMAT_VERSION };
+		});
 
 	// Columns
 	const createColumn = (boardId: Id, title: string, color?: Color) =>
@@ -329,6 +408,26 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		setState(prev =>
 			stateWithBoard(prev, boardId, board =>
 				({ ...board, columnsOrder: moveIdInArray(board.columnsOrder, columnId, toIndex) })));
+
+	const duplicateColumn = (boardId: Id, columnId: Id) =>
+		setState(prev =>
+			stateWithBoard(prev, boardId, board =>
+			{
+				const original = board.columns[columnId];
+				if (!original) return board;
+
+				const copyColumn: Column = { ...original, id: genId() };
+				const originalTaskIds = board.tasksOrderInColumn[columnId] ?? [];
+				const copiedTasks = originalTaskIds.map(id => duplicateTaskData(board.tasks[id]));
+
+				return {
+					...board,
+					columns: { ...board.columns, [copyColumn.id]: copyColumn },
+					columnsOrder: insertIdAfter(board.columnsOrder, columnId, copyColumn.id),
+					tasks: { ...board.tasks, ...Object.fromEntries(copiedTasks.map(t => [t.id, t])) },
+					tasksOrderInColumn: { ...board.tasksOrderInColumn, [copyColumn.id]: copiedTasks.map(t => t.id) }
+				};
+			}));
 
 	// Tasks
 	const createTask = (boardId: Id, columnId: Id, title: string, color?: Color) =>
@@ -408,6 +507,23 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 			stateWithBoard(prev, boardId, board =>
 				boardWithTask(board, taskId, ({ tagsIds, ...task }) =>
 					({ ...task, tagsIds: moveIdInArray(tagsIds, tagId, toIndex) }))));
+
+	const duplicateTask = (boardId: Id, columnId: Id, taskId: Id) =>
+		setState(prev =>
+			stateWithBoard(prev, boardId, board =>
+			{
+				const original = board.tasks[taskId];
+				if (!original) return board;
+
+				const copy = duplicateTaskData(original);
+				const columnTasksOrder = board.tasksOrderInColumn[columnId] ?? [];
+
+				return {
+					...board,
+					tasks: { ...board.tasks, [copy.id]: copy },
+					tasksOrderInColumn: { ...board.tasksOrderInColumn, [columnId]: insertIdAfter(columnTasksOrder, taskId, copy.id) }
+				};
+			}));
 
 	// Tags
 	const createTag = (boardId: Id, title: string, color?: Color) =>
@@ -544,6 +660,22 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 					taskWithChecklist(task, checklistId, checklist =>
 						({ ...checklist, itemsOrder: moveIdInArray(checklist.itemsOrder, itemId, toIndex) })))));
 
+	const duplicateChecklist = (boardId: Id, taskId: Id, checklistId: Id) =>
+		setState(prev =>
+			stateWithBoard(prev, boardId, board =>
+				boardWithTask(board, taskId, task =>
+				{
+					const original = task.checklists[checklistId];
+					if (!original) return task;
+					const copy = duplicateChecklistData(original);
+
+					return {
+						...task,
+						checklists: { ...task.checklists, [copy.id]: copy },
+						checklistsOrder: insertIdAfter(task.checklistsOrder, checklistId, copy.id)
+					};
+				})));
+
 	return {
 		state,
 		loadState,
@@ -552,12 +684,14 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		renameBoard,
 		deleteBoard,
 		reorderBoards,
+		duplicateBoard,
 		// Columns
 		createColumn,
 		renameColumn,
 		setColumnColor,
 		deleteColumn,
 		reorderColumns,
+		duplicateColumn,
 		// Tasks
 		createTask,
 		renameTask,
@@ -570,6 +704,7 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		createTagToTask,
 		removeTagFromTask,
 		reorderTaskTags,
+		duplicateTask,
 		// Tags
 		createTag,
 		renameTag,
@@ -585,6 +720,7 @@ export default function useKanban(initialState: KanbanState = EMPTY_STATE)
 		renameChecklistItem,
 		toggleChecklistItem,
 		deleteChecklistItem,
+		duplicateChecklist,
 		reorderChecklistItems
 	};
 }

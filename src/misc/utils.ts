@@ -128,3 +128,16 @@ export const DND_TRANSITION =
 	duration: 200,
 	easing: 'cubic-bezier(0.66, 0, 0.34, 1)'
 };
+
+/**
+ * Returns the current UTC timestamp in ISO 8601 format.
+ * @returns The current timestamp.
+ */
+export const getCurrentTimestamp = (): string => new Date().toISOString();
+
+/**
+ * Converts a timestamp string to a Date object.
+ * @param timestamp The timestamp string to convert.
+ * @returns A Date object representing the given timestamp.
+ */
+export const timestampToDateTime = (timestamp: string): Date => new Date(timestamp);

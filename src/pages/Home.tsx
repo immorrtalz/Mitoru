@@ -5,7 +5,6 @@ import { DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from "@dnd-kit/react/sortable";
 
 import Button from "../components/Button";
-import { TopBar } from "../components/TopBar";
 import BoardItem from "../components/BoardItem";
 import Separator from "../components/Separator";
 
@@ -37,10 +36,8 @@ function Home()
 
 	return (
 		<div className='mainContainer'>
-			<TopBar/>
-
 			<div className={styles.boardsPageContainer}>
-				<h2 className={styles.boardsTitle}>{translate("boards")}</h2>
+				<h2 className="grayGradientText">{translate("boards")}</h2>
 
 				<DragDropProvider onDragEnd={({ operation }) =>
 				{

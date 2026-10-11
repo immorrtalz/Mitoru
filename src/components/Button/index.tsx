@@ -19,6 +19,7 @@ interface Props
 	onHover?: (...args: any[]) => any;
 	className?: string;
 	style?: React.CSSProperties;
+	"data-text"?: string;
 }
 
 export default function Button(props: Props)
@@ -52,6 +53,7 @@ export default function Button(props: Props)
 		<button className={`${styles.button} ${buttonStyle} ${variantStyle} ${alignStyle} ${props.square ? styles.square : ''} ${props.small ? styles.small : ''} ${props.dimmed ? styles.dimmed : ''} ${props.smallSVG ? styles.smallSVG : ''} ${props.dimmedSVG ? styles.dimmedSVG : ''} ${props.className || ''}`}
 			style={props.style}
 			{ ...(props.bgColor !== undefined && { "data-bg-color": props.bgColor }) }
+			{ ...(props["data-text"] !== undefined && { "data-text": props["data-text"] }) }
 			onClick={onClick}
 			disabled={props.disabled}
 			onPointerEnter={onHover}

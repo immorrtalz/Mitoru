@@ -1,10 +1,8 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { useNavigate } from "react-router";
 import styles from "./Settings.module.scss";
 
-import { TopBar } from "../components/TopBar";
 import Button from "../components/Button";
-import { TextBox } from "../components/TextBox";
 
 import useSettingsLoader from "../hooks/useSettingsLoader";
 import useTranslations, { TranslationKey } from "../hooks/useTranslations";
@@ -14,11 +12,11 @@ import { isValidKanbanState, KanbanState } from "../hooks/useKanban";
 
 import { Locale, LOCALES, Settings } from "../misc/settings";
 import { HorizontalAlign, InteractableStyle, StyleVariant } from "../misc/utils";
-import { clearStoredToken, hasStoredToken } from "../misc/cryptoUtils";
 
 import SettingsContext from '../context/SettingsContext';
 import { useBoardsContext } from "../context/BoardsContext";
-import { useGistAPIContext } from "../context/GistAPIContext";
+
+const JSON_DATA_FILE_NAME = "mitoru_data";
 
 const JSON_DATA_FILE_NAME = "mitoru_data";
 
@@ -30,29 +28,9 @@ function SettingsPage()
 	const { translate } = useTranslations();
 	const { state, loadState } = useBoardsContext();
 	const { openContextMenu } = useContextMenu();
-	const { initOctokit, createGist, getGistContent, updateGist } = useGistAPIContext();
-	const { openPromptDialog } = useDialog();
+	const { openDialog } = useDialog();
 
 	const JSONFileInputRef = useRef<HTMLInputElement>(null);
-
-	const onPassPhraseDialog = () =>
-	{
-		openPromptDialog(
-		{
-			title: "Enter the passphrase",
-			description: `At least 8 characters long.\nThis will overwrite any existing API key and/or gist id in localStorage.`,
-			validate: v => v.trim().length >= 8,
-			onConfirm: result =>
-			{
-				initOctokit(result, githubAPIKeyValue === "" ? undefined : githubAPIKeyValue);
-				setGithubAPIKeyValue("");
-				setGistIdValue("");
-			}
-		});
-	};
-
-	const [githubAPIKeyValue, setGithubAPIKeyValue] = useState("");
-	const [gistIdValue, setGistIdValue] = useState("");
 
 	const changeSetting = <K extends keyof Settings>(key: K, value: Settings[K]) =>
 	{
@@ -75,10 +53,36 @@ function SettingsPage()
 			{
 				const parsedObject = JSON.parse(reader.result as string);
 
-				if (isValidKanbanState(parsedObject)) onStateParsed(parsedObject);
-				else console.error('Invalid file');
+				if (isValidKanbanState(parsedObject))
+				{
+					openDialog(
+					{
+						title: `${translate("are_you_sure_import_data_from")} ${new Date(parsedObject.savedAt).toLocaleString()}?`,
+						description: `${translate("importing_will_overwrite_current_data")}.\n${translate("this_action_cannot_be_undone")}.`,
+						onConfirm: () => onStateParsed(parsedObject)
+					});
+				}
+				else
+				{
+					openDialog(
+					{
+						title: `${translate("invalid_or_corrupted_file")}`,
+						description: `${translate("this_data_cannot_be_imported_invalid")}.`,
+						cancelShown: false,
+						confirmButtonVariant: StyleVariant.Negative
+					});
+				}
 			}
-			catch (e) { console.error('Failed to import file:', e); }
+			catch (e)
+			{
+				openDialog(
+				{
+					title: `${translate("failed_to_import_file")}`,
+					description: `${translate("unknown_error_occured")}.\n${(e as Error).message}`,
+					cancelShown: false,
+					confirmButtonVariant: StyleVariant.Negative
+				});
+			}
 		};
 
 		reader.readAsText(file);
@@ -116,14 +120,11 @@ function SettingsPage()
 
 	return (
 		<div className='mainContainer'>
-
-			<TopBar pageName={translate("settings")}/>
-
 			<div className={styles.settingsPageContainer}>
 				<div className={styles.settingsContentContainer}>
-					<Button className={styles.backButton} buttonStyle={InteractableStyle.Outlined} small onClick={() => navigate("/")}>{translate("go_home")}</Button>
+					<Button className={styles.backButton} buttonStyle={InteractableStyle.Outlined} small onClick={() => navigate("/")}>{translate("go_to_home")}</Button>
 
-					<h2>{translate("settings")}</h2>
+					<h2 className="grayGradientText">{translate("settings")}</h2>
 
 					<div className={`${styles.smallGapRowContainer} ${styles.justifyContentSpaceBetween} ${styles.alignItemsCenter}`}>
 						<p>{translate("language")}</p>
@@ -152,59 +153,6 @@ function SettingsPage()
 							</Button>
 						</div>
 					</div>
-
-					<div className={styles.smallGapColumnContainer}>
-						<h4 className={styles.marginBottomForHeader}>{translate("github_gists_integration")}</h4>
-
-						<p>{translate("this_app_uses_localstorage")}</p>
-						<p>{translate("you_can_provide_a_github_api_key")}</p>
-						<p>{translate("you_can_use_these_types_of_tokens")}</p>
-						<ul>
-							<li><a href="https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app" target="_blank" rel="noopener noreferrer">{translate("a_github_app_user_access_token")}</a></li>
-							<li><a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token" target="_blank" rel="noopener noreferrer">{translate("a_fine_grained_personal_access_token_with_the_gists_read_and_write_permission")}</a></li>
-						</ul>
-						<p>{translate("you_can_provide_a_gist_url_or_id")}</p>
-
-						<br/>
-
-						<p>GitHub API key</p>
-						<TextBox disabled
-							textBoxStyle={InteractableStyle.Outlined}
-							value={githubAPIKeyValue}
-							placeholder={hasStoredToken() ? "*********************************************************************************************" : ""}
-							onInput={e =>
-							{
-								const inputValue = (e.target as HTMLInputElement).value.trim();
-								setGithubAPIKeyValue(inputValue);
-							}}/>
-
-						<br/>
-
-						<p>Gist URL or id</p>
-						<TextBox disabled
-							textBoxStyle={InteractableStyle.Outlined}
-							value={gistIdValue === "" ? undefined : gistIdValue}
-							onInput={e =>
-							{
-								const inputValue = (e.target as HTMLInputElement).value.trim().toLowerCase().split("/").pop() || "";
-								setGistIdValue(inputValue);
-							}}/>
-					</div>
-
-					<Button buttonStyle={InteractableStyle.Secondary} variant={StyleVariant.Negative} onClick={() =>
-					{
-						setGithubAPIKeyValue("");
-						setGistIdValue("");
-						clearStoredToken();
-					}}>
-						Reset API key and gist id
-					</Button>
-
-					<Button buttonStyle={InteractableStyle.Primary}
-						onClick={onPassPhraseDialog}
-						disabled={githubAPIKeyValue === "" && gistIdValue === ""}>
-						{translate("confirm")}
-					</Button>
 
 					<Button buttonStyle={InteractableStyle.Outlined} onClick={() => window.open("https://github.com/immorrtalz/Mitoru", "_blank")}>Source code on GitHub</Button>
 				</div>
