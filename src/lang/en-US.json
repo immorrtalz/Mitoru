@@ -76,6 +76,5 @@
 	"no_boards_yet": "You haven't created any boards yet",
 	"import": "Import",
 	"export": "Export",
-	"json_data": "JSON data",
-	"this_app_uses_localstorage": "This app uses localStorage to store your data."
+	"json_data": "JSON data"
 }

@@ -39,7 +39,7 @@ export function TopBar(props: Props)
 
 					<div className={styles.logoTextsContainer}>
 						<h3 className={styles.appName}>Mitoru</h3>
-						<p className={styles.subText}>v{appVersion} beta</p>
+						<p className={styles.subText}>v{appVersion} rc</p>
 					</div>
 				</div>
 
