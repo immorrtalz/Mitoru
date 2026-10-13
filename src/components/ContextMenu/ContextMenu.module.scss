@@ -20,4 +20,25 @@
 	transition: all 0s;
 
 	& > * { width: 100%; }
+
+	& .glideSelectBackground
+	{
+		--glide-duration: 200ms;
+		--glide-pop-duration: 200ms;
+
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 32px;
+		border-radius: var(--smaller-border-radius);
+		background: var(--hover-main-bg-color);
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			transform var(--glide-duration) cubic-bezier(0.2, 0.8, 0.2, 1),
+			width var(--glide-duration) cubic-bezier(0.2, 0.8, 0.2, 1),
+			height var(--glide-duration) cubic-bezier(0.2, 0.8, 0.2, 1),
+			opacity var(--glide-pop-duration) ease-out;
+	}
 }

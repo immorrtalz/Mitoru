@@ -76,6 +76,5 @@
 	"no_boards_yet": "Вы ещё не создали ни одной доски",
 	"import": "Импорт",
 	"export": "Экспорт",
-	"json_data": "JSON данных",
-	"this_app_uses_localstorage": "Это приложение использует localStorage для хранения ваших данных."
+	"json_data": "JSON данных"
 }

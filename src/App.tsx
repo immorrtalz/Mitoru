@@ -1,14 +1,9 @@
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
-
-import Home from "./pages/Home";
-import Kanban from "./pages/Kanban";
-import SettingsPage from "./pages/Settings";
-import NotFound from "./pages/NotFound";
+import { createHashRouter, Outlet, RouterProvider } from "react-router";
 import { TopBar } from "./components/TopBar";
 
 function App()
 {
-	const router = createBrowserRouter([
+	const router = createHashRouter([
 		{
 			Component: () =>
 				<>
@@ -18,19 +13,19 @@ function App()
 			children: [
 				{
 					index: true,
-					Component: Home // aka Boards
+					lazy: () => import("./pages/Home").then(imported => ({ Component: imported.default })) // aka Boards
 				},
 				{
 					path: "kanban/:boardId",
-					Component: Kanban
+					lazy: () => import("./pages/Kanban").then(imported => ({ Component: imported.default }))
 				},
 				{
 					path: "settings",
-					Component: SettingsPage
+					lazy: () => import("./pages/Settings").then(imported => ({ Component: imported.default }))
 				},
 				{
 					path: "*",
-					Component: NotFound
+					lazy: () => import("./pages/NotFound").then(imported => ({ Component: imported.default }))
 				}
 			]
 		}
